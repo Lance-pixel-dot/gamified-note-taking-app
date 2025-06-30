@@ -1,6 +1,5 @@
 import Header from "./Header"
 import Nav from "./Nav"
-import Notes from "./Notes"
 
 function App() {
 
@@ -8,7 +7,6 @@ function App() {
     <>
      <Header></Header>
      <Nav></Nav>
-     <Notes></Notes>
     </>
   )
 }
