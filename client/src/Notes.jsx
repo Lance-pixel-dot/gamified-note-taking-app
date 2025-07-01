@@ -1,5 +1,9 @@
+import { useState } from 'react';
+
 function Notes(props)
 {
+
+    const [title, setTitle] = useState('');
 
     function createNote(){
         const dialog = document.querySelector('#new-note');
@@ -7,33 +11,21 @@ function Notes(props)
         dialog.showModal();
     }
 
-    function saveNote(){
-        const noteForm = document.querySelector('#note-form');
-        noteForm.addEventListener('submit', e => {
-            e.preventDefault();
-        })
-        const dialog = document.querySelector('#new-note');
-        dialog.close();
+    async function saveNote(){
+        try {
+            const body = { title };
+            const response = await fetch("http://localhost:5000/notes", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(body)
+            });
 
-        const getNoteTitle = document.querySelector('#title');
-        const noteContainer = document.querySelector("#note-container");
-        
-        const noteDiv = document.createElement('div');
-        noteDiv.setAttribute('class', 'border border-black p-2 rounded-xl');
-        const noteTitle = document.createElement('h2');
-        noteTitle.textContent = getNoteTitle.value;
-        const viewBTN = document.createElement('button');
-        viewBTN.textContent = 'View Note';
-        viewBTN.setAttribute('class', 'border border-black p-2 rounded-xl text-white bg-blue-500 font-bold')
-        viewBTN.addEventListener('click', () => {
-            const viewDialog = document.querySelector('#view-note');
-
-            viewDialog.showModal();
-        })
-
-        noteDiv.appendChild(noteTitle);
-        noteDiv.appendChild(viewBTN);
-        noteContainer.appendChild(noteDiv);
+            console.log(response);
+            setTitle(""); // clear input
+        } catch (err) {
+            console.log(err.message);
+        }
+        document.querySelector('#new-note').close();
     }
 
     function cancelNote(){
@@ -67,12 +59,21 @@ function Notes(props)
             </section>
 
             <dialog id="new-note" className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">
-                <form id="note-form" className="flex flex-col gap-4">
+                <form id="note-form" className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
                     <h2>Create new Note</h2>
 
                     <section className="flex flex-col">
                         <label htmlFor="title">Title</label>
-                        <input type="text" id="title" className="border border-black rounded p-2"/>
+                        <input 
+                        type="text" 
+                        id="title" 
+                        className="border border-black rounded p-2" 
+                        value={title} 
+                        onChange={(e) => {
+                            setTitle(e.target.value)
+                            }
+                        }
+                        />
                     </section>
 
                     <section className="flex flex-col">
@@ -85,7 +86,7 @@ function Notes(props)
                         <input type="text" id="tag" className="border border-black rounded p-2"/>
                     </section>
 
-                    <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold" onClick={() => saveNote()}>Save</button>
+                    <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold" onClick={saveNote}>Save</button>
                     <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" type="reset" onClick={() => cancelNote()}>Cancel</button>
                 </form>
             </dialog>
