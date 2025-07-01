@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import EditNote from './EditNotes';
 
 function Notes(props)
 {
-
-    const [title, setTitle] = useState('');
 
     function createNote(){
         const dialog = document.querySelector('#new-note');
 
         dialog.showModal();
     }
+
+    const [title, setTitle] = useState('');
 
     async function saveNote(){
         try {
@@ -23,22 +24,51 @@ function Notes(props)
             console.log(response);
             setTitle(""); // clear input
         } catch (err) {
-            console.log(err.message);
+            console.error(err.message);
         }
         document.querySelector('#new-note').close();
+    }
+
+    const [notes, setNotes] = useState([]);
+
+    async function displayNotes(){
+        try {
+            const response = await fetch("http://localhost:5000/notes");
+            const jsonData = await response.json();
+
+            setNotes(jsonData);
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+
+    useEffect(() => {
+        displayNotes();
+    }, []);
+
+    // console.log(notes);
+
+    async function deleteNote(id) {
+        try {
+            const deleteNote = await fetch(`http://localhost:5000/notes/${id}`, {
+                method: "DELETE"
+            });
+
+            setNotes(notes.filter(notes => notes.note_id !== id));
+        } catch (err) {
+            console.error(err.message);
+        }
     }
 
     function cancelNote(){
         const noteForm = document.querySelector('#note-form');
         const dialog = document.querySelector('#new-note');
-        const viewDialog = document.querySelector('#view-note');
 
         noteForm.addEventListener('submit', e => {
             e.preventDefault();
         })
 
         dialog.close();
-        viewDialog.close();
     }
   
 
@@ -54,6 +84,15 @@ function Notes(props)
                     <h2 className="text-3xl font-bold">Notes</h2>
                     <section id="note-container" className="border-2 h-70 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
                         {/* fills with notes */}
+                        {notes.map(notes => (
+                            <div className="border border-black rounded p-2" key={notes.note_id}>
+                                <h2>{notes.title}</h2>
+                                <EditNote note={notes}></EditNote>
+                                <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
+                                onClick={() => deleteNote(notes.note_id)}
+                                >Delete</button>
+                            </div>
+                        ))}
                     </section>
                 </section>
             </section>
@@ -88,29 +127,6 @@ function Notes(props)
 
                     <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold" onClick={saveNote}>Save</button>
                     <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" type="reset" onClick={() => cancelNote()}>Cancel</button>
-                </form>
-            </dialog>
-
-            <dialog id="view-note" className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">
-                <form id="note-form" className="flex flex-col gap-4">
-                    <h2>Create new Note</h2>
-
-                    <section className="flex flex-col">
-                        <label htmlFor="view-title">Title</label>
-                        <input type="text" id="view-title" className="border border-black rounded p-2"/>
-                    </section>
-
-                    <section className="flex flex-col">
-                        <label htmlFor="view-content">Content</label>
-                        <textarea name="view-content" id="view-content" className="border border-black rounded p-2 resize-none h-55"></textarea>
-                    </section>
-
-                    <section className="flex flex-col">
-                        <label htmlFor="view-tag">Tag</label>
-                        <input type="text" id="view-tag" className="border border-black rounded p-2"/>
-                    </section>
-
-                    <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" type="reset" onClick={() => cancelNote()}>Close</button>
                 </form>
             </dialog>
         </>
