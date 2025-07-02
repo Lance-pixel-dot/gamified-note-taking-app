@@ -1,73 +1,18 @@
 const express = require("express");
-const app = express();
 const cors = require("cors");
-const pool = require("./db");
+const app = express();
+const noteRoutes = require("./routes/notes");
+const flashcardRoutes = require("./routes/flashcards");
 
-//middleware
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-//ROUTES//
+// Route middleware
+app.use("/notes", noteRoutes);
+app.use("/flashcards", flashcardRoutes);
 
-//create a note
-app.post("/notes", async(req, res) => {
-    try{
-        const { title, content, tag } = req.body;
-        const newNote = await pool.query("INSERT INTO notes (title, content, tag) VALUES($1, $2, $3) RETURNING *", [title, content, tag]);
-        
-        res.json(newNote.rows[0]);
-    } catch (err) {
-        console.error(err.message);
-    }
-})
-
-//get all notes
-app.get("/notes", async(req, res) => {
-    try {
-        const allNotes = await pool.query("SELECT * FROM notes");
-        res.json(allNotes.rows);
-    } catch (err) {
-        console.error(err.message);
-    }
-})
-
-//get a note
-app.get("/notes/:id", async(req, res) => {
-    try {
-        const { id } = req.params;
-        const todo = await pool.query("SELECT * FROM notes WHERE note_id = $1", [id]);
-
-        res.json(todo.rows[0]);
-    } catch (err) {
-        console.error(err.message);
-    }
-})
-
-//update a note
-app.put("/notes/:id", async(req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, content, tag } = req.body;
-        const updateNote = await pool.query("UPDATE notes SET title = $1, content = $2, tag = $3 WHERE note_id = $4 ", [title, content, tag, id]);
-
-        res.json("This Note was updated :)");
-    } catch (err) {
-        console.error(err.message);
-    }
-})
-
-//delete a note
-app.delete("/notes/:id", async(req, res) => {
-    try {
-        const { id } = req.params;
-        const deleteNote = await pool.query("DELETE FROM notes WHERE note_id = $1", [id]);
-
-        res.json("This Note was Deleted >:(");
-    } catch (err) {
-        console.error(err.message);
-    }
-})
-
+// Start server
 app.listen(5000, () => {
-    console.log("server has started in port 5000");
+  console.log("Server started on port 5000");
 });

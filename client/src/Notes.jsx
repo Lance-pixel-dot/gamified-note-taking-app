@@ -25,7 +25,10 @@ function Notes(props)
                 body: JSON.stringify(body)
             });
 
-            window.location = "/";
+            const newNote = await response.json();
+
+            setNotes([...notes, newNote]);
+
             setTitle(""); // clear input
             setContent("");
             setTag("");
@@ -75,6 +78,8 @@ function Notes(props)
         })
 
         setTitle("");
+        setContent("");
+        setTag("");
         dialog.close();
     }
 
