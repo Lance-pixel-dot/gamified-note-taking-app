@@ -10,6 +10,7 @@ function Notes(props)
         dialog.showModal();
     }
 
+    //add notes
     const [title, setTitle] = useState('');
 
     async function saveNote(){
@@ -21,7 +22,7 @@ function Notes(props)
                 body: JSON.stringify(body)
             });
 
-            console.log(response);
+            window.location = "/";
             setTitle(""); // clear input
         } catch (err) {
             console.error(err.message);
@@ -29,6 +30,7 @@ function Notes(props)
         document.querySelector('#new-note').close();
     }
 
+    //display note
     const [notes, setNotes] = useState([]);
 
     async function displayNotes(){
@@ -46,8 +48,7 @@ function Notes(props)
         displayNotes();
     }, []);
 
-    // console.log(notes);
-
+    //delete note
     async function deleteNote(id) {
         try {
             const deleteNote = await fetch(`http://localhost:5000/notes/${id}`, {
