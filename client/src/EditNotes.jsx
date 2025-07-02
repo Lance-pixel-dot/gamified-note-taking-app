@@ -3,6 +3,8 @@ import { useState } from "react";
 function EditNote({ note }){
 
     const [title, setTitle] = useState(note.title);
+    const [content, setContent] = useState(note.content);
+    const [tag, setTag] = useState(note.tag);
 
     async function updateTitle(e){
         e.preventDefault();
@@ -53,12 +55,18 @@ function EditNote({ note }){
 
                     <section className="flex flex-col">
                         <label htmlFor="view-content">Content</label>
-                        <textarea name="view-content" id="view-content" className="border border-black rounded p-2 resize-none h-55"></textarea>
+                        <textarea name="view-content" id="view-content" className="border border-black rounded p-2 resize-none h-55"
+                        value={content}
+                        onChange={e => setContent(e.target.value)}
+                        ></textarea>
                     </section>
 
                     <section className="flex flex-col">
                         <label htmlFor="view-tag">Tag</label>
-                        <input type="text" id="view-tag" className="border border-black rounded p-2"/>
+                        <input type="text" id="view-tag" className="border border-black rounded p-2" 
+                        value={tag}
+                        onChange={e => setTag(e.target.value)}
+                        />
                     </section>
 
                     <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" type="reset"

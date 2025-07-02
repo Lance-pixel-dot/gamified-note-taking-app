@@ -12,8 +12,8 @@ app.use(express.json());
 //create a note
 app.post("/notes", async(req, res) => {
     try{
-        const { title } = req.body;
-        const newNote = await pool.query("INSERT INTO notes (title) VALUES($1) RETURNING *", [title]);
+        const { title, content, tag } = req.body;
+        const newNote = await pool.query("INSERT INTO notes (title, content, tag) VALUES($1, $2, $3) RETURNING *", [title, content, tag]);
         
         res.json(newNote.rows[0]);
     } catch (err) {
