@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import EditNote from './EditNotes';
+import ReadNotes from './ReadNotes';
 
 function Notes(props)
 {
@@ -108,6 +109,7 @@ function Notes(props)
                         {notes.map(notes => (
                             <div className="border border-black rounded p-2" key={notes.note_id}>
                                 <h2>{notes.title}</h2>
+                                <ReadNotes note={notes}></ReadNotes>
                                 <EditNote note={notes}></EditNote>
                                 <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
                                 onClick={() => deleteNote(notes.note_id)}

@@ -47,8 +47,8 @@ app.get("/notes/:id", async(req, res) => {
 app.put("/notes/:id", async(req, res) => {
     try {
         const { id } = req.params;
-        const { title } = req.body;
-        const updateNote = await pool.query("UPDATE notes SET title = $1 WHERE note_id = $2", [title, id]);
+        const { title, content, tag } = req.body;
+        const updateNote = await pool.query("UPDATE notes SET title = $1, content = $2, tag = $3 WHERE note_id = $4 ", [title, content, tag, id]);
 
         res.json("This Note was updated :)");
     } catch (err) {
