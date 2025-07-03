@@ -115,7 +115,12 @@ function Notes(props)
                             <div className="border border-black rounded p-2" key={notes.note_id}>
                                 <h2>{notes.title}</h2>
                                 <ReadNotes note={notes}></ReadNotes>
-                                <EditNote note={notes}></EditNote>
+                                <EditNote note={notes} updateNotesDisplay={
+                                    (updatedNote) => {
+                                        setNotes(prev => prev.map(note => note.note_id === updatedNote.note_id ? updatedNote : note))
+                                    }
+                                }
+                                ></EditNote>
                                 <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
                                 onClick={() => deleteNote(notes.note_id)}
                                 >Delete</button>

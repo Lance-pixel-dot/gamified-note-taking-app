@@ -42,11 +42,11 @@ router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, tag } = req.body;
-    await pool.query(
-      "UPDATE notes SET title = $1, content = $2, tag = $3 WHERE note_id = $4",
+    const updatedNote = await pool.query(
+      "UPDATE notes SET title = $1, content = $2, tag = $3 WHERE note_id = $4 RETURNING *",
       [title, content, tag, id]
     );
-    res.json("Note updated successfully.");
+    res.json(updatedNote.rows[0]);
   } catch (err) {
     console.error(err.message);
   }

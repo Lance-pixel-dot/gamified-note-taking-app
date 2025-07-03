@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import EditFlashcard from "./EditFlashcards";
+import ReviewFlashcard from "./ReviewFlashcards";
 
 function Flashcard(props){
 
-     function createFlashcard(){
+    function createFlashcard(){
         const dialog = document.querySelector('#new-flashcard');
 
         dialog.showModal();
@@ -106,6 +108,13 @@ function Flashcard(props){
                         {flashcards.map(flashcard => (
                             <div className="border border-black rounded p-2" key={flashcard.flashcard_id}>
                                 <h2>{flashcard.title}</h2>
+                                <ReviewFlashcard flashcard={flashcard}></ReviewFlashcard>
+                                <EditFlashcard flashcard={flashcard} updateFlashcardsDisplay={
+                                    (updatedFlashcard) => {
+                                        setFlashcards(prev => prev.map(card => card.flashcard_id === updatedFlashcard.flashcard_id ? updatedFlashcard : card))
+                                    }
+                                }
+                                ></EditFlashcard>
                                 <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
                                 onClick={() => deleteFlashcard(flashcard.flashcard_id)}
                                 >Delete</button>
@@ -192,41 +201,13 @@ function Flashcard(props){
                                 }
                             }
                         }
-                        placeholder='Type your Title here (max 50 Characters)'
+                        placeholder='Type your Tag here (max 50 Characters)'
                         required
                         />
                     </section>
 
-                    <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold" type="submit">Save</button>
+                    <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" type="submit">Save</button>
                     <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" type="reset" onClick={() => cancelFlashcard()}>Cancel</button>
-                </form>
-            </dialog>
-
-            <dialog id="view-flashcard" className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">
-                <form id="flashcard-form" className="flex flex-col gap-4">
-                    <h2>Flashcard Details</h2>
-
-                    <section className="flex flex-col">
-                        <label htmlFor="flashcard-view-title">Title</label>
-                        <input type="text" id="flashcard-view-title" className="border border-black rounded p-2"/>
-                    </section>
-
-                    <section className="flex flex-col">
-                        <label htmlFor="flashcard-view-front">Front</label>
-                        <textarea name="flashcard-view-front" id="flashcard-view-front" className="border border-black rounded p-2 resize-none h-30"></textarea>
-                    </section>
-
-                    <section className="flex flex-col">
-                        <label htmlFor="flashcard-view-back">Back</label>
-                        <textarea name="flashcard-view-back" id="flashcard-view-back" className="border border-black rounded p-2 resize-none h-30"></textarea>
-                    </section>
-
-                    <section className="flex flex-col">
-                        <label htmlFor="flashcard-view-tag">Tag</label>
-                        <input type="text" id="flashcard-view-tag" className="border border-black rounded p-2"/>
-                    </section>
-
-                    <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" type="reset" onClick={() => cancelFlashcard()}>Close</button>
                 </form>
             </dialog>
         </>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function EditNote({ note }){
+function EditNote({ note, updateNotesDisplay }){
 
     const [title, setTitle] = useState(note.title);
     const [content, setContent] = useState(note.content);
@@ -15,10 +15,14 @@ function EditNote({ note }){
                 body: JSON.stringify(body)
             })
 
-            window.location = "/";
+            const updatedNote = await response.json();
+
+            updateNotesDisplay(updatedNote);
+
         } catch (err) {
             console.error(err.message);
         }
+        document.querySelector(`#id${note.note_id}`).close();
     }
 
     function viewNote(){
