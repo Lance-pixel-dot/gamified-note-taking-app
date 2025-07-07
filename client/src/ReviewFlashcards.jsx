@@ -27,12 +27,12 @@ function ReviewFlashcard({ flashcard }){
                     <div className="w-80 h-48 perspective" onClick={() => {setIsFlipped(prev => !prev), setDisplay("flex")}}>
                         <div className={`relative w-full h-full duration-500 transform-style preserve-3d ${isFlipped ? "rotate-y-180" : ""}`}>
                             {/* Front */}
-                            <div className="absolute w-full h-full bg-white border border-gray-300 rounded-xl shadow-md backface-hidden flex flex-col justify-center items-center p-4 text-center">
+                            <div className="absolute w-full h-full bg-white border border-gray-300 rounded-xl shadow-md backface-hidden flex flex-col justify-center items-center p-4 text-center cursor-pointer">
                                 <h3>Question:</h3>
                                 <p className="text-gray-700 text-center">{flashcard.question}</p>
                             </div>
                             {/* Back */}
-                            <div className="absolute w-full h-full bg-blue-100 border border-blue-300 rounded-xl shadow-md backface-hidden rotate-y-180 flex  flex-col text-center justify-center items-center p-4">
+                            <div className="absolute w-full h-full bg-blue-100 border border-blue-300 rounded-xl shadow-md backface-hidden rotate-y-180 flex  flex-col text-center justify-center items-center p-4 cursor-pointer">
                                 <h3>Answer:</h3>
                                 <p className="text-lg font-semibold text-center">{flashcard.answer}</p>
                             </div>

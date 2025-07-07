@@ -1,10 +1,11 @@
+import Nav from "./Nav"
 function Header()
 {
-    const progress = 50;
-    const achievement = "Best Coder"
-    const Player = "lance"
+    const progress = 35;
+    const achievement = "Dedicated Learner"
+    const Player = "Renier"
     const level = 21;
-    const streak = 2;
+    const streak = 4;
 
     return(
         <>
@@ -24,6 +25,7 @@ function Header()
                     ></div>
                 </div>
             </section>
+            <Nav></Nav>
         </>
     );
 

@@ -1,12 +1,17 @@
 import Header from "./Header"
-import Nav from "./Nav"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import WelcomeScreen from "./WelcomeScreen"
 
 function App() {
 
   return (
     <>
-     <Header></Header>
-     <Nav></Nav>
+      <Router>
+        <Routes>
+          <Route path="/" element={<WelcomeScreen />} />
+          <Route path="/Dashboard" element={<Header />} />
+        </Routes>
+      </Router>
     </>
   )
 }
