@@ -5,12 +5,13 @@ To do's
 Create User
 -finish validation
     -username validation:
-    no more than 8 characters
+    no more than 12 characters
     -password validation:
-    no less than 4 characters
-    no more than 8 characters
-    must include at least two letters and one number
--finish integration with notes
+    Uppercase letters (A–Z)
+    Lowercase letters (a–z)
+    Digits (0–9)
+    Special characters (e.g., !@#$%^&*()-_+=) 
+-finish integration with notes and flashcards
 
 create collaboration features
 Shared Notes features:

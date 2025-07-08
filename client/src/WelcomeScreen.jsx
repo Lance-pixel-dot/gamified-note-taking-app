@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 
 function WelcomeScreen(){
 
@@ -8,6 +8,7 @@ function WelcomeScreen(){
     //register user
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorReg, setRegError] = useState("");
 
     async function regUser(){
         try {
@@ -18,9 +19,15 @@ function WelcomeScreen(){
                 body: JSON.stringify(body)
             });
 
-            setUsername("");
-            setPassword("");
-            navigate("/dashboard");
+            if(response.ok){
+                setUsername("");
+                setPassword("");
+                navigate("/dashboard");
+            } else {
+                const result = await response.json();
+                setRegError(result.error);
+            }
+
         } catch (err) {
             console.error(err.message);
         }
@@ -29,6 +36,7 @@ function WelcomeScreen(){
     //log in user
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
+    const [error, setError] = useState("");
 
     async function loginUser() {
         try {
@@ -45,7 +53,7 @@ function WelcomeScreen(){
             navigate("/dashboard");
         } else {
             const result = await response.json();
-            alert(result.error || "Login failed.");
+            setError(result.error || "Login failed.");
         }
 
         } catch (err) {
@@ -54,6 +62,18 @@ function WelcomeScreen(){
     } 
 
     const [activeSection, setActiveSection] = useState("landing");
+
+    //password validation
+    const [passwordValid, setPasswordValid] = useState("");
+    const [isValid, setIsValid] = useState(true);
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+    //username validation
+    const [usernameValid, setUsernameValid] = useState("");
+    const [isUsernameValid, setIsUsernameValid] = useState(true);
+
+    const usernameRegex = /^[a-zA-Z0-9_]{3,12}$/;
 
     return(
         <>
@@ -68,20 +88,6 @@ function WelcomeScreen(){
                 </div>
             </section>
 
-            <input
-              type="text"
-              name="fakeuser"
-              style={{ display: "none" }}
-              autoComplete="username"
-            />
-            <input
-              type="password"
-              name="fakepass"
-              style={{ display: "none" }}
-              autoComplete="new-password"
-            />
-
-
             {/* Login Section */}
             <section className={`h-screen bg-gradient-to-r from-blue-500 to-green-500 text-white flex flex-col justify-center items-center ${activeSection === "login" ? "translate-x-0" : "hidden"}`}>
                 <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
@@ -94,7 +100,7 @@ function WelcomeScreen(){
                             <input type="text" id="log-u-name" className="border border-white rounded" required
                             onChange={(e) => {
                                 const input = e.target.value
-                                setLoginUsername(input.toLowerCase())
+                                setLoginUsername(input.toLowerCase());
                             }
                         }
                             autoComplete="off"
@@ -111,6 +117,7 @@ function WelcomeScreen(){
                             autoComplete="new-password"
                             />
                         </div>
+                        {error && <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">{error}</p>}
                         <button type="submit" className="border border-white p-2 rounded w-full font-bold hover:bg-white hover:text-black
                         active:bg-white active:text-black">Login</button>
                         <button
@@ -128,29 +135,53 @@ function WelcomeScreen(){
             <section className={`h-screen bg-gradient-to-r from-blue-500 to-green-500 text-white flex flex-col justify-center items-center ${activeSection === "register" ? "translate-x-0" : "hidden"}`}>
                 <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
                     <h2 className="text-2xl font-bold mb-4">Register to Mind Keep</h2>
-                    <form className="flex flex-col justify-center items-center gap-2 text-center" onSubmit={(e) => {e.preventDefault(); regUser()}} autoComplete="off">
+                    <form className="flex flex-col justify-center items-center gap-2 text-center" 
+                        onSubmit={(e) => {
+                            e.preventDefault(); 
+                            if(isValid && isUsernameValid){
+                                regUser();
+                            }
+                        }} 
+                        autoComplete="off">
                         <div>
                             <label htmlFor="new-u-name" className="block">Username</label>
                             <input type="text" id="new-u-name" className="border border-white rounded" required
+                            value={usernameValid}
                             onChange={(e) => {
                                 const input = e.target.value;
-                                setUsername(input.toLowerCase())
+                                setUsername(input.toLowerCase());
+                                setUsernameValid(input);
+                                setIsUsernameValid(usernameRegex.test(input));
                             }
                         }
                             autoComplete="off"
                             />
+                            {!isUsernameValid && (
+                                <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">
+                                    Username must not include spaces, exceed 12 characters and not less than 3 characters.
+                                </p>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="new-p-word" className="block">Password</label>
                             <input type="password" id="new-p-word" className="border border-white rounded" required
+                            value={passwordValid}
                             onChange={(e) => {
                                 const input = e.target.value;
-                                setPassword(input)
+                                setPassword(input);
+                                setPasswordValid(input);
+                                setIsValid(passwordRegex.test(input));
                             }
                         }
                             autoComplete="new-password"
                             />
+                            {!isValid && (
+                                <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">
+                                    Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.
+                                </p>
+                            )}
                         </div>
+                        {errorReg && <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">{errorReg}</p>}
                         <button type="submit" className="border border-white p-2 rounded w-full font-bold hover:bg-white hover:text-black
                         active:bg-white active:text-black">Register</button>
                         <button

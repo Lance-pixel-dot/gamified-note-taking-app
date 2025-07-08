@@ -5,11 +5,20 @@ const pool = require("../db");
 // Create a user
 router.post("/", async (req, res) => {
   try {
+
     const { username, password } = req.body;
+
+    const userExists = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+
+    if (userExists.rows.length > 0){
+      return res.status(409).json({ error: "Username already taken" }); // 409 = Conflict
+    }
+
     const newUser = await pool.query(
       "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
       [username, password]
     );
+
     res.json(newUser.rows[0]);
   } catch (err) {
     console.error(err.message);
