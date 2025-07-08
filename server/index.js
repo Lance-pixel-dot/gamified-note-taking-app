@@ -9,7 +9,7 @@ const userRoutes = require("./routes/users");
 app.use(cors());
 app.use(express.json());
 
-// Route middleware
+// Routes
 app.use("/users", userRoutes);
 app.use("/notes", noteRoutes);
 app.use("/flashcards", flashcardRoutes);

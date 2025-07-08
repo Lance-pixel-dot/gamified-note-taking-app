@@ -15,10 +15,12 @@ function Notes(props)
     const [title, setTitle] = useState('');
     const [content, setContent] = useState("");
     const [tag, setTag] = useState("");
+    const user_id = localStorage.getItem("user_id");
 
     async function saveNote(){
         try {
-            const body = { title, content, tag };
+            const body = { user_id, title, content, tag };
+
             const response = await fetch("http://localhost:5000/notes", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -43,7 +45,7 @@ function Notes(props)
 
     async function displayNotes(){
         try {
-            const response = await fetch("http://localhost:5000/notes");
+            const response = await fetch(`http://localhost:5000/notes/user/${user_id}`);
             const jsonData = await response.json();
 
             setNotes(jsonData);
@@ -95,7 +97,7 @@ function Notes(props)
         if (input.length <= MAX_CHARS) {
         setContent(input);
         } else {
-        setContent(input.slice(0, MAX_CHARS)); // Optional: force-trim if pasted
+        setContent(input.slice(0, MAX_CHARS)); //force-trim if pasted
         }
   };
   

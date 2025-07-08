@@ -20,13 +20,15 @@ function WelcomeScreen(){
                 body: JSON.stringify(body)
             });
 
+            const result = await response.json();
+
             if(response.ok){
                 setUsername("");
                 setPassword("");
                 navigate("/dashboard");
-                localStorage.setItem("username", username); // or username
+                localStorage.setItem("username", username);
+                localStorage.setItem("user_id", result.user_id);
             } else {
-                const result = await response.json();
                 setRegError(result.error);
             }
 
@@ -49,13 +51,15 @@ function WelcomeScreen(){
             body: JSON.stringify(body),
         });
 
+        const result = await response.json();
+
         if (response.ok) {
             setLoginUsername("");
             setLoginPassword("");
             navigate("/dashboard");
             localStorage.setItem("username", loginUsername);
+            localStorage.setItem("user_id", result.user.user_id);
         } else {
-            const result = await response.json();
             setError(result.error || "Login failed.");
         }
 

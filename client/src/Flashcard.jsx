@@ -15,9 +15,11 @@ function Flashcard(props){
     const [answer, setAnswer] = useState("");
     const [tag, setTag] = useState("");
 
+    const user_id = localStorage.getItem("user_id");
+
     async function saveFlashcard(){
         try {
-            const body = { title, question, answer, tag };
+            const body = {user_id ,title, question, answer, tag };
             const response = await fetch("http://localhost:5000/flashcards", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -44,7 +46,7 @@ function Flashcard(props){
 
     async function displayFlashcards(){
         try {
-            const response = await fetch("http://localhost:5000/flashcards");
+            const response = await fetch(`http://localhost:5000/flashcards/user/${user_id}`);
             const jsonData = await response.json();
 
             setFlashcards(jsonData);

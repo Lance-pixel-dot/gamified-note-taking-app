@@ -5,10 +5,10 @@ const pool = require("../db");
 // Create a flashcard
 router.post("/", async (req, res) => {
   try {
-    const { title, question, answer, tag } = req.body;
+    const { user_id, title, question, answer, tag } = req.body;
     const newFlashcard = await pool.query(
-      "INSERT INTO flashcards (title, question, answer, tag) VALUES ($1, $2, $3, $4) RETURNING *",
-      [title, question, answer, tag]
+      "INSERT INTO flashcards (user_id, title, question, answer, tag) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [user_id, title, question, answer, tag]
     );
     res.json(newFlashcard.rows[0]);
   } catch (err) {
@@ -23,6 +23,21 @@ router.get("/", async (req, res) => {
     res.json(allFlashcards.rows);
   } catch (err) {
     console.error(err.message);
+  }
+});
+
+// Get flashcards for a specific user
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const userFlashcards = await pool.query(
+      "SELECT * FROM flashcards WHERE user_id = $1",
+      [userId]
+    );
+    res.json(userFlashcards.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to fetch user notes" });
   }
 });
 

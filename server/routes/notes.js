@@ -5,10 +5,10 @@ const pool = require("../db");
 // Create a note
 router.post("/", async (req, res) => {
   try {
-    const { title, content, tag } = req.body;
+    const { user_id, title, content, tag } = req.body;
     const newNote = await pool.query(
-      "INSERT INTO notes (title, content, tag) VALUES ($1, $2, $3) RETURNING *",
-      [title, content, tag]
+      "INSERT INTO notes (user_id, title, content, tag) VALUES ($1, $2, $3, $4) RETURNING *",
+      [user_id, title, content, tag]
     );
     res.json(newNote.rows[0]);
   } catch (err) {
@@ -23,6 +23,21 @@ router.get("/", async (req, res) => {
     res.json(allNotes.rows);
   } catch (err) {
     console.error(err.message);
+  }
+});
+
+// Get notes for a specific user
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const userNotes = await pool.query(
+      "SELECT * FROM notes WHERE user_id = $1",
+      [userId]
+    );
+    res.json(userNotes.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to fetch user notes" });
   }
 });
 
