@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { data, useNavigate } from 'react-router-dom';
+import Header from "./Header";
 
 function WelcomeScreen(){
 
@@ -23,6 +24,7 @@ function WelcomeScreen(){
                 setUsername("");
                 setPassword("");
                 navigate("/dashboard");
+                localStorage.setItem("username", username); // or username
             } else {
                 const result = await response.json();
                 setRegError(result.error);
@@ -51,6 +53,7 @@ function WelcomeScreen(){
             setLoginUsername("");
             setLoginPassword("");
             navigate("/dashboard");
+            localStorage.setItem("username", loginUsername);
         } else {
             const result = await response.json();
             setError(result.error || "Login failed.");
@@ -94,7 +97,9 @@ function WelcomeScreen(){
                     <h2 className="text-2xl font-bold mb-4">Login to Mind Keep</h2>
                     <form className="flex flex-col justify-center items-center gap-2 text-center" onSubmit={(e) => {
                         e.preventDefault(); 
-                        loginUser()}} autoComplete="off">
+                        loginUser();
+                        }} 
+                        autoComplete="off">
                         <div>
                             <label htmlFor="log-u-name" className="block">Username</label>
                             <input type="text" id="log-u-name" className="border border-white rounded" required

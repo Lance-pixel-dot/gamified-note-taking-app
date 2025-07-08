@@ -3,15 +3,15 @@ function Header()
 {
     const progress = 35;
     const achievement = "Dedicated Learner"
-    const Player = "Renier"
+    const Player = localStorage.getItem("username").toUpperCase();
     const level = 21;
     const streak = 4;
 
     return(
         <>
-            <section className="w-2/3 place-self-center p-4 flex flex-col gap-1 text-white bg-gradient-to-r from-red-500  to-purple-500 rounded-xl border-2 border-black">
+            <section className={`w-2/3 place-self-center p-4 flex flex-col gap-1 text-white bg-gradient-to-r from-red-500  to-purple-500 rounded-xl border-2 border-black`}>
                 <section className="flex justify-between">
-                    <h1>Welcome {Player}</h1>
+                    <h1>WELCOME {Player}</h1>
                     <span>Level {level}</span>
                 </section>
                 <section className="flex justify-between">
