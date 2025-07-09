@@ -2,25 +2,16 @@ Hello there
 
 To do's
 
-Create User
--finish validation
-    -username validation:
-    no more than 12 characters
-    -password validation:
-    Uppercase letters (A–Z)
-    Lowercase letters (a–z)
-    Digits (0–9)
-    Special characters (e.g., !@#$%^&*()-_+=) 
--finish integration with notes and flashcards
+create Users tab
 
 create collaboration features
 Shared Notes features:
--create a shared notes tab                  (might also start learning database hosting here)
--create a shared notes table
-    -share_ID
-    -owner_ID
-    -note_ID
-    -noteContents&Properties
+-create a shared notes tab
+-set permissions 'view' or 'edit' 
+(before going through this make sure you do the leveling, steaks and spaced repetition first!)
+-add comments
+-add reactions
+(do the same for flashcards)            
 
 implement xp/leveling
 
@@ -29,6 +20,11 @@ implement streaks
 
 implement achievements
 
-implement leaderboard
+implement leaderboard (or this might be as well the users tab)
+
+improve UI
+- add logout button
+
+learn database hosting (supabase)
 
 if have more time (implement AI chat bot assistant)

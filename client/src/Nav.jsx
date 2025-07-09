@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Notes from './Notes';
 import Flashcard from './Flashcard';
+import ShareNotes from './SharedNotes';
 
 function Nav() {
   const [activeTab, setActiveTab] = useState('notes'); // default active tab
@@ -27,11 +28,11 @@ function Nav() {
           </button>
           <button
             className={`bg-white text-black p-2 rounded-t-xl border border-black ${
-              activeTab === 'achievements' ? 'border-b-0' : 'border-b'
+              activeTab === 'share' ? 'border-b-0' : 'border-b'
             }`}
-            onClick={() => setActiveTab('achievements')}
+            onClick={() => setActiveTab('share')}
           >
-            Achievements
+            Shared with me
           </button>
         </nav>
       </section>
@@ -39,6 +40,7 @@ function Nav() {
       {/* Show/hide components based on activeTab */}
       <Notes notesHidden={activeTab !== 'notes' ? 'hidden' : ''} />
       <Flashcard flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''} />
+      <ShareNotes shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''}></ShareNotes>
     </>
   );
 }
