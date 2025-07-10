@@ -7,7 +7,10 @@ create Users tab
 create collaboration features
 Shared Notes features:
 -create a shared notes tab
--set permissions 'view' or 'edit' 
+    -fix the toggling of the add button when the user switches notes he wants to share (this Also connects duplication of shared notes in the database)
+    -create undo
+-set permissions 'view' or 'edit'
+-show it in the DOM
 (before going through this make sure you do the leveling, steaks and spaced repetition first!)
 -add comments
 -add reactions

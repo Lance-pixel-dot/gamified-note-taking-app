@@ -22,3 +22,9 @@ CREATE TABLE flashcards(
     answer VARCHAR(255),
     tag VARCHAR(255)
 );
+
+CREATE TABLE shared_notes (
+  note_id INT REFERENCES notes(note_id),
+  shared_user_id INT REFERENCES users(user_id),
+  PRIMARY KEY (note_id, shared_user_id)
+);

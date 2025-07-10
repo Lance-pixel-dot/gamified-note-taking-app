@@ -38,14 +38,18 @@ function ShareNotes(props){
 
     function openUsers(){
         const dialog = document.querySelector("#users-dialog");
+        const dialogShare = document.querySelector("#share-dialog");
 
         dialog.showModal()
+        dialogShare.close()
     }
 
     function closeUsers(){
        const dialog = document.querySelector("#users-dialog");
+       const dialogShare = document.querySelector("#share-dialog");
 
        dialog.close()
+       dialogShare.showModal()
     }
 
     //display users
@@ -65,6 +69,35 @@ function ShareNotes(props){
     useEffect(() => {
         displayUsers();
     }, []);
+
+    const [buttonStates, setButtonStates] = useState({});
+
+    const toggleButton = (userId) => {
+    setButtonStates((prev) => ({
+      ...prev,
+      [userId]: prev[userId] === "Undo" ? "Add" : "Undo"
+    }));
+    };
+
+    //add shared notes
+    const [sharedNoteID, setSharedNoteID] = useState("");
+    const [sharedUserID, setSharedUserID] = useState("");
+
+    async function saveSharedNote(){
+    try {
+        const body = { 
+            note_id: sharedNoteID,
+            shared_user_id: sharedUserID 
+        };
+        const response = await fetch("http://localhost:5000/shared_notes", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body)
+        });
+    } catch (err) {
+        console.error(err.message);
+    }
+    }
 
     return(
         <>
@@ -90,11 +123,13 @@ function ShareNotes(props){
                         {notes.map(notes => (
                             <div className="border border-black rounded p-2 flex justify-between items-center" key={notes.note_id}>
                                 <h2>{notes.title}</h2>
-                                <button className="border border-black rounded p-1 bg-blue-500 text-white mt-1 ml-1" onClick={() => openUsers()}>Share</button>
+                                <button className="border border-black rounded p-1 bg-blue-500 text-white mt-1 ml-1" onClick={() => { openUsers();
+                                setSharedNoteID(notes.note_id);
+                                }}>Share</button>
                             </div>
                         ))}
                     </div>
-                    <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" onClick={() => cancelShare()}>Cancel</button>
+                    <button className="border border-black p-2 rounded-xl text-white bg-orange-500 font-bold" onClick={() => cancelShare()}>Close</button>
                 </section>
             </dialog>
 
@@ -102,15 +137,29 @@ function ShareNotes(props){
                 <section className="h-full flex flex-col gap-4">
                     <h2>Select the Person who you want Share with</h2>
                     <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
-                        {/* select notes here */}
-                        {users.map(user => (
-                            <div className="border border-black rounded p-2 flex justify-between items-center" key={user.user_id}>
-                                <h2>{user.username}</h2>
-                                <button className="border border-black rounded p-1 bg-green-500 text-white mt-1 ml-1">Add</button>
-                            </div>
-                        ))}
+                    {users.map(user => {
+                        const status = buttonStates[user.user_id] || "Add";
+                        if(user.user_id != user_id)
+                        {
+                            return (
+                                <div className="border border-black rounded p-2 flex justify-between items-center" key={user.user_id}>
+                                  <h2>{user.username}</h2>
+                                  <button
+                                    className={`border border-black rounded p-1 ${status !== "Undo" ? 'bg-green-500' : 'bg-red-500'} text-white mt-1 ml-1`}
+                                    onClick={() => {
+                                        toggleButton(user.user_id);
+                                        setSharedUserID(user.user_id);
+                                        saveSharedNote();
+                                    }}
+                                    >
+                                    {status}
+                                  </button>
+                                </div>
+                            );
+                        }
+                        })}
                     </div>
-                    <button className="border border-black p-2 rounded-xl text-white bg-orange-500 font-bold" onClick={() => closeUsers()}>Close</button>
+                    <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold" onClick={() => closeUsers()}>Done</button>
                 </section>
             </dialog>
         </>

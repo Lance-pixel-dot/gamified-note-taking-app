@@ -4,6 +4,7 @@ const app = express();
 const noteRoutes = require("./routes/notes");
 const flashcardRoutes = require("./routes/flashcards");
 const userRoutes = require("./routes/users");
+const sharedNotesRoutes = require("./routes/sharedNotes")
 
 // Middleware
 app.use(cors());
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/users", userRoutes);
 app.use("/notes", noteRoutes);
 app.use("/flashcards", flashcardRoutes);
+app.use("/shared_notes", sharedNotesRoutes);
 
 // Start server
 app.listen(5000, () => {
