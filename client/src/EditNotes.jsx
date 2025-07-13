@@ -19,6 +19,9 @@ function EditNote({ note, updateNotesDisplay }){
 
             updateNotesDisplay(updatedNote);
 
+            // NEW: Dispatch custom event
+            window.dispatchEvent(new CustomEvent("noteUpdated", { detail: updatedNote }));
+
         } catch (err) {
             console.error(err.message);
         }
@@ -55,7 +58,7 @@ function EditNote({ note, updateNotesDisplay }){
 
             <dialog id={`id${note.note_id}`} className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">
                 <form id="view-note-form" className="flex flex-col gap-4" onSubmit={(e) => {e.preventDefault(); updateNote()}}>
-                    <h2>Create new Note</h2>
+                    <h2>Edit Note</h2>
 
                     <section className="flex flex-col">
                         <label htmlFor="view-title">Title</label>

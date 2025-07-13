@@ -21,7 +21,7 @@ function ReadNotes({ note }){
                 <section className="flex flex-col justify-between h-full">
                     <h1 className="text-xl font-bold">{note.title}</h1>
                     <span>Tag: {note.tag}</span>
-                    <p className="border border-black rounded p-2 overflow-y-auto h-4/5">{note.content}</p>
+                    <p className=" border border-black rounded p-2 break-words h-4/5">{note.content}</p>
                     <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" onClick={() => closeNote()}>Done</button>
                 </section>
             </dialog>

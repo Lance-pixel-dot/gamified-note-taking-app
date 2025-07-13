@@ -26,5 +26,6 @@ CREATE TABLE flashcards(
 CREATE TABLE shared_notes (
   note_id INT REFERENCES notes(note_id),
   shared_user_id INT REFERENCES users(user_id),
+  permission VARCHAR(10) DEFAULT 'view',
   PRIMARY KEY (note_id, shared_user_id)
 );

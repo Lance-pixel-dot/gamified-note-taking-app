@@ -66,6 +66,10 @@ function Notes(props)
             });
 
             setNotes(notes.filter(notes => notes.note_id !== id));
+
+            // NEW: Dispatch custom event
+            window.dispatchEvent(new CustomEvent("noteDeleted", { detail: { id } }));
+
         } catch (err) {
             console.error(err.message);
         }
