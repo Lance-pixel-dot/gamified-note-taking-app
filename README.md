@@ -11,6 +11,7 @@ Shared Notes features:
     -create undo
 -set permissions 'view' or 'edit'
 -show it in the DOM
+-avoid errors when the shared note is deleted by the user (when the note is deleted it will also be removed to the shared_notes database)
 (before going through this make sure you do the leveling, steaks and spaced repetition first!)
 -add comments
 -add reactions
