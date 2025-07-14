@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import ReadNotes from "./ReadNotes";
+import EditNote from "./EditNotes";
 
 function ShareNotes(props){
 
@@ -212,6 +214,8 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
     return true; // Notes shared *with* me should always be shown
     });
 
+    const [sharedUsers, setSharedUsers] = useState([]);
+
     return(
         <>
             <section className={`h-5/6 border-b-2 border-r-2 border-l-2 border-black w-2/3 place-self-center pr-2 pl-2 pb-2 rounded-b-xl bg-gradient-to-r from-red-500 to-purple-500 ${props.shareNotesHidden}`}>
@@ -223,20 +227,43 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                     </section>
                     <h2 className="text-3xl font-bold">Shared Notes</h2>
                     <section id="note-container" className="border-2 h-70 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
-                        {uniqueNotes.map(note => (
-                            <div key={note.note_id} className="border p-2 rounded">
-                                <h2>{note.title}</h2>
-                                <p className="text-sm text-gray-600 italic">
-                                    {note.user_id == user_id
-                                        ? `Shared with: ${sharedUsersByNote[note.note_id]?.map(entry => {
-                                            const user = users.find(u => u.user_id === entry.shared_user_id);
-                                            return user ? `${user.username} (${entry.permission})` : "Unknown";
-                                        }).join(", ") || "None"}`
-                                        : `Owner: ${note.owner_username}`
-                                    }
-                                </p>
-                            </div>
-                        ))}
+                        {uniqueNotes.map(note => {
+                            const isOwner = note.user_id == user_id;
+                            const sharedWithMePermission = !isOwner ? note.permission : null; // From sharedNotesWithMe
+
+                            return (
+                                <div key={note.note_id} className="border p-2 rounded">
+                                    <h2>{note.title}</h2>
+                                    <p className="text-sm text-gray-600 italic">
+                                        {isOwner
+                                            ? `Shared with: ${sharedUsersByNote[note.note_id]?.map(entry => {
+                                                const user = users.find(u => u.user_id === entry.shared_user_id);
+                                                return user ? `${user.username} (${entry.permission})` : "Unknown";
+                                            }).join(", ") || "None"}`
+                                            : `Owner: ${note.owner_username}`
+                                        }
+                                    </p>
+                                    
+                                    {isOwner || sharedWithMePermission === "edit" ? (
+                                        <>
+                                            <ReadNotes note={note} />
+                                            <EditNote
+                                                note={note}
+                                                updateNotesDisplay={(updatedNote) =>
+                                                    setNotes((prev) =>
+                                                        prev.map((n) =>
+                                                            n.note_id === updatedNote.note_id ? updatedNote : n
+                                                        )
+                                                    )
+                                                }
+                                            />
+                                        </>
+                                    ) : sharedWithMePermission === "view" ? (
+                                        <ReadNotes note={note} />
+                                    ) : null}
+                                </div>
+                            );
+                        })}
                     </section>
                 </section>
             </section>
@@ -291,7 +318,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                                 onChange={(e) => {
                                                     saveSharedNote(sharedNoteID, user.user_id, e.target.value);
                                                 }}
-                                                className="border rounded p-1 mr-2"
+                                                className={`border rounded p-1 mr-2 ${sharedUsers.includes(user.user_id) || isAdded ? 'inline-block' : 'hidden'} text-center`}
                                             >
                                                 <option value="view">View</option>
                                                 <option value="edit">View and Edit</option>
@@ -301,8 +328,10 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                                 onClick={() => {
                                                     if (!isAdded) {
                                                         saveSharedNote(sharedNoteID, user.user_id, permission);
+                                                        setSharedUsers((prev) => [...prev, user.user_id]);
                                                     } else {
                                                         unshareNote(sharedNoteID, user.user_id);
+                                                        setSharedUsers((prev) => prev.filter(id => id !== user.user_id));
                                                     }
                                                 }}
                                             >
