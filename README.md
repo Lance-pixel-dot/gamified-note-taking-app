@@ -5,13 +5,7 @@ To do's
 create Users tab
 
 create collaboration features
-Shared Notes features:
--create a shared notes tab
-    -fix the toggling of the add button when the user switches notes he wants to share (this Also connects duplication of shared notes in the database)
-    -create undo
--set permissions 'view' or 'edit'
--show it in the DOM
--avoid errors when the shared note is deleted by the user (when the note is deleted it will also be removed to the shared_notes database)
+Shared Flashcards(just ask AI to recreate the same features that is the same to sharing notes both backend and frontend)
 (before going through this make sure you do the leveling, steaks and spaced repetition first!)
 -add comments
 -add reactions

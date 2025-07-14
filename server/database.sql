@@ -29,3 +29,10 @@ CREATE TABLE shared_notes (
   permission VARCHAR(10) DEFAULT 'view',
   PRIMARY KEY (note_id, shared_user_id)
 );
+
+CREATE TABLE shared_flashcards (
+  flashcard_id INT REFERENCES flashcards(flashcard_id),
+  shared_user_id INT REFERENCES users(user_id),
+  permission VARCHAR(10) DEFAULT 'view',
+  PRIMARY KEY (flashcard_id, shared_user_id)
+);
