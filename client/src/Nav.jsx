@@ -4,7 +4,7 @@ import Flashcard from './Flashcard';
 import ShareNotes from './SharedNotes';
 import ShareFlashcards from './SharedFlashcards';
 
-function Nav() {
+function Nav({ incrementXP }) {
   const getCurrentTab = localStorage.getItem("currentTab");
 
   const [activeTab, setActiveTab] = useState(getCurrentTab); // default active tab
@@ -51,7 +51,7 @@ function Nav() {
       </section>
 
       {/* Show/hide components based on activeTab */}
-      <Notes notesHidden={activeTab !== 'notes' ? 'hidden' : ''} />
+      <Notes notesHidden={activeTab !== 'notes' ? 'hidden' : ''} incrementXP={incrementXP} />
       <Flashcard flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''} />
       <ShareNotes shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''}></ShareNotes>
       <ShareFlashcards shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''}></ShareFlashcards>

@@ -34,6 +34,9 @@ function Notes(props)
             setTitle(""); // clear input
             setContent("");
             setTag("");
+            if (props.incrementXP) {
+                props.incrementXP(10); // Add XP here
+            }
         } catch (err) {
             console.error(err.message);
         }

@@ -1,10 +1,11 @@
 import Nav from "./Nav"
-function Header()
+function Header({ xp, level })
 {
-    const progress = 35;
+    
+    // const progress = 35;
     const achievement = "Dedicated Learner"
     const Player = localStorage.getItem("username").toUpperCase();
-    const level = 21;
+    // const level = 21;
     const streak = 4;
 
     return(
@@ -21,11 +22,11 @@ function Header()
                 <div className="border border-black h-4 rounded-full bg-gray-300">
                     <div
                         className="bg-blue-500 h-4 rounded-full transition-all duration-300 ease-in-out"
-                        style={{ width: `${progress}%` }}
+                        style={{ width: `${xp}%` }}
                     ></div>
                 </div>
             </section>
-            <Nav></Nav>
+            {/* <Nav></Nav> */}
         </>
     );
 

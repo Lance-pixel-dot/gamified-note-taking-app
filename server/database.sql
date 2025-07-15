@@ -3,7 +3,9 @@ CREATE DATABASE notes_test;
 CREATE TABLE users(
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    xp INTEGER DEFAULT 1,
+    level INTEGER DEFAULT 1
 );
 
 CREATE TABLE notes(
