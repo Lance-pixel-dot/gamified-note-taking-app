@@ -2,9 +2,14 @@ import { useState } from 'react';
 import Notes from './Notes';
 import Flashcard from './Flashcard';
 import ShareNotes from './SharedNotes';
+import ShareFlashcards from './SharedFlashcards';
 
 function Nav() {
-  const [activeTab, setActiveTab] = useState('notes'); // default active tab
+  const getCurrentTab = localStorage.getItem("currentTab");
+
+  const [activeTab, setActiveTab] = useState(getCurrentTab); // default active tab
+
+  const setCurrentTab = localStorage.setItem("currentTab", activeTab);
 
   return (
     <>
@@ -14,7 +19,7 @@ function Nav() {
             className={`bg-white text-black p-2 rounded-t-xl border border-black ${
               activeTab === 'notes' ? 'border-b-0' : 'border-b'
             }`}
-            onClick={() => setActiveTab('notes')}
+            onClick={() => {setActiveTab('notes'); }}
           >
             Notes
           </button>
@@ -32,7 +37,15 @@ function Nav() {
             }`}
             onClick={() => setActiveTab('share')}
           >
-            Shared with me
+            Shared with me (notes)
+          </button>
+          <button
+            className={`bg-white text-black p-2 rounded-t-xl border border-black ${
+              activeTab === 'shareFlash' ? 'border-b-0' : 'border-b'
+            }`}
+            onClick={() => setActiveTab('shareFlash')}
+          >
+            Shared with me (flashcards)
           </button>
         </nav>
       </section>
@@ -41,6 +54,7 @@ function Nav() {
       <Notes notesHidden={activeTab !== 'notes' ? 'hidden' : ''} />
       <Flashcard flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''} />
       <ShareNotes shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''}></ShareNotes>
+      <ShareFlashcards shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''}></ShareFlashcards>
     </>
   );
 }

@@ -67,6 +67,7 @@ function Flashcard(props){
             });
 
             setFlashcards(flashcards.filter(flashcard => flashcard.flashcard_id !== id));
+            window.location = "/dashboard";
         } catch (err) {
             console.error(err.message);
         }

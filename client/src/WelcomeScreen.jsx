@@ -28,6 +28,7 @@ function WelcomeScreen(){
                 navigate("/dashboard");
                 localStorage.setItem("username", username);
                 localStorage.setItem("user_id", result.user_id);
+                localStorage.setItem("currentTab", 'notes');
             } else {
                 setRegError(result.error);
             }
@@ -59,6 +60,7 @@ function WelcomeScreen(){
             navigate("/dashboard");
             localStorage.setItem("username", loginUsername);
             localStorage.setItem("user_id", result.user.user_id);
+            localStorage.setItem("currentTab", 'notes');
         } else {
             setError(result.error || "Login failed.");
         }

@@ -54,9 +54,20 @@ function Notes(props)
         }
     }
 
-    useEffect(() => {
+useEffect(() => {
+
+    displayNotes();
+
+    const handleNoteUpdate = () => {
         displayNotes();
-    }, []);
+    };
+
+    window.addEventListener("noteUpdated", handleNoteUpdate);
+
+    return () => {
+        window.removeEventListener("noteUpdated", handleNoteUpdate);
+    };
+}, []);
 
     //delete note
     async function deleteNote(id) {
@@ -69,7 +80,7 @@ function Notes(props)
 
             // NEW: Dispatch custom event
             window.dispatchEvent(new CustomEvent("noteDeleted", { detail: { id } }));
-
+            window.location = "/dashboard";
         } catch (err) {
             console.error(err.message);
         }

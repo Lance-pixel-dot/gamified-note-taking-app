@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 
 function EditNote({ note, updateNotesDisplay }) {
   const dialogRef = useRef(null); // Ref for dialog
+  const errorRef = useRef(null);
 
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
@@ -20,9 +21,11 @@ function EditNote({ note, updateNotesDisplay }) {
       updateNotesDisplay(updatedNote);
 
       window.dispatchEvent(new CustomEvent("noteUpdated", { detail: updatedNote }));
+      window.location = "/dashboard";
       dialogRef.current?.close();
     } catch (err) {
       console.error(err.message);
+      errorActivate();
     }
   }
 
@@ -40,6 +43,15 @@ function EditNote({ note, updateNotesDisplay }) {
   const MAX_CHARS = 500;
   const MAX_TITLE_CHARS = 50;
   const MAX_TAG_CHARS = 50;
+
+  function errorActivate(){
+    dialogRef.current.close();
+    errorRef.current.showModal();
+  }
+
+  function closeError(){
+    errorRef.current.close();
+  }
 
   return (
     <>
@@ -114,6 +126,14 @@ function EditNote({ note, updateNotesDisplay }) {
             Close
           </button>
         </form>
+      </dialog>
+
+      <dialog id="flash-error-message" className="place-self-center p-4 border border-black rounded-xl text-center" ref={errorRef}>
+              <div className="flex flex-col gap-4">
+                <h2 className="font-bold">Error</h2>
+                <p className="w-50">This change/edit couldn't be saved because it's either the owner deleted this content or does not exist anymore</p>
+                <button className="font-bold bg-orange-500 text-white rounded border border-black" onClick={closeError}>Ok</button>
+              </div>
       </dialog>
     </>
   );
