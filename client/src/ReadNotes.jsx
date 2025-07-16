@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-function ReadNotes({ note }) {
+function ReadNotes({ note, incrementXP }) {
   const dialogRef = useRef(null); //  Create the ref
 
   function openDialog() {
@@ -9,6 +9,18 @@ function ReadNotes({ note }) {
 
   function closeDialog() {
     dialogRef.current?.close(); //  Use the ref to close dialog
+  }
+
+  const [isRead, setIsRead] = useState(false);
+  const [hasGivenXP, setHasGivenXP] = useState(false); // to prevent multiple XP gains
+
+  function handleRead() {
+    // setIsRead(!isRead)
+    // Give XP only once per session per note
+    // if (!hasGivenXP && incrementXP) {
+        incrementXP(30); // XP for reading
+        setHasGivenXP(true);
+  // }
   }
 
   return (
@@ -32,9 +44,13 @@ function ReadNotes({ note }) {
           </p>
           <button
             className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold"
-            onClick={closeDialog}
+            onClick={() => {
+              closeDialog();
+              handleRead();
+              }
+            }
           >
-            Done
+           {isRead ? "Read this tomorrow bitch!" : "Done"}
           </button>
         </section>
       </dialog>

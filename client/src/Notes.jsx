@@ -134,7 +134,7 @@ useEffect(() => {
                         {notes.map(notes => (
                             <div className="border border-black rounded p-2" key={notes.note_id}>
                                 <h2>{notes.title}</h2>
-                                <ReadNotes note={notes}></ReadNotes>
+                                <ReadNotes note={notes} incrementXP={props.incrementXP}></ReadNotes>
                                 <EditNote note={notes} updateNotesDisplay={
                                     (updatedNote) => {
                                         setNotes(prev => prev.map(note => note.note_id === updatedNote.note_id ? updatedNote : note))

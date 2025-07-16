@@ -1,23 +1,40 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 import WelcomeScreen from "./WelcomeScreen";
-import Dashboard from "./Dashboard"; // new component
+import Dashboard from "./Dashboard";
+
+// XP needed per level: 100 + 50 * (level - 1)
+function getXPNeeded(level) {
+  return 100 + (level - 1) * 1000; // e.g., Level 1 = 100, Level 2 = 150, Level 3 = 200,
+}
 
 function App() {
-  const [xp, setXP] = useState(0);
-  const [level, setLevel] = useState(1);
+  const [stats, setStats] = useState({
+    xp: 0,
+    level: 1
+  });
 
   function incrementXP(amount) {
-    setXP(prev => {
-      const totalXP = prev + amount;
-      if (totalXP >= 100) {
-        setLevel(lvl => lvl + 1);
-        return totalXP - 100; // rollover
+    setStats(prev => {
+      let newXP = prev.xp + amount;
+      let newLevel = prev.level;
+      let xpNeeded = getXPNeeded(newLevel);
+
+      while (newXP >= xpNeeded) {
+        newXP -= xpNeeded;
+        newLevel += 1;
+        xpNeeded = getXPNeeded(newLevel);
       }
-      return totalXP;
+
+      return {
+        xp: newXP,
+        level: newLevel
+      };
     });
   }
+
+  const xpNeeded = getXPNeeded(stats.level);
+  const progress = Math.floor((stats.xp / xpNeeded) * 100);
 
   return (
     <Router>
@@ -25,7 +42,14 @@ function App() {
         <Route path="/" element={<WelcomeScreen />} />
         <Route
           path="/Dashboard"
-          element={<Dashboard xp={xp} level={level} incrementXP={incrementXP} />}
+          element={
+            <Dashboard
+              xp={stats.xp}
+              level={stats.level}
+              progress={progress}
+              incrementXP={incrementXP}
+            />
+          }
         />
       </Routes>
     </Router>

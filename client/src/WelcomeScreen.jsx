@@ -44,6 +44,7 @@ function WelcomeScreen(){
     const [error, setError] = useState("");
 
     async function loginUser() {
+
         try {
             const body = { username: loginUsername, password: loginPassword };
             const response = await fetch("http://localhost:5000/users/login", {
@@ -58,7 +59,7 @@ function WelcomeScreen(){
             setLoginUsername("");
             setLoginPassword("");
             navigate("/dashboard");
-            localStorage.setItem("username", loginUsername);
+            localStorage.setItem("username", result.user.username);
             localStorage.setItem("user_id", result.user.user_id);
             localStorage.setItem("currentTab", 'notes');
         } else {
@@ -160,7 +161,7 @@ function WelcomeScreen(){
                             value={usernameValid}
                             onChange={(e) => {
                                 const input = e.target.value;
-                                setUsername(input.toLowerCase());
+                                setUsername(input);
                                 setUsernameValid(input);
                                 setIsUsernameValid(usernameRegex.test(input));
                             }

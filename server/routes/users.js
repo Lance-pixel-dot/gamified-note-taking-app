@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
 
     const { username, password } = req.body;
 
-    const userExists = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+    const userExists = await pool.query("SELECT * FROM users WHERE LOWER(username) = $1", [username.toLowerCase()]);
 
     if (userExists.rows.length > 0){
       return res.status(409).json({ error: "Username already taken" }); // 409 = Conflict
@@ -41,8 +41,8 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
     const user = await pool.query(
-      "SELECT * FROM users WHERE username = $1 AND password = $2",
-      [username, password]
+      "SELECT * FROM users WHERE LOWER(username) = $1 AND password = $2",
+      [username.toLowerCase(), password]
     );
 
     if (user.rows.length === 0) {
