@@ -6,6 +6,7 @@ const flashcardRoutes = require("./routes/flashcards");
 const userRoutes = require("./routes/users");
 const sharedNotesRoutes = require("./routes/sharedNotes")
 const sharedFlashcardsRoutes = require("./routes/sharedFlashcards");
+const readNotesRoutes = require("./routes/readNotes");
 
 // Middleware
 app.use(cors());
@@ -17,6 +18,7 @@ app.use("/notes", noteRoutes);
 app.use("/flashcards", flashcardRoutes);
 app.use("/shared_notes", sharedNotesRoutes);
 app.use("/shared_flashcards", sharedFlashcardsRoutes);
+app.use("/read_notes", readNotesRoutes);
 
 // Start server
 app.listen(5000, () => {

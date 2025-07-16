@@ -13,9 +13,12 @@ implement xp/leveling
 dateNFS stuff:
 implement spaced repetition
     - when a note/flashcard has been read/reviewed it will be mark as read/reviewed and no xp will be earned once the user tries to read/review again they will need to return to the web app the next day to earn xp again
+        -do flashcards next
 implement streaks (next)
     - x1.3 first multiplier, adds by 0.3 everyday
     - resets to back to 1.3 when streak ended 
+
+    (!) refresh window/webpage after users logged in
 
 implement achievements
 

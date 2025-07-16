@@ -1,28 +1,52 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
-function ReadNotes({ note, incrementXP }) {
-  const dialogRef = useRef(null); //  Create the ref
+function ReadNotes({ note, userId, incrementXP }) {
+  const dialogRef = useRef(null);
+  const [isRead, setIsRead] = useState(false);
+  const [hasCheckedRead, setHasCheckedRead] = useState(false);
 
-  // console.log(incrementXP);
+  const user_id = localStorage.getItem("user_id");
+
+  // Check if the note was already read today
+  useEffect(() => {
+    async function checkIfReadToday() {
+      try {
+        const res = await fetch(`http://localhost:5000/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
+        const data = await res.json();
+        setIsRead(!data.canRead);
+        setHasCheckedRead(true);
+      } catch (err) {
+        console.error("Failed to check read status", err);
+      }
+    }
+
+    checkIfReadToday();
+  }, [note.note_id, user_id]);
 
   function openDialog() {
-    dialogRef.current?.showModal(); //  Use the ref to show dialog
+    dialogRef.current?.showModal();
   }
 
   function closeDialog() {
-    dialogRef.current?.close(); //  Use the ref to close dialog
+    dialogRef.current?.close();
   }
 
-  const [isRead, setIsRead] = useState(false);
-  const [hasGivenXP, setHasGivenXP] = useState(false); // to prevent multiple XP gains
+  async function handleRead() {
+    if (!isRead && incrementXP) {
+      incrementXP(3.5);
 
-  function handleRead() {
-    // setIsRead(!isRead)
-    // Give XP only once per session per note
-    // if (!hasGivenXP && incrementXP) {
-        incrementXP(3.5); // XP for reading
-        setHasGivenXP(true);
-  // }
+      try {
+        await fetch("http://localhost:5000/read_notes/mark-read", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: user_id, note_id: note.note_id })
+        });
+      } catch (err) {
+        console.error("Failed to mark read", err);
+      }
+
+      setIsRead(true);
+    }
   }
 
   return (
@@ -35,7 +59,7 @@ function ReadNotes({ note, incrementXP }) {
       </button>
 
       <dialog
-        ref={dialogRef} //  Attach ref to dialog
+        ref={dialogRef}
         className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12"
       >
         <section className="flex flex-col justify-between h-full">
@@ -49,10 +73,10 @@ function ReadNotes({ note, incrementXP }) {
             onClick={() => {
               closeDialog();
               handleRead();
-              }
-            }
+            }}
+            disabled={!hasCheckedRead}
           >
-           {isRead ? "Read this tomorrow bitch!" : "Done"}
+            {isRead ? "Read this tomorrow!" : "Done"}
           </button>
         </section>
       </dialog>

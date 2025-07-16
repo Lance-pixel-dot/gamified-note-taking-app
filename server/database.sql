@@ -38,3 +38,11 @@ CREATE TABLE shared_flashcards (
   permission VARCHAR(10) DEFAULT 'view',
   PRIMARY KEY (flashcard_id, shared_user_id)
 );
+
+CREATE TABLE read_notes (
+    read_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    note_id INTEGER REFERENCES notes(note_id),
+    last_read_date TIMESTAMP,
+    UNIQUE(user_id, note_id)
+);
