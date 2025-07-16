@@ -2,19 +2,20 @@ Hello there
 
 To do's
 
-create Users tab
-
-create collaboration features
-Shared Flashcards(just ask AI to recreate the same features that is the same to sharing notes both backend and frontend)
-(before going through this make sure you do the leveling, steaks and spaced repetition first!)
+create collaboration features(done!)
+(before going through this make sure you do the leveling, steaks and spaced repetition first! do this when there's extra time)
 -add comments
 -add reactions
 (do the same for flashcards)            
 
 implement xp/leveling
 
+dateNFS stuff:
 implement spaced repetition
-implement streaks
+    - when a note/flashcard has been read/reviewed it will be mark as read/reviewed and no xp will be earned once the user tries to read/review again they will need to return to the web app the next day to earn xp again
+implement streaks (next)
+    - x1.3 first multiplier, adds by 0.3 everyday
+    - resets to back to 1.3 when streak ended 
 
 implement achievements
 
@@ -22,6 +23,9 @@ implement leaderboard (or this might be as well the users tab)
 
 improve UI
 - add logout button
+
+implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
+    -users can buy themes on a digital store with the digital currency *coins*
 
 learn database hosting (supabase)
 

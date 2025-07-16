@@ -246,7 +246,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                     
                                     {isOwner || sharedWithMePermission === "edit" ? (
                                         <>
-                                            <ReadNotes note={note} />
+                                            <ReadNotes note={note} incrementXP={props.incrementXP}/>
                                             <EditNote
                                                 note={note}
                                                 updateNotesDisplay={(updatedNote) =>
@@ -259,7 +259,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                             />
                                         </>
                                     ) : sharedWithMePermission === "view" ? (
-                                        <ReadNotes note={note} />
+                                        <ReadNotes note={note} incrementXP={props.incrementXP}/>
                                     ) : null}
                                 </div>
                             );

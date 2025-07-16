@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 function ReadNotes({ note, incrementXP }) {
   const dialogRef = useRef(null); //  Create the ref
 
+  // console.log(incrementXP);
+
   function openDialog() {
     dialogRef.current?.showModal(); //  Use the ref to show dialog
   }
@@ -18,7 +20,7 @@ function ReadNotes({ note, incrementXP }) {
     // setIsRead(!isRead)
     // Give XP only once per session per note
     // if (!hasGivenXP && incrementXP) {
-        incrementXP(30); // XP for reading
+        incrementXP(3.5); // XP for reading
         setHasGivenXP(true);
   // }
   }

@@ -52,9 +52,9 @@ function Nav({ incrementXP }) {
 
       {/* Show/hide components based on activeTab */}
       <Notes notesHidden={activeTab !== 'notes' ? 'hidden' : ''} incrementXP={incrementXP} />
-      <Flashcard flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''} />
-      <ShareNotes shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''}></ShareNotes>
-      <ShareFlashcards shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''}></ShareFlashcards>
+      <Flashcard flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''} incrementXP={incrementXP} />
+      <ShareNotes shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''} incrementXP={incrementXP}></ShareNotes>
+      <ShareFlashcards shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''} incrementXP={incrementXP}></ShareFlashcards>
     </>
   );
 }

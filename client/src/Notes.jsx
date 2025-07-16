@@ -35,7 +35,7 @@ function Notes(props)
             setContent("");
             setTag("");
             if (props.incrementXP) {
-                props.incrementXP(10); // Add XP here
+                props.incrementXP(3.5); // Add XP here
             }
         } catch (err) {
             console.error(err.message);

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-function ReviewFlashcard({ flashcard }) {
+function ReviewFlashcard({ flashcard, incrementXP }) {
   const dialogRef = useRef(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [display, setDisplay] = useState("hidden");
@@ -17,6 +17,18 @@ function ReviewFlashcard({ flashcard }) {
       setIsFlipped(false);
       setDisplay("hidden");
     }
+  }
+
+  const [isRead, setIsRead] = useState(false);
+  const [hasGivenXP, setHasGivenXP] = useState(false); // to prevent multiple XP gains
+
+  function handleReview(totalXp) {
+    // setIsRead(!isRead)
+    // Give XP only once per session per note
+    // if (!hasGivenXP && incrementXP) {
+        incrementXP(totalXp); // XP for reading
+        setHasGivenXP(true);
+  // }
   }
 
   return (
@@ -68,19 +80,28 @@ function ReviewFlashcard({ flashcard }) {
             <section className="flex gap-2">
               <button
                 className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
-                onClick={emergencyClose}
+                onClick={() => {
+                  emergencyClose();
+                  handleReview(5);
+                }}
               >
                 Easy
               </button>
               <button
                 className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={emergencyClose}
+                onClick={() => {
+                  emergencyClose();
+                  handleReview(4);
+                }}
               >
                 Good
               </button>
               <button
                 className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                onClick={emergencyClose}
+                onClick={() => {
+                  emergencyClose();
+                  handleReview(3.5);
+                }}
               >
                 Hard
               </button>
