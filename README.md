@@ -12,7 +12,7 @@ implement xp/leveling
 
 dateNFS stuff:
 implement spaced repetition
-    -dfaskdjhAksjdhfI
+    -dfasugeestionbykdjhAksjdhfI.
 implement streaks (next)
     - x1.3 first multiplier, adds by 0.3 everyday
     - resets to back to 1.3 when streak ended 

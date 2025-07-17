@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
     }
 
     const newUser = await pool.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
+      "INSERT INTO users (username, password, xp, level, streak_count, last_active) VALUES ($1, $2, 0, 1, 0, CURRENT_DATE) RETURNING *",
       [username, password]
     );
 
@@ -59,20 +59,21 @@ router.post("/login", async (req, res) => {
 router.put("/:id/xp", async (req, res) => {
   try {
     const { id } = req.params;
-    const { xp, level } = req.body;
+    const { xp, level, streak_count, last_active } = req.body;
 
     const updateXP = await pool.query(
-      "UPDATE users SET xp = $1, level = $2 WHERE user_id = $3 RETURNING *",
-      [xp, level, id]
+      `UPDATE users
+       SET xp = $1, level = $2, streak_count = $3, last_active = $4
+       WHERE user_id = $5 RETURNING *`,
+      [xp.toFixed(2), level, streak_count, last_active, id]
     );
 
     res.json(updateXP.rows[0]);
   } catch (err) {
-    console.error("Error updating XP:", err.message);
+    console.error("Error updating XP and streak:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // Corrected XP fetch route
 router.get("/:id", async (req, res) => {
@@ -90,6 +91,27 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch user XP and level" });
   }
 });
+
+router.get("/:id/streak", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      "SELECT streak_count, last_active FROM users WHERE user_id = $1",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error fetching streak info:", err.message);
+    res.status(500).json({ error: "Failed to fetch streak info" });
+  }
+});
+
 
 
 module.exports = router;

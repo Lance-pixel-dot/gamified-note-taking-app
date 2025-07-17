@@ -1,9 +1,9 @@
 import Nav from "./Nav";
 
-function Header({ xp, level, progress }) {
+function Header({ xp, level, progress, streak }) {
+  
   const achievement = "Dedicated Learner";
   const Player = localStorage.getItem("username");
-  const streak = 4;
 
   return (
     <>

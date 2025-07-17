@@ -34,9 +34,7 @@ function Notes(props)
             setTitle(""); // clear input
             setContent("");
             setTag("");
-            if (props.incrementXP) {
-                props.incrementXP(3.5); // Add XP here
-            }
+            props.incrementXP(3.5); // Add XP here
         } catch (err) {
             console.error(err.message);
         }
@@ -79,11 +77,12 @@ useEffect(() => {
                 method: "DELETE"
             });
 
+            window.location = "/dashboard";
+
             setNotes(notes.filter(notes => notes.note_id !== id));
 
             // NEW: Dispatch custom event
             window.dispatchEvent(new CustomEvent("noteDeleted", { detail: { id } }));
-            window.location = "/dashboard";
         } catch (err) {
             console.error(err.message);
         }

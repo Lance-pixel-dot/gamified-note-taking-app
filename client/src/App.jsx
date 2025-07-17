@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WelcomeScreen from "./WelcomeScreen";
 import Dashboard from "./Dashboard";
+import { format, isToday, isYesterday, parseISO } from "date-fns";
 
 // XP needed per level: 100 + 50 * (level - 1)
 function getXPNeeded(level) {
-  return 100 + (level - 1) * 50; // e.g., Level 1 = 100, Level 2 = 150, Level 3 = 200...,
+  return 100 + (level - 1) * 50;
 }
 
 function App() {
@@ -14,73 +15,95 @@ function App() {
     level: 1
   });
 
-function incrementXP(amount) {
-  setStats(prev => {
-    const currentXP = parseFloat(prev.xp);           // Ensure numeric
-    const gainedXP = parseFloat(amount);             // Ensure numeric
-    let newXP = currentXP + gainedXP;
+  const [streak, setStreak] = useState(0); // Make streak reactive
 
-    let newLevel = parseInt(prev.level);             // Ensure integer
-    let xpNeeded = getXPNeeded(newLevel);
+  async function incrementXP(baseAmount) {
+    const userId = localStorage.getItem("user_id");
+    const todayStr = format(new Date(), "yyyy-MM-dd");
+    
+    try {
+      const res = await fetch(`http://localhost:5000/users/${userId}/streak`);
+      const data = await res.json();
 
-    while (newXP >= xpNeeded) {
-      newXP -= xpNeeded;
-      newLevel += 1;
-      xpNeeded = getXPNeeded(newLevel);
+      const lastActiveDate = data.last_active ? parseISO(data.last_active) : null;
+      let newStreak = data.streak_count || 0;
+
+      if (lastActiveDate && isYesterday(lastActiveDate)) {
+        newStreak += 1; // Continue streak
+      } else {
+        newStreak = 0; // Reset streak
+      }
+
+      const multiplier = 1.3 + 0.3 * (newStreak - 1);
+      const finalXP = baseAmount * multiplier;
+
+      setStats(prev => {
+        let newXP = parseFloat(prev.xp) + finalXP;
+        let newLevel = prev.level;
+        let xpNeeded = getXPNeeded(newLevel);
+
+        while (newXP >= xpNeeded) {
+          newXP -= xpNeeded;
+          newLevel += 1;
+          xpNeeded = getXPNeeded(newLevel);
+        }
+
+        updateXPInBackend(userId, newXP, newLevel, newStreak, todayStr);
+        setStreak(newStreak); // update streak state
+
+        return {
+          xp: newXP,
+          level: newLevel
+        };
+      });
+
+    } catch (err) {
+      console.error("Failed to increment XP with streak:", err.message);
     }
-
-    // Get userId from localStorage or props/context
-    const userId = localStorage.getItem("user_id"); // Or use props.userId if passed
-    updateXPInBackend(userId, newXP, newLevel);
-
-    return {
-      xp: newXP,
-      level: newLevel
-    };
-  });
-}
+  }
 
   const xpNeeded = getXPNeeded(stats.level);
   const progress = Math.floor((stats.xp / xpNeeded) * 100);
 
-const updateXPInBackend = async (userId, xp, level) => {
-  try {
-    // Force numeric conversion
-    const xpNumber = parseFloat(xp);
-    const levelNumber = parseInt(level);
-
-    const response = await fetch(`http://localhost:5000/users/${userId}/xp`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ xp: xpNumber, level: levelNumber }),
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error || "Failed to update XP and level");
-    }
-
-  } catch (err) {
-    console.error("Failed to update XP and level:", err.message);
-  }
-};
-
-useEffect(() => {
-  const fetchXP = async () => {
-    const user_id = localStorage.getItem("user_id");
+  const updateXPInBackend = async (userId, xp, level, streak_count, last_active) => {
     try {
-      const res = await fetch(`http://localhost:5000/users/${user_id}`);
-      const data = await res.json();
-      setStats({ xp: data.xp, level: data.level });
+      const response = await fetch(`http://localhost:5000/users/${userId}/xp`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ xp, level, streak_count, last_active }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to update XP and level");
+      }
+
     } catch (err) {
-      console.error("Failed to fetch XP and level:", err.message);
+      console.error("Failed to update XP and level:", err.message);
     }
   };
 
-  fetchXP();
-}, []);
+  useEffect(() => {
+    const fetchXP = async () => {
+      const user_id = localStorage.getItem("user_id");
+      try {
+        const res1 = await fetch(`http://localhost:5000/users/${user_id}`);
+        const data1 = await res1.json();
+        setStats({ xp: data1.xp, level: data1.level });
+
+        const res2 = await fetch(`http://localhost:5000/users/${user_id}/streak`);
+        const data2 = await res2.json();
+        setStreak(data2.streak_count || 0); // Fetch and set streak initially
+
+      } catch (err) {
+        console.error("Failed to fetch XP or streak:", err.message);
+      }
+    };
+
+    fetchXP();
+  }, []);
 
   return (
     <Router>
@@ -94,6 +117,7 @@ useEffect(() => {
               level={stats.level}
               progress={progress}
               incrementXP={incrementXP}
+              streak={streak}
             />
           }
         />
