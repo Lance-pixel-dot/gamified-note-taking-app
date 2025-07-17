@@ -1,9 +1,28 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { isSameDay, parseISO } from "date-fns";
 
 function ReviewFlashcard({ flashcard, incrementXP }) {
   const dialogRef = useRef(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [display, setDisplay] = useState("hidden");
+
+  const [isAllowed, setIsAllowed] = useState(true);
+  const [hasGivenXP, setHasGivenXP] = useState(false);
+  const user_id = localStorage.getItem("user_id");
+
+  useEffect(() => {
+  async function checkIfReviewed() {
+    try {
+      const res = await fetch(`http://localhost:5000/review_flashcards/can-review?user_id=${user_id}&flashcard_id=${flashcard.flashcard_id}`);
+      const data = await res.json();
+      setIsAllowed(data.canReview);
+    } catch (err) {
+      console.error("Failed to check review status", err);
+    }
+  }
+
+  checkIfReviewed();
+}, [user_id, flashcard.flashcard_id]);
 
   function reviewFlashcard() {
     if (dialogRef.current) {
@@ -19,16 +38,27 @@ function ReviewFlashcard({ flashcard, incrementXP }) {
     }
   }
 
-  const [isRead, setIsRead] = useState(false);
-  const [hasGivenXP, setHasGivenXP] = useState(false); // to prevent multiple XP gains
+  async function handleReview(totalXp) {
+    if (isAllowed && !hasGivenXP && incrementXP) {
+      incrementXP(totalXp);
+      setHasGivenXP(true);
+      await markReviewed();
+    }
+  }
 
-  function handleReview(totalXp) {
-    // setIsRead(!isRead)
-    // Give XP only once per session per note
-    // if (!hasGivenXP && incrementXP) {
-        incrementXP(totalXp); // XP for reading
-        setHasGivenXP(true);
-  // }
+  async function markReviewed() {
+    try {
+      await fetch("http://localhost:5000/review_flashcards/mark-reviewed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id,
+          flashcard_id: flashcard.flashcard_id,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to mark flashcard as reviewed", err);
+    }
   }
 
   return (
@@ -76,36 +106,45 @@ function ReviewFlashcard({ flashcard, incrementXP }) {
           </div>
 
           <div className={`${display} flex-col gap-1 items-center`}>
-            <span>How well did you answer?</span>
-            <section className="flex gap-2">
-              <button
-                className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  emergencyClose();
-                  handleReview(5);
-                }}
-              >
-                Easy
-              </button>
-              <button
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  emergencyClose();
-                  handleReview(4);
-                }}
-              >
-                Good
-              </button>
-              <button
-                className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  emergencyClose();
-                  handleReview(3.5);
-                }}
-              >
-                Hard
-              </button>
-            </section>
+            {!isAllowed ? (
+              <p className="text-red-500 text-sm mt-2">You’ve already reviewed this flashcard today.</p>
+            ) : (
+              <>
+                <span>How well did you answer?</span>
+                <section className="flex gap-2">
+                  <button
+                    className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+                    onClick={() => {
+                      emergencyClose();
+                      handleReview(5);
+                      setIsAllowed(false);
+                    }}
+                  >
+                    Easy
+                  </button>
+                  <button
+                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={() => {
+                      emergencyClose();
+                      handleReview(4);
+                      setIsAllowed(false);
+                    }}
+                  >
+                    Good
+                  </button>
+                  <button
+                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                    onClick={() => {
+                      emergencyClose();
+                      handleReview(3.5);
+                      setIsAllowed(false);
+                    }}
+                  >
+                    Hard
+                  </button>
+                </section>
+              </>
+            )}
           </div>
         </section>
       </dialog>

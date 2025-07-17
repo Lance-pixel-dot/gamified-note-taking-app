@@ -46,3 +46,11 @@ CREATE TABLE read_notes (
     last_read_date TIMESTAMP,
     UNIQUE(user_id, note_id)
 );
+
+CREATE TABLE review_flashcards (
+    review_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    flashcard_id INTEGER REFERENCES flashcards(flashcard_id),
+    last_read_date TIMESTAMP,
+    UNIQUE(user_id, flashcard_id)
+);

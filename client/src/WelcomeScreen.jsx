@@ -25,7 +25,7 @@ function WelcomeScreen(){
             if(response.ok){
                 setUsername("");
                 setPassword("");
-                navigate("/dashboard");
+                window.location = "/";
                 localStorage.setItem("username", username);
                 localStorage.setItem("user_id", result.user_id);
                 localStorage.setItem("currentTab", 'notes');
@@ -58,7 +58,8 @@ function WelcomeScreen(){
         if (response.ok) {
             setLoginUsername("");
             setLoginPassword("");
-            navigate("/dashboard");
+            window.location = "/";
+            window.location = "/dashboard";
             localStorage.setItem("username", result.user.username);
             localStorage.setItem("user_id", result.user.user_id);
             localStorage.setItem("currentTab", 'notes');
