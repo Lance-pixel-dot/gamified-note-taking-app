@@ -107,7 +107,10 @@ function ReviewFlashcard({ flashcard, incrementXP }) {
 
           <div className={`${display} flex-col gap-1 items-center`}>
             {!isAllowed ? (
-              <p className="text-red-500 text-sm mt-2">You’ve already reviewed this flashcard today.</p>
+              <div className="flex flex-col">
+                <p className="text-red-500 text-sm mt-2">You’ve already reviewed this flashcard today.</p>
+                <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" onClick={emergencyClose}>Ok</button>
+              </div>
             ) : (
               <>
                 <span>How well did you answer?</span>
