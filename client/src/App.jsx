@@ -28,9 +28,12 @@ function App() {
       const lastActiveDate = data.last_active ? parseISO(data.last_active) : null;
       let newStreak = data.streak_count || 0;
 
-      if (lastActiveDate && isYesterday(lastActiveDate)) {
+      if (isYesterday(lastActiveDate)) {
         newStreak += 1; // Continue streak
-      } else {
+      } else if(isToday(lastActiveDate)) {
+        newStreak += 0; // don't decrement or increment if the user is active today  
+      }
+      else {
         newStreak = 0; // Reset streak
       }
 
