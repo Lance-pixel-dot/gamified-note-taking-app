@@ -40,6 +40,9 @@ function App() {
       const multiplier = 1.3 + 0.3 * (newStreak - 1);
       const finalXP = baseAmount * multiplier;
 
+      console.log(multiplier);
+      console.log(finalXP); 
+
       setStats(prev => {
         let newXP = parseFloat(prev.xp) + finalXP;
         let newLevel = prev.level;

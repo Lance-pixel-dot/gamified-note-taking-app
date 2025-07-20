@@ -13,13 +13,15 @@ implement xp/leveling
 dateNFS stuff:
 implement spaced repetition
     -dfasugeestionbykdjhAksjdhfI.
-implement streaks (next)
+implement streaks (still monitoring)
     - x1.3 first multiplier, adds by 0.3 everyday
     - resets to back to 1.3 when streak ended 
+    - display multiplier
 
-implement achievements
+implement achievements (next)
+ -start functionality
 
-implement leaderboard (or this might be as well the users tab)
+implement leaderboard (maybe) (or this might be as well the users tab) 
 
 improve UI
 - add logout button
@@ -30,5 +32,7 @@ implement rewards system (add digital currency *coins* for doing notes and flash
     -users can buy themes on a digital store with the digital currency *coins*
 
 learn database hosting (supabase)
+
+add daily goals (optional)
 
 if have more time (implement AI chat bot assistant)

@@ -3,6 +3,7 @@ import Notes from './Notes';
 import Flashcard from './Flashcard';
 import ShareNotes from './SharedNotes';
 import ShareFlashcards from './SharedFlashcards';
+import Achievements from './Achievements';
 
 function Nav({ incrementXP }) {
   const getCurrentTab = localStorage.getItem("currentTab");
@@ -47,6 +48,14 @@ function Nav({ incrementXP }) {
           >
             Shared with me (flashcards)
           </button>
+          <button
+            className={`bg-white text-black p-2 rounded-t-xl border border-black ${
+              activeTab === 'achievements' ? 'border-b-0' : 'border-b'
+            }`}
+            onClick={() => setActiveTab('achievements')}
+          >
+            Achievements
+          </button>
         </nav>
       </section>
 
@@ -55,6 +64,7 @@ function Nav({ incrementXP }) {
       <Flashcard flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''} incrementXP={incrementXP} />
       <ShareNotes shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''} incrementXP={incrementXP}></ShareNotes>
       <ShareFlashcards shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''} incrementXP={incrementXP}></ShareFlashcards>
+      <Achievements achievementsHidden={activeTab !== 'achievements' ? 'hidden' : ''} ></Achievements>
     </>
   );
 }

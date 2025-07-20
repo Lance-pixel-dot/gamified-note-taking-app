@@ -54,3 +54,17 @@ CREATE TABLE review_flashcards (
     last_read_date TIMESTAMP,
     UNIQUE(user_id, flashcard_id)
 );
+
+CREATE TABLE achievements (
+  achievement_id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  xp_reward INTEGER DEFAULT 0,
+  type TEXT -- e.g., "note", "review", "streak"
+);
+
+CREATE TABLE user_achievements (
+  user_id INTEGER REFERENCES users(user_id),
+  achievement_id INTEGER REFERENCES achievements(achievement_id),
+  PRIMARY KEY (user_id, achievement_id)
+);
