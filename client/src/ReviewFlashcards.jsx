@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { isSameDay, parseISO } from "date-fns";
 
-function ReviewFlashcard({ flashcard, incrementXP }) {
+function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
   const dialogRef = useRef(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [display, setDisplay] = useState("hidden");
@@ -56,6 +56,7 @@ function ReviewFlashcard({ flashcard, incrementXP }) {
           flashcard_id: flashcard.flashcard_id,
         }),
       });
+      onCreated();
     } catch (err) {
       console.error("Failed to mark flashcard as reviewed", err);
     }

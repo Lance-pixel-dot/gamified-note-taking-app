@@ -2,17 +2,50 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// Create a flashcard
+// Create a flashcard and check for flashcard-based achievements
 router.post("/", async (req, res) => {
   try {
     const { user_id, title, question, answer, tag } = req.body;
+
+    // 1. Create flashcard
     const newFlashcard = await pool.query(
       "INSERT INTO flashcards (user_id, title, question, answer, tag) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [user_id, title, question, answer, tag]
     );
+
+    // 2. Count total flashcards for user
+    const countRes = await pool.query(
+      "SELECT COUNT(*) FROM flashcards WHERE user_id = $1",
+      [user_id]
+    );
+    const flashcardCount = parseInt(countRes.rows[0].count);
+
+    // 3. Define achievement milestones
+    const achievementMilestones = [
+      { id: 6, count: 1 },    // First Flashcard
+      { id: 7, count: 50 },   // 50 Flashcards
+    ];
+
+    for (const { id, count } of achievementMilestones) {
+      if (flashcardCount >= count) {
+        // Check if already unlocked
+        const check = await pool.query(
+          "SELECT 1 FROM user_achievements WHERE user_id = $1 AND achievement_id = $2",
+          [user_id, id]
+        );
+        if (check.rows.length === 0) {
+          await pool.query(
+            "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, $2)",
+            [user_id, id]
+          );
+        }
+      }
+    }
+
     res.json(newFlashcard.rows[0]);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error creating flashcard:", err.message);
+    res.status(500).json({ error: "Failed to create flashcard" });
   }
 });
 

@@ -35,6 +35,7 @@ function Flashcard(props){
             setQuestion("");
             setAnswer("");
             setTag("");
+            props.onCreated();
             if (props.incrementXP) {
                 props.incrementXP(3.5); // Add XP here
             }
@@ -114,7 +115,7 @@ function Flashcard(props){
                         {flashcards.map(flashcard => (
                             <div className="border border-black rounded p-2" key={flashcard.flashcard_id}>
                                 <h2>{flashcard.title}</h2>
-                                <ReviewFlashcard flashcard={flashcard} incrementXP={props.incrementXP}></ReviewFlashcard>
+                                <ReviewFlashcard flashcard={flashcard} incrementXP={props.incrementXP} onCreated={props.onCreated}></ReviewFlashcard>
                                 <EditFlashcard flashcard={flashcard} updateFlashcardsDisplay={
                                     (updatedFlashcard) => {
                                         setFlashcards(prev => prev.map(card => card.flashcard_id === updatedFlashcard.flashcard_id ? updatedFlashcard : card))

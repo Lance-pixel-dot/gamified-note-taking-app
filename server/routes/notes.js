@@ -2,17 +2,60 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// Create a note
+// Create a note and check for achievements
 router.post("/", async (req, res) => {
+  const client = await pool.connect(); // start transaction
+
   try {
     const { user_id, title, content, tag } = req.body;
-    const newNote = await pool.query(
+
+    await client.query("BEGIN");
+
+    // Insert new note
+    const newNote = await client.query(
       "INSERT INTO notes (user_id, title, content, tag) VALUES ($1, $2, $3, $4) RETURNING *",
       [user_id, title, content, tag]
     );
+
+    // Get current note count
+    const noteCountResult = await client.query(
+      "SELECT COUNT(*) FROM notes WHERE user_id = $1",
+      [user_id]
+    );
+    const noteCount = parseInt(noteCountResult.rows[0].count);
+
+    // Get achievements already unlocked by user
+    const achieved = await client.query(
+      "SELECT achievement_id FROM user_achievements WHERE user_id = $1",
+      [user_id]
+    );
+    const alreadyAchieved = achieved.rows.map(row => row.achievement_id);
+
+    // Unlock "First Note"
+    if (noteCount === 1 && !alreadyAchieved.includes(1)) {
+      await client.query(
+        "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, 1)",
+        [user_id]
+      );
+    }
+
+    // Unlock "Note Taker"
+    if (noteCount === 10 && !alreadyAchieved.includes(2)) {
+      await client.query(
+        "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, 2)",
+        [user_id]
+      );
+    }
+
+    await client.query("COMMIT");
+
     res.json(newNote.rows[0]);
   } catch (err) {
-    console.error(err.message);
+    await client.query("ROLLBACK");
+    console.error("Error creating note:", err.message);
+    res.status(500).json({ error: "Failed to create note and check achievements." });
+  } finally {
+    client.release();
   }
 });
 

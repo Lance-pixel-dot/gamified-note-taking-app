@@ -34,6 +34,7 @@ function Notes(props)
             setTitle(""); // clear input
             setContent("");
             setTag("");
+            props.onCreated();
             props.incrementXP(3.5); // Add XP here
         } catch (err) {
             console.error(err.message);
@@ -133,7 +134,7 @@ useEffect(() => {
                         {notes.map(notes => (
                             <div className="border border-black rounded p-2" key={notes.note_id}>
                                 <h2>{notes.title}</h2>
-                                <ReadNotes note={notes} incrementXP={props.incrementXP}></ReadNotes>
+                                <ReadNotes note={notes} incrementXP={props.incrementXP} onCreated={props.onCreated}></ReadNotes>
                                 <EditNote note={notes} updateNotesDisplay={
                                     (updatedNote) => {
                                         setNotes(prev => prev.map(note => note.note_id === updatedNote.note_id ? updatedNote : note))

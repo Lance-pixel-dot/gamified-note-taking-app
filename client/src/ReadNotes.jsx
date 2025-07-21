@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
-function ReadNotes({ note, userId, incrementXP }) {
+function ReadNotes({ note, userId, incrementXP, onCreated }) {
   const dialogRef = useRef(null);
   const [isRead, setIsRead] = useState(false);
   const [hasCheckedRead, setHasCheckedRead] = useState(false);
@@ -34,7 +34,6 @@ function ReadNotes({ note, userId, incrementXP }) {
   async function handleRead() {
     if (!isRead && incrementXP) {
       incrementXP(3.5);
-
       try {
         await fetch("http://localhost:5000/read_notes/mark-read", {
           method: "POST",
@@ -44,7 +43,7 @@ function ReadNotes({ note, userId, incrementXP }) {
       } catch (err) {
         console.error("Failed to mark read", err);
       }
-
+      onCreated();
       setIsRead(true);
     }
   }

@@ -20,6 +20,9 @@ implement streaks (still monitoring)
 
 implement achievements (next)
  -start functionality
+    -implement too Easy Achievement
+    -make notes and flashcards achievements works too on sharing
+    -implement achievements on the following: sharing, levels and streaks
 
 implement leaderboard (maybe) (or this might be as well the users tab) 
 
