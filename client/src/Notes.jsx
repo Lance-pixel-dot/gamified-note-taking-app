@@ -17,30 +17,50 @@ function Notes(props)
     const [tag, setTag] = useState("");
     const user_id = localStorage.getItem("user_id");
 
-    async function saveNote(){
-        try {
-            const body = { user_id, title, content, tag };
+    async function saveNote() {
+    try {
+    const body = { user_id, title, content, tag };
 
-            const response = await fetch("http://localhost:5000/notes", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(body)
-            });
+    const response = await fetch("http://localhost:5000/notes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
 
-            const newNote = await response.json();
+    const result = await response.json();
+    const createdNote = result.note;
+    const unlockedAchievements = result.newAchievements || [];
 
-            setNotes([...notes, newNote]);
+    // Set note in state
+    setNotes([...notes, createdNote]);
+    setTitle("");
+    setContent("");
+    setTag("");
+    props.onCreated(); 
 
-            setTitle(""); // clear input
-            setContent("");
-            setTag("");
-            props.onCreated();
-            props.incrementXP(3.5); // Add XP here
-        } catch (err) {
-            console.error(err.message);
-        }
-        document.querySelector('#new-note').close();
+    // Base XP for creating a note
+    let totalXP = 3.5;
+
+    // XP values for achievements
+    const achievementXPMap = {
+      1: 10,   // First Note
+      2: 20,   // 10 Notes
+      12: 50   // 50 Notes
+    };
+
+    for (let id of unlockedAchievements) {
+      totalXP += achievementXPMap[id] || 0; // default to 0 if not found
     }
+
+    props.incrementXP(totalXP); // Final XP with achievement bonus
+
+  } catch (err) {
+    console.error(err.message);
+  }
+
+  document.querySelector("#new-note").close();
+}
+
 
     //display note
     const [notes, setNotes] = useState([]);

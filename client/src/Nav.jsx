@@ -64,10 +64,12 @@ function Nav({ incrementXP }) {
       <ShareNotes
         shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''}
         incrementXP={incrementXP}
+        onCreated={handleCreated}
       />
       <ShareFlashcards
         shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''}
         incrementXP={incrementXP}
+        onCreated={handleCreated}
       />
       <Achievements
         ref={achievementsRef}

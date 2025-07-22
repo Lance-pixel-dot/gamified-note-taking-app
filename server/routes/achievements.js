@@ -31,4 +31,51 @@ router.get("/user/:user_id", async (req, res) => {
   }
 });
 
+// Check if user has unlocked "Help a Friend" achievement (achievement_id = 15)
+router.get("/has-helped-friend", async (req, res) => {
+  const { user_id } = req.query;
+
+  try {
+    const result = await pool.query(
+      `SELECT 1 FROM user_achievements WHERE user_id = $1 AND achievement_id = 15`,
+      [user_id]
+    );
+
+    if (result.rows.length > 0) {
+      res.json({ hasAchievement: true });
+    } else {
+      res.json({ hasAchievement: false });
+    }
+  } catch (err) {
+    console.error("Error checking 'Help a Friend' achievement:", err.message);
+    res.status(500).json({ error: "Failed to check achievement" });
+  }
+});
+
+// Unlock an achievement for a user
+router.post("/unlock", async (req, res) => {
+  const { user_id, achievement_id } = req.body;
+
+  try {
+    // Check if the achievement already exists
+    const check = await pool.query(
+      `SELECT 1 FROM user_achievements WHERE user_id = $1 AND achievement_id = $2`,
+      [user_id, achievement_id]
+    );
+
+    if (check.rows.length === 0) {
+      // Insert new row to unlock the achievement
+      await pool.query(
+        `INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, $2)`,
+        [user_id, achievement_id]
+      );
+    }
+
+    res.status(200).json({ message: "Achievement unlocked" });
+  } catch (err) {
+    console.error("Error unlocking achievement:", err.message);
+    res.status(500).json({ error: "Failed to unlock achievement" });
+  }
+});
+
 module.exports = router;

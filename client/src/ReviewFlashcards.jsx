@@ -10,7 +10,6 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
   const [hasGivenXP, setHasGivenXP] = useState(false);
   const user_id = localStorage.getItem("user_id");
 
-  useEffect(() => {
   async function checkIfReviewed() {
     try {
       const res = await fetch(`http://localhost:5000/review_flashcards/can-review?user_id=${user_id}&flashcard_id=${flashcard.flashcard_id}`);
@@ -20,9 +19,6 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
       console.error("Failed to check review status", err);
     }
   }
-
-  checkIfReviewed();
-}, [user_id, flashcard.flashcard_id]);
 
   function reviewFlashcard() {
     if (dialogRef.current) {
@@ -38,29 +34,53 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
     }
   }
 
-  async function handleReview(totalXp) {
-    if (isAllowed && !hasGivenXP && incrementXP) {
-      incrementXP(totalXp);
-      setHasGivenXP(true);
-      await markReviewed();
-    }
-  }
+async function handleReview(baseXP, difficulty) {
+  if (isAllowed && !hasGivenXP && incrementXP) {
+    const bonusXP = await markReviewed(difficulty); // now passes difficulty
+    const totalXP = baseXP + bonusXP;
 
-  async function markReviewed() {
-    try {
-      await fetch("http://localhost:5000/review_flashcards/mark-reviewed", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id,
-          flashcard_id: flashcard.flashcard_id,
-        }),
-      });
-      onCreated();
-    } catch (err) {
-      console.error("Failed to mark flashcard as reviewed", err);
-    }
+    incrementXP(totalXP);
+    setHasGivenXP(true);
   }
+}
+
+async function markReviewed(difficulty) {
+  try {
+    const res = await fetch("http://localhost:5000/review_flashcards/mark-reviewed", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id,
+        flashcard_id: flashcard.flashcard_id,
+        difficulty,
+      }),
+    });
+
+    const data = await res.json();
+    const newAchievements = data.newAchievements || [];
+
+    const achievementXPMap = {
+      8: 20,
+      9: 70,
+      4: 100,
+      10: 100, // This is Easy!
+    };
+
+    let bonusXP = 0;
+    for (const id of newAchievements) {
+      if (achievementXPMap[id]) {
+        bonusXP += achievementXPMap[id];
+      }
+    }
+
+    onCreated();
+    return bonusXP;
+
+  } catch (err) {
+    console.error("Failed to mark flashcard as reviewed", err);
+    return 0;
+  }
+}
 
   return (
     <>
@@ -68,6 +88,7 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
         onClick={() => {
           reviewFlashcard();
           setDisplay("hidden");
+          checkIfReviewed();
         }}
         className="border border-black rounded p-1 bg-blue-500 text-white ml-1"
       >
@@ -120,7 +141,7 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
                     className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
                     onClick={() => {
                       emergencyClose();
-                      handleReview(5);
+                      handleReview(5, "easy");  // <-- now sends "easy"
                       setIsAllowed(false);
                     }}
                   >
@@ -130,7 +151,7 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
                     onClick={() => {
                       emergencyClose();
-                      handleReview(4);
+                      handleReview(4, "good"); 
                       setIsAllowed(false);
                     }}
                   >
@@ -140,7 +161,7 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
                     className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
                     onClick={() => {
                       emergencyClose();
-                      handleReview(3.5);
+                      handleReview(3.5, "hard"); 
                       setIsAllowed(false);
                     }}
                   >

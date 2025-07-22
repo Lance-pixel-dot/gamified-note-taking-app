@@ -125,48 +125,62 @@ function ShareNotes(props){
     }, []);
 
 async function saveSharedNote(note_id, shared_user_id, permission = "view") {
-    try {
-        const body = { note_id, shared_user_id, permission };
-        const response = await fetch("http://localhost:5000/shared_notes", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
+  try {
+    const body = { note_id, shared_user_id, permission };
+    const response = await fetch("http://localhost:5000/shared_notes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    if (response.ok) {
+      //  Check if user already unlocked "Help a Friend" (achievement_id: 15)
+      const checkRes = await fetch(`http://localhost:5000/achievements/has-helped-friend?user_id=${user_id}`);
+      const checkData = await checkRes.json();
+
+      if (!checkData.hasAchievement) {
+        //  Unlock achievement and grant XP
+        const achievementXp = 70; // or fetch from backend if needed
+        if (props.incrementXP) props.incrementXP(achievementXp);
+
+        await fetch("http://localhost:5000/achievements/unlock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id,
+            achievement_id: 15,
+          }),
         });
+      }
 
-        if (response.ok) {
-            // Get current users list for the note
-            setSharedUsersByNote((prev) => {
-                const current = prev[note_id] || [];
+      props.onCreated();
 
-                // Check if user already exists
-                const existingIndex = current.findIndex(u => u.shared_user_id === shared_user_id);
+      setSharedUsersByNote((prev) => {
+        const current = prev[note_id] || [];
+        const existingIndex = current.findIndex(u => u.shared_user_id === shared_user_id);
+        let updated;
 
-                let updated;
-                if (existingIndex !== -1) {
-                    // Update permission
-                    updated = [...current];
-                    updated[existingIndex] = { shared_user_id, permission };
-                } else {
-                    // Add new user
-                    updated = [...current, { shared_user_id, permission }];
-                }
-
-                return {
-                    ...prev,
-                    [note_id]: updated
-                };
-            });
-
-            // Optional: Refetch or dispatch event if needed
-            await fetchSharedNotesWithMe();
-            await fetchSharedNotesWithOthers();
-            window.dispatchEvent(new CustomEvent("noteUpdated"));
+        if (existingIndex !== -1) {
+          updated = [...current];
+          updated[existingIndex] = { shared_user_id, permission };
+        } else {
+          updated = [...current, { shared_user_id, permission }];
         }
-    } catch (err) {
-        console.error(err.message);
-    }
-}
 
+        return {
+          ...prev,
+          [note_id]: updated
+        };
+      });
+
+      await fetchSharedNotesWithMe();
+      await fetchSharedNotesWithOthers();
+      window.dispatchEvent(new CustomEvent("noteUpdated"));
+    }
+  } catch (err) {
+    console.error(err.message);
+  }
+}
 
     async function unshareNote(note_id, shared_user_id) {
         try {
@@ -246,7 +260,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                     
                                     {isOwner || sharedWithMePermission === "edit" ? (
                                         <>
-                                            <ReadNotes note={note} incrementXP={props.incrementXP}/>
+                                            <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
                                             <EditNote
                                                 note={note}
                                                 updateNotesDisplay={(updatedNote) =>
@@ -259,7 +273,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                             />
                                         </>
                                     ) : sharedWithMePermission === "view" ? (
-                                        <ReadNotes note={note} incrementXP={props.incrementXP}/>
+                                        <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
                                     ) : null}
                                 </div>
                             );
@@ -318,7 +332,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                                 onChange={(e) => {
                                                     saveSharedNote(sharedNoteID, user.user_id, e.target.value);
                                                 }}
-                                                className={`border rounded p-1 mr-2 ${sharedUsers.includes(user.user_id) || isAdded ? 'inline-block' : 'hidden'} text-center`}
+                                                className={`border rounded p-1 mr-2 ${isAdded ? 'inline-block' : 'hidden'} text-center`}
                                             >
                                                 <option value="view">View</option>
                                                 <option value="edit">View and Edit</option>

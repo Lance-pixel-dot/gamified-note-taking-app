@@ -65,9 +65,12 @@ router.post("/mark-read", async (req, res) => {
     // Reading achievements
     const readingAchievements = [
       { id: 11, count: 1 },   
-      { id: 13, count: 10 },  //10
-      { id: 14, count: 50 }   //50
+      { id: 13, count: 10 },  // 10
+      { id: 14, count: 50 }   // 50
     ];
+
+    // Track newly unlocked achievements
+    const newlyUnlocked = [];
 
     for (const { id, count } of readingAchievements) {
       const check = await pool.query(
@@ -81,10 +84,14 @@ router.post("/mark-read", async (req, res) => {
            VALUES ($1, $2)`,
           [user_id, id]
         );
+        newlyUnlocked.push(id);
       }
     }
 
-    res.send("Note marked as read.");
+    res.json({
+      message: "Note marked as read.",
+      newAchievements: newlyUnlocked
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

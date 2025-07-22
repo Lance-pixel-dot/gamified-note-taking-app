@@ -17,33 +17,54 @@ function Flashcard(props){
 
     const user_id = localStorage.getItem("user_id");
 
-    async function saveFlashcard(){
-        try {
-            const body = {user_id ,title, question, answer, tag };
-            const response = await fetch("http://localhost:5000/flashcards", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(body)
-            });
+async function saveFlashcard() {
+  try {
+    const body = { user_id, title, question, answer, tag };
+    const response = await fetch("http://localhost:5000/flashcards", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
 
-            const newFlashcard = await response.json();
+    const data = await response.json();
+    const newFlashcard = data.flashcard;
+    const newAchievements = data.newAchievements || [];
 
-            //Append it to the current state
-            setFlashcards([...flashcards, newFlashcard]);
+    // Append to flashcards state
+    setFlashcards([...flashcards, newFlashcard]);
 
-            setTitle(""); // clear input
-            setQuestion("");
-            setAnswer("");
-            setTag("");
-            props.onCreated();
-            if (props.incrementXP) {
-                props.incrementXP(3.5); // Add XP here
-            }
-        } catch (err) {
-            console.error(err.message);
+    // Clear input fields
+    setTitle("");
+    setQuestion("");
+    setAnswer("");
+    setTag("");
+
+    props.onCreated();
+
+    // Base XP for creating a flashcard
+    if (props.incrementXP) {
+      let totalXP = 3.5;
+
+      // XP values per flashcard-related achievement ID
+      const achievementXP = {
+        6: 10,   // First Flashcard
+        7: 50    // 50 Flashcards
+      };
+
+      for (const id of newAchievements) {
+        if (achievementXP[id]) {
+          totalXP += achievementXP[id];
         }
-        document.querySelector('#new-flashcard').close();
+      }
+
+      props.incrementXP(totalXP);
     }
+  } catch (err) {
+    console.error(err.message);
+  }
+
+  document.querySelector('#new-flashcard').close();
+}
 
     //display flashcards
     const [flashcards, setFlashcards] = useState([]);

@@ -26,6 +26,8 @@ implement achievements (next)
 
 implement leaderboard (maybe) (or this might be as well the users tab) 
 
+implement coins first before UI
+
 improve UI
 - add logout button
 

@@ -4,7 +4,7 @@ const pool = require("../db");
 
 // Create a note and check for achievements
 router.post("/", async (req, res) => {
-  const client = await pool.connect(); // start transaction
+  const client = await pool.connect();
 
   try {
     const { user_id, title, content, tag } = req.body;
@@ -17,39 +17,48 @@ router.post("/", async (req, res) => {
       [user_id, title, content, tag]
     );
 
-    // Get current note count
-    const noteCountResult = await client.query(
+    // Count total notes for the user
+    const countResult = await client.query(
       "SELECT COUNT(*) FROM notes WHERE user_id = $1",
       [user_id]
     );
-    const noteCount = parseInt(noteCountResult.rows[0].count);
+    const noteCount = parseInt(countResult.rows[0].count);
 
-    // Get achievements already unlocked by user
+    // Milestone-based achievements (for note creation)
+    const noteAchievements = [
+      { id: 1, count: 1 },   
+      { id: 2, count: 10 },   // 10
+      { id: 12, count: 50 }   // 50
+    ];
+
+    // Get already unlocked achievements
     const achieved = await client.query(
       "SELECT achievement_id FROM user_achievements WHERE user_id = $1",
       [user_id]
     );
     const alreadyAchieved = achieved.rows.map(row => row.achievement_id);
 
-    // Unlock "First Note"
-    if (noteCount === 1 && !alreadyAchieved.includes(1)) {
-      await client.query(
-        "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, 1)",
-        [user_id]
-      );
-    }
+    // Track which achievements were unlocked
+    const newlyUnlocked = [];
 
-    // Unlock "Note Taker"
-    if (noteCount === 10 && !alreadyAchieved.includes(2)) {
-      await client.query(
-        "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, 2)",
-        [user_id]
-      );
+    for (const achievement of noteAchievements) {
+      if (noteCount >= achievement.count && !alreadyAchieved.includes(achievement.id)) {
+        await client.query(
+          "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, $2)",
+          [user_id, achievement.id]
+        );
+        newlyUnlocked.push(achievement.id); // Track it
+      }
     }
 
     await client.query("COMMIT");
 
-    res.json(newNote.rows[0]);
+    // Return only unlocked achievements
+    res.json({
+      note: newNote.rows[0],
+      newAchievements: newlyUnlocked
+    });
+
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Error creating note:", err.message);

@@ -8,7 +8,6 @@ function ReadNotes({ note, userId, incrementXP, onCreated }) {
   const user_id = localStorage.getItem("user_id");
 
   // Check if the note was already read today
-  useEffect(() => {
     async function checkIfReadToday() {
       try {
         const res = await fetch(`http://localhost:5000/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
@@ -20,9 +19,6 @@ function ReadNotes({ note, userId, incrementXP, onCreated }) {
       }
     }
 
-    checkIfReadToday();
-  }, [note.note_id, user_id]);
-
   function openDialog() {
     dialogRef.current?.showModal();
   }
@@ -32,26 +28,47 @@ function ReadNotes({ note, userId, incrementXP, onCreated }) {
   }
 
   async function handleRead() {
-    if (!isRead && incrementXP) {
-      incrementXP(3.5);
-      try {
-        await fetch("http://localhost:5000/read_notes/mark-read", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: user_id, note_id: note.note_id })
+  if (!isRead && incrementXP) {
+    try {
+      const response = await fetch("http://localhost:5000/read_notes/mark-read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user_id, note_id: note.note_id })
+      });
+
+      const data = await response.json();
+
+      // Base XP for reading a note
+      let totalXP = 3.5;
+
+      // Bonus XP for unlocking reading achievements
+      const achievementXPMap = {
+        11: 10,  // First read
+        13: 30,  // Read 10 notes
+        14: 70   // Read 50 notes
+      };
+
+      if (data.newAchievements && Array.isArray(data.newAchievements)) {
+        data.newAchievements.forEach(id => {
+          if (achievementXPMap[id]) {
+            totalXP += achievementXPMap[id];
+          }
         });
-      } catch (err) {
-        console.error("Failed to mark read", err);
       }
-      onCreated();
+
+      incrementXP(totalXP);  // Apply XP
       setIsRead(true);
+      onCreated();
+    } catch (err) {
+      console.error("Failed to mark read", err);
     }
   }
+}
 
   return (
     <>
       <button
-        onClick={openDialog}
+        onClick={() => {openDialog(); checkIfReadToday()}}
         className="border border-black rounded p-1 bg-blue-500 text-white ml-1"
       >
         Read

@@ -71,27 +71,63 @@ function ShareFlashcards(props) {
   }, []);
 
   async function saveSharedFlashcard(flashcard_id, shared_user_id, permission = "view") {
-    const body = { flashcard_id, shared_user_id, permission };
-    const response = await fetch("http://localhost:5000/shared_flashcards", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
+  const body = { flashcard_id, shared_user_id, permission };
 
-    if (response.ok) {
-      setSharedUsersByFlashcard(prev => {
-        const current = prev[flashcard_id] || [];
-        const existingIndex = current.findIndex(u => u.shared_user_id === shared_user_id);
-        let updated = existingIndex !== -1
+  const response = await fetch("http://localhost:5000/shared_flashcards", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  if (response.ok) {
+
+    if (!user_id) {
+      console.error("User ID not found in localStorage");
+      return;
+    }
+
+    try {
+      //  Check if user already has the "Help a Friend" achievement
+      const check = await fetch(`http://localhost:5000/achievements/has-helped-friend?user_id=${user_id}`);
+      const checkData = await check.json();
+
+      if (!checkData.hasAchievement) {
+        console.log("Unlocking 'Help a Friend' achievement and adding XP!");
+        //  Unlock the achievement and grant XP
+        await fetch("http://localhost:5000/achievements/unlock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id,
+            achievement_id: 15,
+          }),
+        });
+
+        props.incrementXP(70);
+      } 
+
+        props.onCreated();
+
+    } catch (err) {
+      console.error("Error checking/unlocking achievement:", err);
+    }
+
+    // Update shared flashcard state
+    setSharedUsersByFlashcard(prev => {
+      const current = prev[flashcard_id] || [];
+      const existingIndex = current.findIndex(u => u.shared_user_id === shared_user_id);
+      const updated =
+        existingIndex !== -1
           ? [...current.slice(0, existingIndex), { shared_user_id, permission }, ...current.slice(existingIndex + 1)]
           : [...current, { shared_user_id, permission }];
-        return { ...prev, [flashcard_id]: updated };
-      });
-      await fetchSharedFlashcardsWithOthers();
-      await fetchSharedFlashcardsWithMe();
-      window.dispatchEvent(new CustomEvent("flashcardUpdated"));
-    }
+      return { ...prev, [flashcard_id]: updated };
+    });
+
+    await fetchSharedFlashcardsWithOthers();
+    await fetchSharedFlashcardsWithMe();
+    window.dispatchEvent(new CustomEvent("flashcardUpdated"));
   }
+}
 
   async function unshareFlashcard(flashcard_id, shared_user_id) {
     const res = await fetch("http://localhost:5000/shared_flashcards", {
@@ -178,7 +214,7 @@ function ShareFlashcards(props) {
                   </p>
                   {isOwner || sharedWithMePermission === "edit" ? (
                     <>
-                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} />
+                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
                       <EditFlashcard
                         flashcard={fc}
                         updateFlashcardsDisplay={(updated) =>
@@ -189,7 +225,7 @@ function ShareFlashcards(props) {
                       />
                     </>
                   ) : sharedWithMePermission === "view" ? (
-                    <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP}/>
+                    <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
                   ) : null}
                 </div>
               );
@@ -248,7 +284,7 @@ function ShareFlashcards(props) {
                         onChange={(e) => {
                           saveSharedFlashcard(sharedFlashcardID, user.user_id, e.target.value);
                         }}
-                        className={`border rounded p-1 mr-2 ${sharedUsers.includes(user.user_id) || isAdded ? 'inline-block' : 'hidden'} text-center`}
+                        className={`border rounded p-1 mr-2 ${isAdded ? 'inline-block' : 'hidden'} text-center`}
                       >
                         <option value="view">View</option>
                         <option value="edit">View and Edit</option>

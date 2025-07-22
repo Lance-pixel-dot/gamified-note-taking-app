@@ -4,17 +4,20 @@ const pool = require("../db");
 
 // Create a flashcard and check for flashcard-based achievements
 router.post("/", async (req, res) => {
+  const client = await pool.connect();
   try {
     const { user_id, title, question, answer, tag } = req.body;
 
+    await client.query("BEGIN");
+
     // 1. Create flashcard
-    const newFlashcard = await pool.query(
+    const newFlashcard = await client.query(
       "INSERT INTO flashcards (user_id, title, question, answer, tag) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [user_id, title, question, answer, tag]
     );
 
     // 2. Count total flashcards for user
-    const countRes = await pool.query(
+    const countRes = await client.query(
       "SELECT COUNT(*) FROM flashcards WHERE user_id = $1",
       [user_id]
     );
@@ -22,30 +25,42 @@ router.post("/", async (req, res) => {
 
     // 3. Define achievement milestones
     const achievementMilestones = [
-      { id: 6, count: 1 },    // First Flashcard
-      { id: 7, count: 50 },   // 50 Flashcards
+      { id: 6, count: 1 },   
+      { id: 7, count: 50 }   // 50
     ];
 
+    // 4. Get already unlocked achievements
+    const achievedRes = await client.query(
+      "SELECT achievement_id FROM user_achievements WHERE user_id = $1",
+      [user_id]
+    );
+    const alreadyUnlocked = achievedRes.rows.map(row => row.achievement_id);
+
+    // 5. Unlock new achievements
+    const newlyUnlocked = [];
+
     for (const { id, count } of achievementMilestones) {
-      if (flashcardCount >= count) {
-        // Check if already unlocked
-        const check = await pool.query(
-          "SELECT 1 FROM user_achievements WHERE user_id = $1 AND achievement_id = $2",
+      if (flashcardCount >= count && !alreadyUnlocked.includes(id)) {
+        await client.query(
+          "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, $2)",
           [user_id, id]
         );
-        if (check.rows.length === 0) {
-          await pool.query(
-            "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, $2)",
-            [user_id, id]
-          );
-        }
+        newlyUnlocked.push(id);
       }
     }
 
-    res.json(newFlashcard.rows[0]);
+    await client.query("COMMIT");
+
+    res.json({
+      flashcard: newFlashcard.rows[0],
+      newAchievements: newlyUnlocked
+    });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Error creating flashcard:", err.message);
     res.status(500).json({ error: "Failed to create flashcard" });
+  } finally {
+    client.release();
   }
 });
 
