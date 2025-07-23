@@ -78,4 +78,21 @@ router.post("/unlock", async (req, res) => {
   }
 });
 
+// Check if user has unlocked a specific achievement
+router.get("/has", async (req, res) => {
+  const { user_id, achievement_id } = req.query;
+
+  try {
+    const result = await pool.query(
+      "SELECT 1 FROM user_achievements WHERE user_id = $1 AND achievement_id = $2",
+      [user_id, achievement_id]
+    );
+
+    res.json({ hasAchievement: result.rows.length > 0 });
+  } catch (err) {
+    console.error("Error checking achievement:", err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;

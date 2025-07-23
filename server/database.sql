@@ -52,6 +52,7 @@ CREATE TABLE review_flashcards (
     user_id INTEGER REFERENCES users(user_id),
     flashcard_id INTEGER REFERENCES flashcards(flashcard_id),
     last_read_date TIMESTAMP,
+    easy_count INTEGER DEFAULT 0,
     UNIQUE(user_id, flashcard_id)
 );
 

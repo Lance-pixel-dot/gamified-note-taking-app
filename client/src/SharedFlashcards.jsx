@@ -92,7 +92,6 @@ function ShareFlashcards(props) {
       const checkData = await check.json();
 
       if (!checkData.hasAchievement) {
-        console.log("Unlocking 'Help a Friend' achievement and adding XP!");
         //  Unlock the achievement and grant XP
         await fetch("http://localhost:5000/achievements/unlock", {
           method: "POST",

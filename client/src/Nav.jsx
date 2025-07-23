@@ -5,18 +5,12 @@ import ShareNotes from './SharedNotes';
 import ShareFlashcards from './SharedFlashcards';
 import Achievements from './Achievements';
 
-function Nav({ incrementXP }) {
+function Nav({ incrementXP, handleCreated, achievementsRef }) {
   const getCurrentTab = localStorage.getItem("currentTab");
   const [activeTab, setActiveTab] = useState(getCurrentTab);
-  const achievementsRef = useRef();
 
   // Save currentTab whenever it changes
   localStorage.setItem("currentTab", activeTab);
-
-  // Handler to refresh achievements after creating a note
-  const handleCreated = () => {
-    achievementsRef.current?.refreshAchievements();
-  };
 
   return (
     <>

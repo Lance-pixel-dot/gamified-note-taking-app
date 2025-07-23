@@ -18,15 +18,15 @@ implement streaks (still monitoring)
     - resets to back to 1.3 when streak ended 
     - display multiplier
 
-implement achievements (next)
- -start functionality
-    -implement too Easy Achievement
-    -make notes and flashcards achievements works too on sharing
-    -implement achievements on the following: sharing, levels and streaks
+implement achievements 
+    -organize achievements order
 
 implement leaderboard (maybe) (or this might be as well the users tab) 
 
-implement coins first before UI
+implement coins first before UI (next)
+    -set up database probably only for user table
+    - same amount of coins per achievements
+    - increasing coins by n per level up
 
 improve UI
 - add logout button
