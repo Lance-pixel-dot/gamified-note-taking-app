@@ -22,6 +22,34 @@ function App() {
   };
 
   const [streak, setStreak] = useState(0); // Make streak reactive
+  const [coins, setCoins] = useState(0);
+
+  const updateCoinsInBackend = async (userId, amount) => {
+  try {
+    const response = await fetch(`http://localhost:5000/users/${userId}/coins`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Failed to update coins");
+    setCoins(data.coins);
+
+  } catch (err) {
+    console.error("Failed to update coins:", err.message);
+  }
+};
+
+const fetchCoins = async () => {
+  const userId = localStorage.getItem("user_id");
+  try {
+    const res = await fetch(`http://localhost:5000/users/${userId}/coins`);
+    const data = await res.json();
+    setCoins(data.coins);
+  } catch (err) {
+    console.error("Failed to fetch coins:", err.message);
+  }
+};
 
 async function checkAndUnlockLevelAchievements(level) {
   const user_id = localStorage.getItem("user_id");
@@ -52,6 +80,9 @@ async function checkAndUnlockLevelAchievements(level) {
 
           // Now grant XP without triggering achievement check again
           await incrementXP(achievement.xp, true);
+
+          await updateCoinsInBackend(user_id, 10);
+
           handleCreated();
         }
 
@@ -91,6 +122,9 @@ async function checkAndUnlockStreakAchievements(streakCount) {
           else if (achievement.id === 19) xpReward = 100;
 
           await incrementXP(xpReward, true); // avoid infinite loop by skipping achievement check inside
+
+          await updateCoinsInBackend(userId, 10);
+
           handleCreated();
         }
       } catch (err) {
@@ -100,11 +134,12 @@ async function checkAndUnlockStreakAchievements(streakCount) {
   }
 }
 
- async function incrementXP(baseAmount, skipAchievements = false) {
+async function incrementXP(baseAmount, skipAchievements = false) {
   const userId = localStorage.getItem("user_id");
   const todayStr = format(new Date(), "yyyy-MM-dd");
 
   try {
+    // Fetch current streak info
     const res = await fetch(`http://localhost:5000/users/${userId}/streak`);
     const data = await res.json();
 
@@ -119,41 +154,44 @@ async function checkAndUnlockStreakAchievements(streakCount) {
       newStreak = 0;
     }
 
+    // Apply streak-based XP multiplier
     const multiplier = 1.3 + 0.3 * (newStreak - 1);
     const finalXP = baseAmount * multiplier;
 
-    console.log(baseAmount);
-    console.log(multiplier);
-    console.log(finalXP);
+    console.log(`Incrementing XP for user ${userId}: base=${baseAmount}, multiplier=${multiplier}, finalXP=${finalXP}`);
 
-    let newXP = 0;
-    let newLevel = 0;
+    // Fetch user's current XP and level
+    const res2 = await fetch(`http://localhost:5000/users/${userId}`);
+    const userData = await res2.json();
+    let currentXP = parseFloat(userData.xp);
+    let currentLevel = parseInt(userData.level);
+    let xp = currentXP + finalXP;
 
-    setStats(prev => {
-      newXP = parseFloat(prev.xp) + finalXP;
-      newLevel = prev.level;
-      let xpNeeded = getXPNeeded(newLevel);
+    let coinsToAdd = 0;
 
-      while (newXP >= xpNeeded) {
-        newXP -= xpNeeded;
-        newLevel += 1;
-        xpNeeded = getXPNeeded(newLevel);
-      }
+    // Level up calculation
+    while (xp >= getXPNeeded(currentLevel)) {
+      xp -= getXPNeeded(currentLevel);
+      currentLevel += 1;
+      coinsToAdd += currentLevel * 10;  // Clean coin reward formula
+    }
 
-      updateXPInBackend(userId, newXP, newLevel, newStreak, todayStr);
-      setStreak(newStreak);
+    // Update XP/level/streak/last_active
+    await updateXPInBackend(userId, xp, currentLevel, newStreak, todayStr);
+    setStats({ xp, level: currentLevel });
+    setStreak(newStreak);
 
-      return {
-        xp: newXP,
-        level: newLevel,
-      };
-    });
+    // Update coins (only if not from an achievement)
+    if (!skipAchievements && coinsToAdd > 0) {
+      await updateCoinsInBackend(userId, coinsToAdd);
+    }
 
+    // Check and unlock streak achievements
     await checkAndUnlockStreakAchievements(newStreak);
 
-    // After stats update, check achievements (if allowed)
+    // Check level-based achievements only if this XP gain wasn't from another achievement
     if (!skipAchievements) {
-      await checkAndUnlockLevelAchievements(newLevel);
+      await checkAndUnlockLevelAchievements(currentLevel);
     }
 
   } catch (err) {
@@ -218,7 +256,7 @@ async function checkAndUnlockStreakAchievements(streakCount) {
       }
 
       setStreak(newStreak);
-
+      fetchCoins();
     } catch (err) {
       console.error("Failed to fetch XP or streak:", err.message);
     }
@@ -240,8 +278,10 @@ async function checkAndUnlockStreakAchievements(streakCount) {
               progress={progress}
               incrementXP={incrementXP}
               streak={streak}
+              coins={coins}
               handleCreated={handleCreated}
               achievementsRef={achievementsRef}
+              updateCoinsInBackend={updateCoinsInBackend}
             />
           }
         />

@@ -4,8 +4,11 @@ CREATE TABLE users(
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    xp INTEGER DEFAULT 1,
-    level INTEGER DEFAULT 1
+    xp INTEGER DEFAULT 0,
+    level INTEGER DEFAULT 1,
+    streak_count INTEGER DEFAULT 0,
+    last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    coins INTEGER DEFAULT 0
 );
 
 CREATE TABLE notes(

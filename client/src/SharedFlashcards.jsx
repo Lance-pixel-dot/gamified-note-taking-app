@@ -213,7 +213,7 @@ function ShareFlashcards(props) {
                   </p>
                   {isOwner || sharedWithMePermission === "edit" ? (
                     <>
-                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
+                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
                       <EditFlashcard
                         flashcard={fc}
                         updateFlashcardsDisplay={(updated) =>
@@ -224,7 +224,7 @@ function ShareFlashcards(props) {
                       />
                     </>
                   ) : sharedWithMePermission === "view" ? (
-                    <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
+                    <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
                   ) : null}
                 </div>
               );

@@ -142,6 +142,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
         //  Unlock achievement and grant XP
         const achievementXp = 70; // or fetch from backend if needed
         if (props.incrementXP) props.incrementXP(achievementXp);
+        if (props.updateCoinsInBackend) props.updateCoinsInBackend(user_id, 20);
 
         await fetch("http://localhost:5000/achievements/unlock", {
           method: "POST",
@@ -260,7 +261,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                     
                                     {isOwner || sharedWithMePermission === "edit" ? (
                                         <>
-                                            <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
+                                            <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
                                             <EditNote
                                                 note={note}
                                                 updateNotesDisplay={(updatedNote) =>
@@ -273,7 +274,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                             />
                                         </>
                                     ) : sharedWithMePermission === "view" ? (
-                                        <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated}/>
+                                        <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
                                     ) : null}
                                 </div>
                             );

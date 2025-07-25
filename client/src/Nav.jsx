@@ -5,7 +5,7 @@ import ShareNotes from './SharedNotes';
 import ShareFlashcards from './SharedFlashcards';
 import Achievements from './Achievements';
 
-function Nav({ incrementXP, handleCreated, achievementsRef }) {
+function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend }) {
   const getCurrentTab = localStorage.getItem("currentTab");
   const [activeTab, setActiveTab] = useState(getCurrentTab);
 
@@ -49,21 +49,25 @@ function Nav({ incrementXP, handleCreated, achievementsRef }) {
         notesHidden={activeTab !== 'notes' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
+        updateCoinsInBackend={updateCoinsInBackend}
       />
       <Flashcard
         flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
+        updateCoinsInBackend={updateCoinsInBackend}
       />
       <ShareNotes
         shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
+        updateCoinsInBackend={updateCoinsInBackend}
       />
       <ShareFlashcards
         shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
+        updateCoinsInBackend={updateCoinsInBackend}
       />
       <Achievements
         ref={achievementsRef}

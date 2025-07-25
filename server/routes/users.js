@@ -112,6 +112,43 @@ router.get("/:id/streak", async (req, res) => {
   }
 });
 
+// Get user's coins
+router.get("/:id/coins", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      "SELECT coins FROM users WHERE user_id = $1",
+      [id]
+    );
 
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ coins: result.rows[0].coins });
+  } catch (err) {
+    console.error("Error fetching coins:", err.message);
+    res.status(500).json({ error: "Failed to fetch coins" });
+  }
+});
+
+router.put("/:id/coins", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { amount } = req.body;
+    // Increment coins by amount
+    const result = await pool.query(
+      "UPDATE users SET coins = coins + $1 WHERE user_id = $2 RETURNING coins",
+      [amount, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ coins: result.rows[0].coins });
+  } catch (err) {
+    console.error("Error updating coins:", err.message);
+    res.status(500).json({ error: "Failed to update coins" });
+  }
+});
 
 module.exports = router;

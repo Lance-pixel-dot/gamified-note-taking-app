@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { isSameDay, parseISO } from "date-fns";
 
-function ReviewFlashcard({ flashcard, incrementXP, onCreated }) {
+function ReviewFlashcard({ flashcard, incrementXP, onCreated, updateCoinsInBackend }) {
   const dialogRef = useRef(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [display, setDisplay] = useState("hidden");
@@ -72,6 +72,12 @@ async function markReviewed(difficulty) {
         bonusXP += achievementXPMap[id];
       }
     }
+
+    if (typeof updateCoinsInBackend === "function" && newAchievements.length > 0) {
+      await updateCoinsInBackend(user_id, newAchievements.length * 10);
+    }
+
+    updateCoinsInBackend(user_id, 2); // Add coins for reviewing a flashcard
 
     onCreated();
     return bonusXP;

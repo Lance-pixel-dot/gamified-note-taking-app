@@ -24,14 +24,14 @@ implement achievements
 implement leaderboard (maybe) (or this might be as well the users tab) 
 
 implement coins first before UI (next)
-    -set up database probably only for user table
+    - set up database probably only for user table
     - same amount of coins per achievements
     - increasing coins by n per level up
 
 improve UI
+-pop up achievements
 - add logout button
-
-    (!) Every time the user left the web app, the web app will refresh back to log in screen
+(!) Every time the user left the web app, the web app will refresh back to log in screen
 
 implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
     -users can buy themes on a digital store with the digital currency *coins*

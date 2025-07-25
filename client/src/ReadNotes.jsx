@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
-function ReadNotes({ note, userId, incrementXP, onCreated }) {
+function ReadNotes({ note, userId, incrementXP, onCreated, updateCoinsInBackend }) {
   const dialogRef = useRef(null);
   const [isRead, setIsRead] = useState(false);
   const [hasCheckedRead, setHasCheckedRead] = useState(false);
@@ -48,12 +48,19 @@ function ReadNotes({ note, userId, incrementXP, onCreated }) {
         14: 70   // Read 50 notes
       };
 
+      let coinsToAdd = 2;
+
       if (data.newAchievements && Array.isArray(data.newAchievements)) {
         data.newAchievements.forEach(id => {
           if (achievementXPMap[id]) {
             totalXP += achievementXPMap[id];
+            coinsToAdd += 10;
           }
         });
+      }
+
+      if (updateCoinsInBackend) {
+          await updateCoinsInBackend(user_id, coinsToAdd);
       }
 
       incrementXP(totalXP);  // Apply XP

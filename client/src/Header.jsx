@@ -1,8 +1,7 @@
 import Nav from "./Nav";
 
-function Header({ xp, level, progress, streak }) {
+function Header({ xp, level, progress, streak, coins }) {
   
-  const achievement = "Dedicated Learner";
   const Player = localStorage.getItem("username");
 
   return (
@@ -10,10 +9,10 @@ function Header({ xp, level, progress, streak }) {
       <section className={`w-2/3 place-self-center p-4 flex flex-col gap-1 text-white bg-gradient-to-r from-red-500  to-purple-500 rounded-xl border-2 border-black`}>
         <section className="flex justify-between">
           <h1>Welcome {Player}</h1>
-          <span>Level {level}</span>
+          <span>Coins {coins}</span>
         </section>
         <section className="flex justify-between">
-          <span>{achievement}</span>
+          <span>Level {level}</span>
           <span>Streaks {streak}</span>
         </section>
         <div className="border border-black h-4 rounded-full bg-gray-300">

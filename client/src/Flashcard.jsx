@@ -58,7 +58,14 @@ async function saveFlashcard() {
       }
 
       props.incrementXP(totalXP);
+      props.updateCoinsInBackend(user_id, 1); // Add coins for creating a flashcard
     }
+
+    // Award coins for flashcard achievements
+    if (props.updateCoinsInBackend && newAchievements.length > 0) {
+      await props.updateCoinsInBackend(user_id, newAchievements.length * 10);
+    }
+
   } catch (err) {
     console.error(err.message);
   }
@@ -136,7 +143,7 @@ async function saveFlashcard() {
                         {flashcards.map(flashcard => (
                             <div className="border border-black rounded p-2" key={flashcard.flashcard_id}>
                                 <h2>{flashcard.title}</h2>
-                                <ReviewFlashcard flashcard={flashcard} incrementXP={props.incrementXP} onCreated={props.onCreated}></ReviewFlashcard>
+                                <ReviewFlashcard flashcard={flashcard} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}></ReviewFlashcard>
                                 <EditFlashcard flashcard={flashcard} updateFlashcardsDisplay={
                                     (updatedFlashcard) => {
                                         setFlashcards(prev => prev.map(card => card.flashcard_id === updatedFlashcard.flashcard_id ? updatedFlashcard : card))

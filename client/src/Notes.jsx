@@ -52,7 +52,12 @@ function Notes(props)
       totalXP += achievementXPMap[id] || 0; // default to 0 if not found
     }
 
+    if (props.updateCoinsInBackend && unlockedAchievements.length > 0) {
+      await props.updateCoinsInBackend(user_id, unlockedAchievements.length * 10);
+    }
+
     props.incrementXP(totalXP); // Final XP with achievement bonus
+    props.updateCoinsInBackend(user_id, 1); 
 
   } catch (err) {
     console.error(err.message);
@@ -102,7 +107,7 @@ useEffect(() => {
 
             setNotes(notes.filter(notes => notes.note_id !== id));
 
-            // NEW: Dispatch custom event
+            // Dispatch custom event
             window.dispatchEvent(new CustomEvent("noteDeleted", { detail: { id } }));
         } catch (err) {
             console.error(err.message);
@@ -154,7 +159,7 @@ useEffect(() => {
                         {notes.map(notes => (
                             <div className="border border-black rounded p-2" key={notes.note_id}>
                                 <h2>{notes.title}</h2>
-                                <ReadNotes note={notes} incrementXP={props.incrementXP} onCreated={props.onCreated}></ReadNotes>
+                                <ReadNotes note={notes} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}></ReadNotes>
                                 <EditNote note={notes} updateNotesDisplay={
                                     (updatedNote) => {
                                         setNotes(prev => prev.map(note => note.note_id === updatedNote.note_id ? updatedNote : note))
