@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+@font-face {
+font-family: 'Rubik One Regular';
+font-style: normal;
+font-weight: normal;
+src: local('Rubik One Regular'), url('./assets/fonts/RubikOne-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('./assets/fonts/opensans-variablefont_wdthwght-webfont.woff2') format('woff2'),
+         url('./assets/fonts/opensans-variablefont_wdthwght-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+/* @font-face kit by Fonts2u (https://fonts2u.com) */ @font-face {font-family:"Open Sans Bold";src:url("OpenSans-Bold.eot?") format("eot"),url("./assets/fonts/OpenSans-Bold.woff") format("woff"),url("OpenSans-Bold.ttf") format("truetype"),url("OpenSans-Bold.svg#OpenSans-Bold") format("svg");font-weight:normal;font-style:normal;}
+
+.welcome-container {
+  font-family: "Open Sans Bold", sans-serif;
+}
+
+.slogan {
+  font-size: 0.650rem;
+}
+
+.error-username, .error-password {
+  font-size: 0.650rem;
+}
+
 button{
     cursor: pointer;
 }

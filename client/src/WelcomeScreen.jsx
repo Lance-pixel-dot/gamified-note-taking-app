@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { data, useNavigate } from 'react-router-dom';
 import Header from "./Header";
+import logo from "./assets/logo/mk-logo.svg";
+import { motion, AnimatePresence } from "framer-motion";
+import { set } from "date-fns";
 
 function WelcomeScreen(){
 
@@ -86,127 +89,193 @@ function WelcomeScreen(){
 
     const usernameRegex = /^[a-zA-Z0-9_]{3,12}$/;
 
+    // Animation variants for sliding
+
+    const [direction, setDirection] = useState("right"); // Track swipe direction
+
+    const variants = {
+      initial: (direction) => ({
+        x: direction === "left" ? "-100vw" : "100vw",
+        opacity: 0,
+        position: "absolute",
+        width: "100%",
+      }),
+      animate: {
+        x: 0,
+        opacity: 1,
+        position: "relative",
+        width: "100%",
+        transition: { type: "spring", stiffness: 300, damping: 30 }
+      },
+      exit: (direction) => ({
+        x: direction === "left" ? "100vw" : "-100vw",
+        opacity: 0,
+        position: "absolute",
+        width: "100%",
+        transition: { type: "spring", stiffness: 300, damping: 30 }
+      }),
+    };
+
+    const goToSection = (section) => {
+        if (section === "landing") {
+            // Always swipe left when returning to landing
+            setDirection("left");
+        } else if (section === "login" || section === "register") {
+            // Always swipe right when going to login or register from landing
+            setDirection("right");
+        }
+        setActiveSection(section);
+    };
+
     return(
         <>
-            <section className={`h-screen bg-gradient-to-r from-blue-500 to-green-500 text-white flex flex-col justify-center items-center ${activeSection === "landing" ? "translate-x-0" : "hidden"}`}>
-                <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                    <h1 className="font-bold text-2xl">Mind Keep</h1>
-                    <p>Secure, manage, and grow your mind’s contents.</p>
-                    <button className="border border-white p-2 rounded w-full font-bold hover:bg-white hover:text-black
-                    active:bg-white active:text-black" onClick={() => setActiveSection("login")}>Log In</button>
-                    <button className="border border-white p-2 rounded w-full font-bold hover:bg-white hover:text-black
-                    active:bg-white active:text-black" onClick={() => setActiveSection("register")}>Register</button>
-                </div>
-            </section>
-
-            {/* Login Section */}
-            <section className={`h-screen bg-gradient-to-r from-blue-500 to-green-500 text-white flex flex-col justify-center items-center ${activeSection === "login" ? "translate-x-0" : "hidden"}`}>
-                <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                    <h2 className="text-2xl font-bold mb-4">Login to Mind Keep</h2>
-                    <form className="flex flex-col justify-center items-center gap-2 text-center" onSubmit={(e) => {
-                        e.preventDefault(); 
-                        loginUser();
-                        }} 
-                        autoComplete="off">
-                        <div>
-                            <label htmlFor="log-u-name" className="block">Username</label>
-                            <input type="text" id="log-u-name" className="border border-white rounded" required
-                            onChange={(e) => {
-                                const input = e.target.value
-                                setLoginUsername(input.toLowerCase());
+        <section className="welcome-container relative overflow-hidden h-screen w-screen">
+            <AnimatePresence mode="wait" custom={direction}>
+                {activeSection === "landing" && (
+                    <motion.section
+                    key="landing"
+                    custom={direction}
+                    variants={variants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="h-screen bg-white text-black flex flex-col justify-center items-center"
+                    >
+                    <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
+                        <img src={logo} alt="Mind Keep Logo" className="w-max mb-4" />
+                        <p className="slogan">Secure, manage, and grow your mind’s contents.</p>
+                        <button className="border border-black text-black p-2 rounded w-full mt-2" onClick={() => {setActiveSection("login"); goToSection("login")}}>Log In</button>
+                        <button className="bg-[#1f48ff] text-white p-2 rounded w-full" onClick={() => {setActiveSection("register"); goToSection("register")}}>Register</button>
+                    </div>
+                    </motion.section>
+                )}
+                {/* Login Section */}
+                {activeSection === "login" && (
+                    <motion.section
+                      key="login"
+                      custom={direction}
+                      variants={variants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      className="h-screen bg-white text-black flex flex-col justify-center items-center"
+                    >
+                    <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
+                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4">Log in to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
+                        <form className="flex flex-col justify-center items-center gap-4 text-center" onSubmit={(e) => {
+                            e.preventDefault();
+                            loginUser();
+                            }}
+                            autoComplete="off">
+                            <div>
+                                <label htmlFor="log-u-name" className="block">Username</label>
+                                <input type="text" id="log-u-name" className="border border-black rounded h-10 m-1" required
+                                onChange={(e) => {
+                                    const input = e.target.value
+                                    setLoginUsername(input.toLowerCase());
+                                }
                             }
-                        }
-                            autoComplete="off"
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="log-p-word" className="block">Password</label>
-                            <input type="password" id="log-p-word" className="border border-white rounded" required
-                            onChange={(e) => {
-                                const input = e.target.value
-                                setLoginPassword(input)
+                                autoComplete="off"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="log-p-word" className="block">Password</label>
+                                <input type="password" id="log-p-word" className="border border-black rounded h-10 m-1" required
+                                onChange={(e) => {
+                                    const input = e.target.value
+                                    setLoginPassword(input)
+                                }
                             }
-                        }
-                            autoComplete="new-password"
-                            />
-                        </div>
-                        {error && <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">{error}</p>}
-                        <button type="submit" className="border border-white p-2 rounded w-full font-bold hover:bg-white hover:text-black
-                        active:bg-white active:text-black">Login</button>
-                        <button
-                        type="reset"
-                        onClick={() => {setActiveSection("landing"); setLoginUsername(""); setLoginPassword("")}}
-                        className="mt-4 underline"
-                        >
-                        Back
-                        </button>
-                    </form>
-                </div>
-            </section>
-
-            {/* Register Section */}
-            <section className={`h-screen bg-gradient-to-r from-blue-500 to-green-500 text-white flex flex-col justify-center items-center ${activeSection === "register" ? "translate-x-0" : "hidden"}`}>
-                <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                    <h2 className="text-2xl font-bold mb-4">Register to Mind Keep</h2>
-                    <form className="flex flex-col justify-center items-center gap-2 text-center" 
-                        onSubmit={(e) => {
-                            e.preventDefault(); 
-                            if(isValid && isUsernameValid){
-                                regUser();
+                                autoComplete="new-password"
+                                />
+                            </div>
+                            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                            <button type="submit" className="border bg-[#1f48ff] p-2 rounded w-full text-white">Login</button>
+                            <button
+                            type="reset"
+                            onClick={() => {setActiveSection("landing"); setLoginUsername(""); setLoginPassword(""); setError(""); goToSection("landing")}}
+                            className="mt-4 underline text-sm"
+                            >
+                            Back
+                            </button>
+                        </form>
+                    </div>
+                    </motion.section>
+                )}
+                {/* Register Section */}
+                {activeSection === "register" && (
+                <motion.section
+                  key="register"
+                  custom={direction}
+                  variants={variants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="h-screen bg-white text-black flex flex-col justify-center items-center"
+                >
+                    <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
+                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4">Register to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
+                        <form className="flex flex-col justify-center items-center gap-4 text-center"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                if(isValid && isUsernameValid){
+                                    regUser();
+                                }
+                            }}
+                            autoComplete="off">
+                            <div>
+                                <label htmlFor="new-u-name" className="block">Username</label>
+                                <input type="text" id="new-u-name" className="border border-black rounded h-10 m-1" required
+                                value={usernameValid}
+                                onChange={(e) => {
+                                    const input = e.target.value;
+                                    setUsername(input);
+                                    setUsernameValid(input);
+                                    setIsUsernameValid(usernameRegex.test(input));
+                                }
                             }
-                        }} 
-                        autoComplete="off">
-                        <div>
-                            <label htmlFor="new-u-name" className="block">Username</label>
-                            <input type="text" id="new-u-name" className="border border-white rounded" required
-                            value={usernameValid}
-                            onChange={(e) => {
-                                const input = e.target.value;
-                                setUsername(input);
-                                setUsernameValid(input);
-                                setIsUsernameValid(usernameRegex.test(input));
+                                autoComplete="off"
+                                />
+                                {!isUsernameValid && (
+                                    <p className="text-red-500 mt-1 error-username">
+                                        Username must not include spaces, exceed 12 characters and not less than 3 characters.
+                                    </p>
+                                )}
+                            </div>
+                            <div>
+                                <label htmlFor="new-p-word" className="block">Password</label>
+                                <input type="password" id="new-p-word" className="border border-black rounded h-10 m-1" required
+                                value={passwordValid}
+                                onChange={(e) => {
+                                    const input = e.target.value;
+                                    setPassword(input);
+                                    setPasswordValid(input);
+                                    setIsValid(passwordRegex.test(input));
+                                }
                             }
-                        }
-                            autoComplete="off"
-                            />
-                            {!isUsernameValid && (
-                                <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">
-                                    Username must not include spaces, exceed 12 characters and not less than 3 characters.
-                                </p>
-                            )}
-                        </div>
-                        <div>
-                            <label htmlFor="new-p-word" className="block">Password</label>
-                            <input type="password" id="new-p-word" className="border border-white rounded" required
-                            value={passwordValid}
-                            onChange={(e) => {
-                                const input = e.target.value;
-                                setPassword(input);
-                                setPasswordValid(input);
-                                setIsValid(passwordRegex.test(input));
-                            }
-                        }
-                            autoComplete="new-password"
-                            />
-                            {!isValid && (
-                                <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">
-                                    Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.
-                                </p>
-                            )}
-                        </div>
-                        {errorReg && <p className="text-white text-sm mt-1 bg-red-500 p-2 rounded">{errorReg}</p>}
-                        <button type="submit" className="border border-white p-2 rounded w-full font-bold hover:bg-white hover:text-black
-                        active:bg-white active:text-black">Register</button>
-                        <button
-                        type="reset"
-                        onClick={() => {setActiveSection("landing"); setUsername(""); setPassword("")}}
-                        className="mt-4 underline"
-                        >
-                        Back
-                        </button>
-                    </form>
-                </div>
-            </section>
+                                autoComplete="new-password"
+                                />
+                                {!isValid && (
+                                    <p className="text-red-500 text-sm mt-1 error-password">
+                                        Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.
+                                    </p>
+                                )}
+                            </div>
+                            {errorReg && <p className="text-red-500 text-xs mt-1">{errorReg}</p>}
+                            <button type="submit" className="border bg-[#1f48ff] p-2 rounded w-full text-white">Register</button>
+                            <button
+                            type="reset"
+                            onClick={() => {setActiveSection("landing"); setUsername(""); setPassword(""); setRegError(""); setIsUsernameValid(true); setIsValid(true); setUsernameValid(""); setPasswordValid("");  goToSection("landing")}}
+                            className="mt-4 underline text-sm"
+                            >
+                            Back
+                            </button>
+                        </form>
+                    </div>
+                </motion.section>
+             )}
+            </AnimatePresence>
+        </section>
         </>
     );
 }
