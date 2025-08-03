@@ -128,20 +128,15 @@ async function saveFlashcard() {
 
     return(
         <>
-            <section className={`h-5/6 border-b-2 border-r-2 border-l-2 border-black w-2/3 place-self-center pr-2 pl-2 pb-2 rounded-b-xl bg-gradient-to-r from-red-500 to-purple-500 ${props.flashcardHidden}`}>
-                <section className="border-black border-b border-r border-l bg-white rounded-b-xl h-96 flex flex-col gap-5 p-4">
+            <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.flashcardHidden}`}>
+                <section className=" bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <label htmlFor="search">Search</label>
-                        <input id="search" className="border border-black rounded-xl w-auto h-7"></input>
-                        <button className="border border-black p-2 rounded-xl ml-9 text-white bg-blue-500 font-bold"
-                         onClick={() => createFlashcard()}
-                         >Create New FLashcard</button>
+                        <input id="search" className="border border-black rounded-xl h-7 w-full"></input>
                     </section>
-                    <h2 className="text-3xl font-bold">Flashcards</h2>
-                    <section id="flashcard-container" className="border-2 h-70 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
+                    <section id="flashcard-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with flashcards */}
                         {flashcards.map(flashcard => (
-                            <div className="border border-black rounded p-2" key={flashcard.flashcard_id}>
+                            <div className="border border-black rounded-xl p-2 w-full" key={flashcard.flashcard_id}>
                                 <h2>{flashcard.title}</h2>
                                 <ReviewFlashcard flashcard={flashcard} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}></ReviewFlashcard>
                                 <EditFlashcard flashcard={flashcard} updateFlashcardsDisplay={
@@ -155,6 +150,9 @@ async function saveFlashcard() {
                                 >Delete</button>
                             </div>
                         ))}
+                        <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold w-full"
+                         onClick={() => createFlashcard()}
+                         >Create New FLashcard</button>
                     </section>
                 </section>
             </section>

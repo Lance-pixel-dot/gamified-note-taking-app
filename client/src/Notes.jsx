@@ -150,7 +150,7 @@ useEffect(() => {
                 <section className="border-black border-b border-r border-l bg-white rounded-b-xl h-96 flex flex-col gap-5 p-4">
                     <section className="flex h-10 gap-2 items-center">
                         <label htmlFor="search">Search</label>
-                        <input id="search" className="border border-black rounded-xl w-auto h-7"></input>
+                        <input id="search" className="border border-black rounded-xl w-auto h-7 hidden"></input>
                         <button className="border border-black p-2 rounded-xl ml-15 text-white bg-blue-500 font-bold" onClick={() => createNote()}>Create New Note</button>
                     </section>
                     <h2 className="text-3xl font-bold">Notes</h2>

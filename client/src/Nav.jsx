@@ -14,34 +14,36 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
 
   return (
     <>
-      <section id='nav-container' className="w-2/3 place-self-center px-1.5 flex flex-col gap-1 text-white bg-gradient-to-r from-red-500 to-purple-500 rounded-t-xl border-l-2 border-r-2 border-black pr-2 pl-2">
-        <nav className="flex justify-between mt-3.5">
-          {/* NAV BUTTONS */}
-          <button
-            className={`bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'notes' ? 'border-b-0' : 'border-b'}`}
-            onClick={() => setActiveTab('notes')}
-          >Notes</button>
-
-          <button
-            className={`bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'flashcard' ? 'border-b-0' : 'border-b'}`}
-            onClick={() => setActiveTab('flashcard')}
-          >Flashcard</button>
-
-          <button
-            className={`bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'share' ? 'border-b-0' : 'border-b'}`}
-            onClick={() => setActiveTab('share')}
-          >Shared with me (notes)</button>
-
-          <button
-            className={`bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'shareFlash' ? 'border-b-0' : 'border-b'}`}
-            onClick={() => setActiveTab('shareFlash')}
-          >Shared with me (flashcards)</button>
-
-          <button
-            className={`bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'achievements' ? 'border-b-0' : 'border-b'}`}
-            onClick={() => setActiveTab('achievements')}
-          >Achievements</button>
-        </nav>
+      <section id='nav-container' className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-white bg-[#1800ad] w-full">
+        <div className="flex justify-between p-3 pb-0 bg-white rounded-t-xl">
+          <div className="bg-[#1800ad] w-full rounded-xl p-3 text-center flex">
+            <nav className='font-bold'>
+              ☰
+              {/* NAV BUTTONS */}
+              <button
+                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'notes' ? 'border-b-0' : 'border-b'}`}
+                onClick={() => setActiveTab('notes')}
+              >Notes</button>
+              <button
+                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'flashcard' ? 'border-b-0' : 'border-b'}`}
+                onClick={() => setActiveTab('flashcard')}
+              >Flashcard</button>
+              <button
+                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'share' ? 'border-b-0' : 'border-b'}`}
+                onClick={() => setActiveTab('share')}
+              >Shared with me (notes)</button>
+              <button
+                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'shareFlash' ? 'border-b-0' : 'border-b'}`}
+                onClick={() => setActiveTab('shareFlash')}
+              >Shared with me (flashcards)</button>
+              <button
+                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'achievements' ? 'border-b-0' : 'border-b'}`}
+                onClick={() => setActiveTab('achievements')}
+              >Achievements</button>
+            </nav>
+            <h2 className='font-bold w-10/12'>Notes</h2>
+          </div>
+        </div>
       </section>
 
       {/* COMPONENTS */}

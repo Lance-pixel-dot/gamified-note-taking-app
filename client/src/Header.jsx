@@ -6,20 +6,24 @@ function Header({ xp, level, progress, streak, coins }) {
 
   return (
     <>
-      <section className={`w-2/3 place-self-center p-4 flex flex-col gap-1 text-white bg-gradient-to-r from-red-500  to-purple-500 rounded-xl border-2 border-black`}>
-        <section className="flex justify-between">
-          <h1>Welcome {Player}</h1>
-          <span>Coins {coins}</span>
-        </section>
-        <section className="flex justify-between">
-          <span>Level {level}</span>
-          <span>Streaks {streak}</span>
-        </section>
-        <div className="border border-black h-4 rounded-full bg-gray-300">
-          <div
-            className="bg-blue-500 h-4 rounded-full transition-all duration-300 ease-in-out"
-            style={{ width: `${progress}%` }}
-          ></div>
+      <section className={`place-self-center p-3 bg-[#1800ad] w-full h-30 mb-1`}>
+        <div className="bg-white h-full text-black p-2 rounded-lg flex flex-col gap-2 justify-between">
+          <section className="flex justify-between font-bold items-center">
+            <h1 className="text-xl">Welcome {Player}!</h1>
+            <span className="text-xs">Coins {coins}</span>
+          </section>
+          <div>
+            <section className="flex justify-between items-center font-bold text-xs">
+              <span>Level {level}</span>
+              <span>Streaks {streak}</span>
+            </section>
+            <div className="border border-black h-3 rounded-full bg-gray-300">
+              <div
+                className="bg-[#ffb13d] h-3 rounded-full transition-all duration-300 border-1 border-black ease-in-out"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          </div>
         </div>
       </section>
     </>

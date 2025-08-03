@@ -50,3 +50,12 @@ button{
   transform: rotateY(180deg);
 }
 
+.flash-container {
+  height: 520px;
+}
+
+body{
+  overflow: hidden;
+  background-color: #1800ad;
+}
+
