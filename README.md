@@ -31,9 +31,10 @@ implement coins first before UI
     -make the bar red once read
 - make search bar work
 - finish with the rest sections (flashcards, shared flashcards and achievements(Check))
-- pop up achievements, level up, and coins recieved.
-- display multiplier
 - arrange achievements order
+- pop up achievements, level up, and coins recieved.
+- improve header
+    - display multiplier
 - improve ui on dialogs
 
 - implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )

@@ -31,7 +31,7 @@ function WelcomeScreen(){
                 window.location = "/";
                 localStorage.setItem("username", username);
                 localStorage.setItem("user_id", result.user_id);
-                localStorage.setItem("currentTab", 'notes');
+                localStorage.setItem("currentTab", 'Notes');
             } else {
                 setRegError(result.error);
             }
@@ -65,7 +65,7 @@ function WelcomeScreen(){
             window.location = "/dashboard";
             localStorage.setItem("username", result.user.username);
             localStorage.setItem("user_id", result.user.user_id);
-            localStorage.setItem("currentTab", 'notes');
+            localStorage.setItem("currentTab", 'Notes');
         } else {
             setError(result.error || "Login failed.");
         }

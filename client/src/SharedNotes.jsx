@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from 'react';
 import ReadNotes from "./ReadNotes";
 import EditNote from "./EditNotes";
 
@@ -29,6 +29,7 @@ function ShareNotes(props){
             const response = await fetch(`http://localhost:5000/notes/user/${user_id}`);
             const jsonData = await response.json();
             setNotes(jsonData);
+            fetchReadNotesStatus(jsonData);
             jsonData.forEach(note => {
                 fetchSharedUsers(note.note_id);
             });
@@ -231,20 +232,91 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
     const [sharedUsers, setSharedUsers] = useState([]);
 
+    const readNoteRefs = useRef([]);
+
+    const [readNotesToday, setReadNotesToday] = useState([]);
+    
+    async function fetchReadNotesStatus(notesList) {
+      try {
+        const readStatuses = await Promise.all(notesList.map(async (note) => {
+          const res = await fetch(`http://localhost:5000/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
+          const data = await res.json();
+          return {
+            note_id: note.note_id,
+            isRead: !data.canRead
+          };
+        }));
+    
+        const readTodayIds = readStatuses
+          .filter(status => status.isRead)
+          .map(status => status.note_id);
+    
+        setReadNotesToday(readTodayIds);
+      } catch (err) {
+        console.error("Failed to fetch read statuses", err);
+      }
+    }
+      
+    function markNoteAsRead(noteId) {
+        setReadNotesToday(prev => [...new Set([...prev, noteId])]);
+
+          window.dispatchEvent(new CustomEvent("noteRead", {
+            detail: { noteId }
+          }));
+    }
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+      function handleNoteRead(event) {
+        const { noteId } = event.detail;
+        setReadNotesToday(prev => [...new Set([...prev, noteId])]);
+      }
+    
+      window.addEventListener("noteRead", handleNoteRead);
+    
+      return () => {
+        window.removeEventListener("noteRead", handleNoteRead);
+      };
+    }, []);
+
     return(
         <>
             <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.shareNotesHidden}`}>
                 <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-black rounded-xl h-7 w-full"></input>
+                        <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
                     <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
-                        {uniqueNotes.map(note => {
-                            const isOwner = note.user_id == user_id;
-                            const sharedWithMePermission = !isOwner ? note.permission : null; // From sharedNotesWithMe
+                        {uniqueNotes.filter(note => 
+                          note.title.toLowerCase().includes(searchTerm) ||
+                          note.tag.toLowerCase().includes(searchTerm)
+                        )
+                        .map((note, index) => {
+                        if (!readNoteRefs.current[index]) {
+                          readNoteRefs.current[index] = React.createRef(); // assign ref if not yet assigned
+                        }
+                            
+                        const isOwner = note.user_id == user_id;
+                        const sharedWithMePermission = !isOwner ? note.permission : null; // From sharedNotesWithMe
+
+                        const isRead = readNotesToday.includes(note.note_id);
 
                             return (
-                                <div key={note.note_id} className="border p-2 rounded flex">
+                                <div key={note.note_id} className={`border border-black rounded-xl p-2 flex items-center gap-2 ${
+                                isRead ? 'bg-gray-200' : 'bg-white'
+                              }`}
+                              onClick={() => {
+                                readNoteRefs.current[index]?.current?.open();
+                              }}
+                              >
+
+                            <div
+                                className={`rounded-xl w-3 h-full border-2 border-black ${
+                                  isRead ? 'bg-red-500' : 'bg-green-500'
+                                }`}
+                              ></div>
+
                                     <div className="w-full">
                                         <h2 className="font-bold">{note.title}</h2>
                                         <span className="text-sm text-gray-600 italic">Tag: {note.tag}</span>
@@ -259,10 +331,11 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                         </p>
                                     </div>
                                     
-                                    <div className="flex flex-col items-end justify-center">
+                                    <div className="flex flex-col items-end justify-center" onClick={(e) => e.stopPropagation()}>
                                         {isOwner || sharedWithMePermission === "edit" ? (
                                             <>
-                                                <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
+                                                <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={readNoteRefs.current[index]}
+                                                markNoteAsRead={markNoteAsRead}/>
                                                 <EditNote
                                                     note={note}
                                                     updateNotesDisplay={(updatedNote) =>
@@ -275,7 +348,8 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                                 />
                                             </>
                                         ) : sharedWithMePermission === "view" ? (
-                                            <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
+                                            <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={readNoteRefs.current[index]}
+                                            markNoteAsRead={markNoteAsRead}/>
                                         ) : null}
                                     </div>
                                 </div>

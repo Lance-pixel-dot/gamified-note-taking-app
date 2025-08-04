@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import EditNote from './EditNotes';
 import ReadNotes from './ReadNotes';
 import deleteIcon from './assets/icons/delete.png';
@@ -77,6 +77,7 @@ function Notes(props)
             const jsonData = await response.json();
 
             setNotes(jsonData);
+            fetchReadNotesStatus(jsonData);
         } catch (err) {
             console.error(err.message);
         }
@@ -95,6 +96,19 @@ useEffect(() => {
     return () => {
         window.removeEventListener("noteUpdated", handleNoteUpdate);
     };
+}, []);
+
+useEffect(() => {
+  function handleNoteRead(event) {
+    const { noteId } = event.detail;
+    setReadNotesToday(prev => [...new Set([...prev, noteId])]);
+  }
+
+  window.addEventListener("noteRead", handleNoteRead);
+
+  return () => {
+    window.removeEventListener("noteRead", handleNoteRead);
+  };
 }, []);
 
     //delete note
@@ -144,37 +158,114 @@ useEffect(() => {
         setContent(input.slice(0, MAX_CHARS)); //force-trim if pasted
         }
   };
+
+  const readNoteRefs = useRef([]);
+
+  const [readNotesToday, setReadNotesToday] = useState([]);
+
+  async function fetchReadNotesStatus(notesList) {
+  try {
+    const readStatuses = await Promise.all(notesList.map(async (note) => {
+      const res = await fetch(`http://localhost:5000/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
+      const data = await res.json();
+      return {
+        note_id: note.note_id,
+        isRead: !data.canRead
+      };
+    }));
+
+    const readTodayIds = readStatuses
+      .filter(status => status.isRead)
+      .map(status => status.note_id);
+
+    setReadNotesToday(readTodayIds);
+  } catch (err) {
+    console.error("Failed to fetch read statuses", err);
+  }
+}
   
+    function markNoteAsRead(noteId) {
+        setReadNotesToday(prev => [...new Set([...prev, noteId])]);
+
+        window.dispatchEvent(new CustomEvent("noteRead", {
+        detail: { noteId }
+        }));
+    }
+
+    const [searchTerm, setSearchTerm] = useState('');
+
     return(
         <>
             <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.notesHidden}`}>
                 <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-black rounded-xl h-7 w-full"></input>
+                        <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
                     <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with notes */}
-                        {notes.map(notes => (
-                            <div className="border border-black rounded-xl p-2 flex items-center gap-2" key={notes.note_id}>
-                                <div className='rounded-xl w-3 bg-green-500 h-full border-2 border-black'></div>
-                                <div className='w-full'>
-                                    <h2 className='font-bold text-sm'>{notes.title}</h2>
-                                    <span className='text-xs text-gray-600 italic'>Tag: {notes.tag}</span>
-                                </div>
-                                <div className='flex flex-col gap-2 items-end'>
-                                    <ReadNotes note={notes} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}></ReadNotes>
-                                    <EditNote note={notes} updateNotesDisplay={
-                                        (updatedNote) => {
-                                            setNotes(prev => prev.map(note => note.note_id === updatedNote.note_id ? updatedNote : note))
-                                        }
-                                    }
-                                    ></EditNote>
-                                    <button className="w-8"
-                                    onClick={() => deleteNote(notes.note_id)}
-                                    ><img src={deleteIcon} alt="delete-icon" /></button>
-                                </div>
+                        {notes
+                        .filter(note =>
+                          note.title.toLowerCase().includes(searchTerm) ||
+                          note.tag.toLowerCase().includes(searchTerm)
+                        )
+                        .map((note, index) => {
+                          if (!readNoteRefs.current[index]) {
+                            readNoteRefs.current[index] = React.createRef(); // assign ref if not yet assigned
+                          }
+                        
+                          const isRead = readNotesToday.includes(note.note_id);
+                        
+                          return (
+                            <div
+                              className={`border border-black rounded-xl p-2 flex items-center gap-2 ${
+                                isRead ? 'bg-gray-200' : 'bg-white'
+                              }`}
+                              key={note.note_id}
+                              onClick={() => {
+                                readNoteRefs.current[index]?.current?.open();
+                              }}
+                            >
+                              <div
+                                className={`rounded-xl w-3 h-full border-2 border-black ${
+                                  isRead ? 'bg-red-500' : 'bg-green-500'
+                                }`}
+                              ></div>
+                        
+                              <div className="w-full">
+                                <h2 className="font-bold text-sm">{note.title}</h2>
+                                <span className="text-xs text-gray-600 italic">Tag: {note.tag}</span>
+                              </div>
+                            
+                              <div
+                                className="flex flex-col gap-2 items-end"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <EditNote
+                                  note={note}
+                                  updateNotesDisplay={(updatedNote) => {
+                                    setNotes((prev) =>
+                                      prev.map((n) =>
+                                        n.note_id === updatedNote.note_id ? updatedNote : n
+                                      )
+                                    );
+                                  }}
+                                />
+                                <button className="w-8" onClick={() => deleteNote(note.note_id)}>
+                                  <img src={deleteIcon} alt="delete-icon" />
+                                </button>
+                              </div>
+                                
+                              <ReadNotes
+                                note={note}
+                                incrementXP={props.incrementXP}
+                                onCreated={props.onCreated}
+                                updateCoinsInBackend={props.updateCoinsInBackend}
+                                ref={readNoteRefs.current[index]}
+                                markNoteAsRead={markNoteAsRead}
+                              />
                             </div>
-                        ))}
+                          );
+                        })}
                         <button className="border border-black p-2 rounded-xl text-black bg-white font-bold w-full" onClick={() => createNote()}> + Create New Note</button>
                     </section>
                 </section>
