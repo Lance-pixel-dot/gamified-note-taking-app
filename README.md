@@ -35,11 +35,12 @@ implement coins first before UI
 - display multiplier
 - arrange achievements order
 - improve ui on dialogs
+
+- implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
+    -users can buy themes on a digital store with the digital currency *coins*
+
 - make it responsive
 - add logout button (maybe)
-
-implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
-    -users can buy themes on a digital store with the digital currency *coins*
 
 (!) Every time the user left the web app, the web app will refresh back to log in screen
 
