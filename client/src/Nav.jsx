@@ -9,71 +9,119 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
   const getCurrentTab = localStorage.getItem("currentTab");
   const [activeTab, setActiveTab] = useState(getCurrentTab);
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const [currentMenu, setCurrentMenu] = useState(`${getCurrentTab}`);
+
   // Save currentTab whenever it changes
   localStorage.setItem("currentTab", activeTab);
 
   return (
     <>
-      <section id='nav-container' className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-white bg-[#1800ad] w-full">
-        <div className="flex justify-between p-3 pb-0 bg-white rounded-t-xl">
-          <div className="bg-[#1800ad] w-full rounded-xl p-3 text-center flex">
-            <nav className='font-bold'>
-              ☰
-              {/* NAV BUTTONS */}
-              <button
-                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'notes' ? 'border-b-0' : 'border-b'}`}
-                onClick={() => setActiveTab('notes')}
-              >Notes</button>
-              <button
-                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'flashcard' ? 'border-b-0' : 'border-b'}`}
-                onClick={() => setActiveTab('flashcard')}
-              >Flashcard</button>
-              <button
-                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'share' ? 'border-b-0' : 'border-b'}`}
-                onClick={() => setActiveTab('share')}
-              >Shared with me (notes)</button>
-              <button
-                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'shareFlash' ? 'border-b-0' : 'border-b'}`}
-                onClick={() => setActiveTab('shareFlash')}
-              >Shared with me (flashcards)</button>
-              <button
-                className={`hidden bg-white text-black p-2 rounded-t-xl border border-black ${activeTab === 'achievements' ? 'border-b-0' : 'border-b'}`}
-                onClick={() => setActiveTab('achievements')}
-              >Achievements</button>
-            </nav>
-            <h2 className='font-bold w-10/12'>Notes</h2>
+      <section
+      id="nav-container"
+      className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-white bg-[#1800ad] w-full"
+    >
+      <div className="flex justify-between p-3 pb-0 bg-white rounded-t-xl">
+        <div className="bg-[#1800ad] w-full rounded-xl p-3 relative flex items-center">
+          {/* NAV WRAPPER */}
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-white text-2xl transition-transform duration-300 ease-in-out"
+            >
+              {menuOpen ? 'X' : '☰'}
+            </button>
+
+            {/* DROPDOWN MENU (FLOATING ABOVE SCREEN) */}
+            <div className={`absolute top-full left-0 mt-2 w-64 bg-white text-black rounded-xl border border-black shadow-xl z-50          overflow-visible transition-all duration-300 ease-in-out transform -ml-4.5 ${menuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+            <div className="absolute top-0 left-4 -translate-y-full w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-white"></div>
+                <button
+                  className={`block w-full text-left p-2 border-b ${activeTab === 'Notes' ? 'font-bold' : ''}`}
+                  onClick={() => {
+                    setActiveTab('Notes');
+                    setMenuOpen(false);
+                    setCurrentMenu('Notes');
+                  }}
+                >
+                  Notes
+                </button>
+                <button
+                  className={`block w-full text-left p-2 border-b ${activeTab === 'Flashcards' ? 'font-bold' : ''}`}
+                  onClick={() => {
+                    setActiveTab('Flashcards');
+                    setMenuOpen(false);
+                    setCurrentMenu('Flashcards');
+                  }}
+                >
+                  Flashcard
+                </button>
+                <button
+                  className={`block w-full text-left p-2 border-b ${activeTab === 'Shared Notes' ? 'font-bold' : ''}`}
+                  onClick={() => {
+                    setActiveTab('Shared Notes');
+                    setMenuOpen(false);
+                    setCurrentMenu('Shared Notes');
+                  }}
+                >
+                  Shared with me (notes)
+                </button>
+                <button
+                  className={`block w-full text-left p-2 border-b ${activeTab === 'Shared Flashcards' ? 'font-bold' : ''}`}
+                  onClick={() => {
+                    setActiveTab('Shared Flashcards');
+                    setMenuOpen(false);
+                    setCurrentMenu('Shared Flashcards');
+                  }}
+                >
+                  Shared with me (flashcards)
+                </button>
+                <button
+                  className={`block w-full text-left p-2 ${activeTab === 'Achievements' ? 'font-bold' : ''}`}
+                  onClick={() => {
+                    setActiveTab('Achievements');
+                    setMenuOpen(false);
+                    setCurrentMenu('Achievements');
+                  }}
+                >
+                  Achievements
+                </button>
+              </div>
           </div>
+
+          <h2 className="absolute left-1/2 transform -translate-x-1/2 font-bold text-white text-sm">{currentMenu}</h2>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* COMPONENTS */}
       <Notes
-        notesHidden={activeTab !== 'notes' ? 'hidden' : ''}
+        notesHidden={activeTab !== 'Notes' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
       />
       <Flashcard
-        flashcardHidden={activeTab !== 'flashcard' ? 'hidden' : ''}
+        flashcardHidden={activeTab !== 'Flashcards' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
       />
       <ShareNotes
-        shareNotesHidden={activeTab !== 'share' ? 'hidden' : ''}
+        shareNotesHidden={activeTab !== 'Shared Notes' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
       />
       <ShareFlashcards
-        shareFlashcardsHidden={activeTab !== 'shareFlash' ? 'hidden' : ''}
+        shareFlashcardsHidden={activeTab !== 'Shared Flashcards' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
       />
       <Achievements
         ref={achievementsRef}
-        achievementsHidden={activeTab !== 'achievements' ? 'hidden' : ''}
+        achievementsHidden={activeTab !== 'Achievements' ? 'hidden' : ''}
       />
     </>
   );

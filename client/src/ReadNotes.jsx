@@ -76,7 +76,7 @@ function ReadNotes({ note, userId, incrementXP, onCreated, updateCoinsInBackend 
     <>
       <button
         onClick={() => {openDialog(); checkIfReadToday()}}
-        className="border border-black rounded p-1 bg-blue-500 text-white ml-1"
+        className="border border-black rounded p-1 bg-blue-500 text-white ml-1 hidden"
       >
         Read
       </button>

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import edit from './assets/icons/edit.png';
 
 function EditNote({ note, updateNotesDisplay }) {
   const dialogRef = useRef(null); // Ref for dialog
@@ -55,8 +56,8 @@ function EditNote({ note, updateNotesDisplay }) {
 
   return (
     <>
-      <button onClick={viewNote} className="border border-black rounded p-1 bg-orange-500 text-white mt-1 ml-1">
-        Edit
+      <button onClick={viewNote} className="w-8">
+        <img src={edit} alt="edit-icon" />
       </button>
 
       <dialog ref={dialogRef} className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">

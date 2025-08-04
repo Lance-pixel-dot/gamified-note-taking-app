@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import EditNote from './EditNotes';
 import ReadNotes from './ReadNotes';
+import deleteIcon from './assets/icons/delete.png';
 
 function Notes(props)
 {
@@ -146,31 +147,35 @@ useEffect(() => {
   
     return(
         <>
-            <section className={`h-5/6 border-b-2 border-r-2 border-l-2 border-black w-2/3 place-self-center pr-2 pl-2 pb-2 rounded-b-xl bg-gradient-to-r from-red-500 to-purple-500 ${props.notesHidden}`}>
-                <section className="border-black border-b border-r border-l bg-white rounded-b-xl h-96 flex flex-col gap-5 p-4">
+            <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.notesHidden}`}>
+                <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <label htmlFor="search">Search</label>
-                        <input id="search" className="border border-black rounded-xl w-auto h-7 hidden"></input>
-                        <button className="border border-black p-2 rounded-xl ml-15 text-white bg-blue-500 font-bold" onClick={() => createNote()}>Create New Note</button>
+                        <input id="search" className="border border-black rounded-xl h-7 w-full"></input>
                     </section>
-                    <h2 className="text-3xl font-bold">Notes</h2>
-                    <section id="note-container" className="border-2 h-70 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
+                    <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with notes */}
                         {notes.map(notes => (
-                            <div className="border border-black rounded p-2" key={notes.note_id}>
-                                <h2>{notes.title}</h2>
-                                <ReadNotes note={notes} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}></ReadNotes>
-                                <EditNote note={notes} updateNotesDisplay={
-                                    (updatedNote) => {
-                                        setNotes(prev => prev.map(note => note.note_id === updatedNote.note_id ? updatedNote : note))
+                            <div className="border border-black rounded-xl p-2 flex items-center gap-2" key={notes.note_id}>
+                                <div className='rounded-xl w-3 bg-green-500 h-full border-2 border-black'></div>
+                                <div className='w-full'>
+                                    <h2 className='font-bold text-sm'>{notes.title}</h2>
+                                    <span className='text-xs text-gray-600 italic'>Tag: {notes.tag}</span>
+                                </div>
+                                <div className='flex flex-col gap-2 items-end'>
+                                    <ReadNotes note={notes} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}></ReadNotes>
+                                    <EditNote note={notes} updateNotesDisplay={
+                                        (updatedNote) => {
+                                            setNotes(prev => prev.map(note => note.note_id === updatedNote.note_id ? updatedNote : note))
+                                        }
                                     }
-                                }
-                                ></EditNote>
-                                <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
-                                onClick={() => deleteNote(notes.note_id)}
-                                >Delete</button>
+                                    ></EditNote>
+                                    <button className="w-8"
+                                    onClick={() => deleteNote(notes.note_id)}
+                                    ><img src={deleteIcon} alt="delete-icon" /></button>
+                                </div>
                             </div>
                         ))}
+                        <button className="border border-black p-2 rounded-xl text-black bg-white font-bold w-full" onClick={() => createNote()}> + Create New Note</button>
                     </section>
                 </section>
             </section>

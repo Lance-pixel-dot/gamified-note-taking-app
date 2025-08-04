@@ -16,25 +16,32 @@ implement spaced repetition
 implement streaks (still monitoring)
     - x1.3 first multiplier, adds by 0.3 everyday
     - resets to back to 1.3 when streak ended 
-    - display multiplier
 
 implement achievements 
     -organize achievements order
 
 implement leaderboard (maybe) (or this might be as well the users tab) 
 
-implement coins first before UI (next)
-    - set up database probably only for user table
-    - same amount of coins per achievements
-    - increasing coins by n per level up
+implement coins first before UI
+ -still not done with achievement for buying a theme 
 
-improve UI
--pop up achievements
-- add logout button
-(!) Every time the user left the web app, the web app will refresh back to log in screen
+(next) improve UI
+-make tapping/clicking the notes is the "read button"
+    -make them grayed out once read
+    -make the bar red once read
+- make search bar work
+- finish with the rest sections (flashcards, shared flashcards and achievements(Check))
+- pop up achievements, level up, and coins recieved.
+- display multiplier
+- arrange achievements order
+- improve ui on dialogs
+- make it responsive
+- add logout button (maybe)
 
 implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
     -users can buy themes on a digital store with the digital currency *coins*
+
+(!) Every time the user left the web app, the web app will refresh back to log in screen
 
 learn database hosting (supabase)
 

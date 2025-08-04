@@ -233,52 +233,55 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
     return(
         <>
-            <section className={`h-5/6 border-b-2 border-r-2 border-l-2 border-black w-2/3 place-self-center pr-2 pl-2 pb-2 rounded-b-xl bg-gradient-to-r from-red-500 to-purple-500 ${props.shareNotesHidden}`}>
-                <section className="border-black border-b border-r border-l bg-white rounded-b-xl h-96 flex flex-col gap-5 p-4">
+            <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.shareNotesHidden}`}>
+                <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <label htmlFor="search">Search</label>
-                        <input id="search" className="border border-black rounded-xl w-auto h-7"></input>
-                        <button className="border border-black p-2 rounded-xl ml-15 text-white bg-blue-500 font-bold" onClick={() => openShare()}>Share Notes</button>
+                        <input id="search" className="border border-black rounded-xl h-7 w-full"></input>
                     </section>
-                    <h2 className="text-3xl font-bold">Shared Notes</h2>
-                    <section id="note-container" className="border-2 h-70 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
+                    <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {uniqueNotes.map(note => {
                             const isOwner = note.user_id == user_id;
                             const sharedWithMePermission = !isOwner ? note.permission : null; // From sharedNotesWithMe
 
                             return (
-                                <div key={note.note_id} className="border p-2 rounded">
-                                    <h2>{note.title}</h2>
-                                    <p className="text-sm text-gray-600 italic">
-                                        {isOwner
-                                            ? `Shared with: ${sharedUsersByNote[note.note_id]?.map(entry => {
-                                                const user = users.find(u => u.user_id === entry.shared_user_id);
-                                                return user ? `${user.username} (${entry.permission})` : "Unknown";
-                                            }).join(", ") || "None"}`
-                                            : `Owner: ${note.owner_username}`
-                                        }
-                                    </p>
+                                <div key={note.note_id} className="border p-2 rounded flex">
+                                    <div className="w-full">
+                                        <h2 className="font-bold">{note.title}</h2>
+                                        <span className="text-sm text-gray-600 italic">Tag: {note.tag}</span>
+                                        <p className="text-sm text-gray-600 italic">
+                                            {isOwner
+                                                ? `Shared with: ${sharedUsersByNote[note.note_id]?.map(entry => {
+                                                    const user = users.find(u => u.user_id === entry.shared_user_id);
+                                                    return user ? `${user.username} (${entry.permission})` : "Unknown";
+                                                }).join(", ") || "None"}`
+                                                : `Owner: ${note.owner_username}`
+                                            }
+                                        </p>
+                                    </div>
                                     
-                                    {isOwner || sharedWithMePermission === "edit" ? (
-                                        <>
-                                            <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
-                                            <EditNote
-                                                note={note}
-                                                updateNotesDisplay={(updatedNote) =>
-                                                    setNotes((prev) =>
-                                                        prev.map((n) =>
-                                                            n.note_id === updatedNote.note_id ? updatedNote : n
+                                    <div className="flex flex-col items-end justify-center">
+                                        {isOwner || sharedWithMePermission === "edit" ? (
+                                            <>
+                                                <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
+                                                <EditNote
+                                                    note={note}
+                                                    updateNotesDisplay={(updatedNote) =>
+                                                        setNotes((prev) =>
+                                                            prev.map((n) =>
+                                                                n.note_id === updatedNote.note_id ? updatedNote : n
+                                                            )
                                                         )
-                                                    )
-                                                }
-                                            />
-                                        </>
-                                    ) : sharedWithMePermission === "view" ? (
-                                        <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
-                                    ) : null}
+                                                    }
+                                                />
+                                            </>
+                                        ) : sharedWithMePermission === "view" ? (
+                                            <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
+                                        ) : null}
+                                    </div>
                                 </div>
                             );
                         })}
+                        <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold w-full" onClick={() => openShare()}>Share Notes</button>
                     </section>
                 </section>
             </section>
