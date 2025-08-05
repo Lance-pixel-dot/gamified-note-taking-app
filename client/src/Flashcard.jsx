@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from 'react';
 import EditFlashcard from "./EditFlashcards";
 import ReviewFlashcard from "./ReviewFlashcards";
 
@@ -82,6 +82,7 @@ async function saveFlashcard() {
             const jsonData = await response.json();
 
             setFlashcards(jsonData);
+            fetchReadStatus(jsonData);
         } catch (err) {
             console.error(err.message);
         }
@@ -126,30 +127,107 @@ async function saveFlashcard() {
     const MAX_ANSWER_CHARS = 100;
     const MAX_TAG_CHARS = 50;
 
+    useEffect(() => {
+      function handleFlashcardRead(event) {
+        const { flashcardId } = event.detail;
+        setReadFlashcardsToday(prev => [...new Set([...prev, flashcardId])]);
+      }
+
+      window.addEventListener("flashcardRead", handleFlashcardRead);
+
+      return () => {
+        window.removeEventListener("flashcardRead", handleFlashcardRead);
+      };
+    }, []);
+
+    useEffect(() => {
+  reviewFlashcardRefs.current = flashcards.map(() => React.createRef());
+}, [flashcards]);
+
+    const [readFlashcardsToday, setReadFlashcardsToday] = useState([]);
+    const reviewFlashcardRefs = useRef([]);
+
+ async function fetchReadStatus(flashcardsList) {
+    try {
+      const readStatuses = await Promise.all(flashcardsList.map(async (card) => {
+        const res = await fetch(`http://localhost:5000/flashcards/can-review?user_id=${user_id}&flashcard_id=${card.flashcard_id}`)
+        const data = await res.json();
+        return {
+          flashcard_id: card.flashcard_id,
+          isRead: !data.canReview
+        };
+      }));
+
+      const readIds = readStatuses.filter(f => f.isRead).map(f => f.flashcard_id);
+      setReadFlashcardsToday(readIds);
+    } catch (err) {
+      console.error("Failed to fetch read status", err);
+    }
+  }
+
+  function markFlashcardAsRead(flashcardId) {
+    setReadFlashcardsToday(prev => [...new Set([...prev, flashcardId])]);
+    window.dispatchEvent(new CustomEvent("flashcardRead", { detail: { flashcardId } }));
+  }
+
+    const [searchTerm, setSearchTerm] = useState('');
+
     return(
         <>
             <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.flashcardHidden}`}>
                 <section className=" bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-black rounded-xl h-7 w-full"></input>
+                        <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
                     <section id="flashcard-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with flashcards */}
-                        {flashcards.map(flashcard => (
-                            <div className="border border-black rounded-xl p-2 w-full" key={flashcard.flashcard_id}>
-                                <h2>{flashcard.title}</h2>
-                                <ReviewFlashcard flashcard={flashcard} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}></ReviewFlashcard>
-                                <EditFlashcard flashcard={flashcard} updateFlashcardsDisplay={
-                                    (updatedFlashcard) => {
-                                        setFlashcards(prev => prev.map(card => card.flashcard_id === updatedFlashcard.flashcard_id ? updatedFlashcard : card))
-                                    }
-                                }
-                                ></EditFlashcard>
-                                <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
-                                onClick={() => deleteFlashcard(flashcard.flashcard_id)}
-                                >Delete</button>
-                            </div>
-                        ))}
+                        {flashcards
+                             .filter(f => f.title.toLowerCase().includes(searchTerm) || f.tag.toLowerCase().includes(searchTerm))
+                             .map((flashcard, index) => {
+                               if (!reviewFlashcardRefs.current[index]) {
+                                 reviewFlashcardRefs.current[index] = React.createRef();
+                               }
+                           
+                               const isReview = readFlashcardsToday.includes(flashcard.flashcard_id);
+                           
+                               return (
+                                     <div
+                                       className={`border border-black rounded-xl p-2 flex items-center gap-2 ${isReview ? 'bg-gray-200' : 'bg-white'}`}
+                                       key={flashcard.flashcard_id}
+                                       onClick={() => {
+                                         reviewFlashcardRefs.current[index]?.current?.open(flashcard);
+                                       }}
+                                     >
+                                       <div className={`rounded-xl w-3 h-full border-2 border-black ${isReview ? 'bg-red-500' : 'bg-green-500'}`} />
+                                       <div className="w-full">
+                                         <h2 className="font-bold text-sm">{flashcard.title}</h2>
+                                         <span className="text-xs text-gray-600 italic">Tag: {flashcard.tag}</span>
+                                       </div>
+                                       <div className="flex flex-col gap-2 items-end" onClick={(e) => e.stopPropagation()}>
+                                         <EditFlashcard
+                                           flashcard={flashcard}
+                                           updateFlashcardsDisplay={(updated) =>
+                                             setFlashcards(prev => prev.map(card => card.flashcard_id === updated.flashcard_id ? updated : card))
+                                           }
+                                         />
+                                         <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
+                                           onClick={() => deleteFlashcard(flashcard.flashcard_id)}
+                                         >
+                                           Delete
+                                         </button>
+                                       </div>
+                                     
+                                       <ReviewFlashcard
+                                         flashcard={flashcard}
+                                         ref={reviewFlashcardRefs.current[index]}
+                                         incrementXP={props.incrementXP}
+                                         onCreated={props.onCreated}
+                                         updateCoinsInBackend={props.updateCoinsInBackend}
+                                         markFlashcardAsRead={markFlashcardAsRead}
+                                       />
+                                     </div>
+                               );
+                             })}
                         <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold w-full"
                          onClick={() => createFlashcard()}
                          >Create New FLashcard</button>

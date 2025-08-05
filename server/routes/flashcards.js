@@ -89,6 +89,28 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
+// Check if a user can review a flashcard today
+router.get("/can-review", async (req, res) => {
+  try {
+    const { user_id, flashcard_id } = req.query;
+
+    const result = await pool.query(
+      `SELECT * FROM review_flashcards 
+       WHERE user_id = $1 
+       AND flashcard_id = $2 
+       AND DATE(last_review_date) = CURRENT_DATE`,
+      [user_id, flashcard_id]
+    );
+
+    const alreadyReviewedToday = result.rows.length > 0;
+    res.json({ canReview: !alreadyReviewedToday });
+
+  } catch (err) {
+    console.error("Error checking review status:", err.message);
+    res.status(500).json({ error: "Failed to check review status" });
+  }
+});
+
 // Get a flashcard
 router.get("/:id", async (req, res) => {
   try {
@@ -132,5 +154,7 @@ router.delete("/:id", async (req, res) => {
     console.error(err.message);
   }
 });
+
+
 
 module.exports = router;

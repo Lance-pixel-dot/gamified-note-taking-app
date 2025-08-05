@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
 import { isSameDay, parseISO } from "date-fns";
 
-function ReviewFlashcard({ flashcard, incrementXP, onCreated, updateCoinsInBackend }) {
+const ReviewFlashcard = forwardRef(function ReviewFlashcard({ flashcard, incrementXP, onCreated, updateCoinsInBackend, markFlashcardAsRead }, ref) {
   const dialogRef = useRef(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [display, setDisplay] = useState("hidden");
@@ -21,26 +21,26 @@ function ReviewFlashcard({ flashcard, incrementXP, onCreated, updateCoinsInBacke
   }
 
   function reviewFlashcard() {
-    if (dialogRef.current) {
+    if (dialogRef.current && !dialogRef.current.open) {
       dialogRef.current.showModal();
     }
   }
 
-  function emergencyClose() {
-    if (dialogRef.current) {
-      dialogRef.current.close();
-      setIsFlipped(false);
-      setDisplay("hidden");
-    }
+ function emergencyClose() {
+  console.log("Closing dialog...");
+  if (dialogRef.current?.open) {
+    dialogRef.current.close();
   }
+}
 
 async function handleReview(baseXP, difficulty) {
   if (isAllowed && !hasGivenXP && incrementXP) {
-    const bonusXP = await markReviewed(difficulty); // now passes difficulty
+    const bonusXP = await markReviewed(difficulty); 
     const totalXP = baseXP + bonusXP;
 
     incrementXP(totalXP);
     setHasGivenXP(true);
+    markFlashcardAsRead(flashcard.flashcard_id);
   }
 }
 
@@ -63,7 +63,7 @@ async function markReviewed(difficulty) {
       8: 20,
       9: 70,
       4: 100,
-      10: 100, // This is Easy!
+      10: 100, 
     };
 
     let bonusXP = 0;
@@ -77,7 +77,7 @@ async function markReviewed(difficulty) {
       await updateCoinsInBackend(user_id, newAchievements.length * 10);
     }
 
-    updateCoinsInBackend(user_id, 2); // Add coins for reviewing a flashcard
+    updateCoinsInBackend(user_id, 2); 
 
     onCreated();
     return bonusXP;
@@ -88,6 +88,22 @@ async function markReviewed(difficulty) {
   }
 }
 
+const [card, setCard] = useState(null); 
+
+useImperativeHandle(ref, () => ({
+  open: (flashcard) => {
+    setCard(flashcard);
+    setIsFlipped(false); 
+    setDisplay("flex"); 
+    dialogRef.current?.showModal();
+    checkIfReviewed(flashcard.flashcard_id);
+  },
+}));
+
+  useEffect(() => {
+  window.dialogRef = dialogRef.current;
+}, []);
+
   return (
     <>
       <button
@@ -96,7 +112,7 @@ async function markReviewed(difficulty) {
           setDisplay("hidden");
           checkIfReviewed();
         }}
-        className="border border-black rounded p-1 bg-blue-500 text-white ml-1"
+        className="border border-black rounded p-1 bg-blue-500 text-white ml-1 hidden"
       >
         Review
       </button>
@@ -106,7 +122,7 @@ async function markReviewed(difficulty) {
         className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12"
       >
         <section className="flex flex-col justify-center items-center h-full gap-2">
-          <h2 className="text-xl font-bold mb-2">{flashcard.title}</h2>
+          <h2 className="text-xl font-bold mb-2">{card?.title}</h2>
           <div
             className="w-80 h-48 perspective"
             onClick={() => {
@@ -122,13 +138,13 @@ async function markReviewed(difficulty) {
               {/* Front */}
               <div className="absolute w-full h-full bg-white border border-gray-300 rounded-xl shadow-md backface-hidden flex flex-col justify-center items-center p-4 text-center cursor-pointer">
                 <h3>Question:</h3>
-                <p className="text-gray-700 text-center">{flashcard.question}</p>
+                <p className="text-gray-700 text-center">{card?.question}</p>
               </div>
 
               {/* Back */}
               <div className="absolute w-full h-full bg-blue-100 border border-blue-300 rounded-xl shadow-md backface-hidden rotate-y-180 flex flex-col text-center justify-center items-center p-4 cursor-pointer">
                 <h3>Answer:</h3>
-                <p className="text-lg font-semibold text-center">{flashcard.answer}</p>
+                <p className="text-lg font-semibold text-center">{card?.answer}</p>
               </div>
             </div>
           </div>
@@ -137,7 +153,11 @@ async function markReviewed(difficulty) {
             {!isAllowed ? (
               <div className="flex flex-col">
                 <p className="text-red-500 text-sm mt-2">You’ve already reviewed this flashcard today.</p>
-                <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" onClick={emergencyClose}>Ok</button>
+                <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" onClick={() => {
+                    setTimeout(() => {
+                      emergencyClose();
+                    }, 0);
+                  }}>Ok</button>
               </div>
             ) : (
               <>
@@ -145,9 +165,9 @@ async function markReviewed(difficulty) {
                 <section className="flex gap-2">
                   <button
                     className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
-                    onClick={() => {
+                    onClick={async () => {
+                      await handleReview(5, "easy");
                       emergencyClose();
-                      handleReview(5, "easy");  // <-- now sends "easy"
                       setIsAllowed(false);
                     }}
                   >
@@ -155,9 +175,9 @@ async function markReviewed(difficulty) {
                   </button>
                   <button
                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={() => {
+                    onClick={async () => {
+                      await handleReview(4, "good"); 
                       emergencyClose();
-                      handleReview(4, "good"); 
                       setIsAllowed(false);
                     }}
                   >
@@ -165,9 +185,9 @@ async function markReviewed(difficulty) {
                   </button>
                   <button
                     className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                    onClick={() => {
+                    onClick={async () => {
+                      await handleReview(3.5, "hard"); 
                       emergencyClose();
-                      handleReview(3.5, "hard"); 
                       setIsAllowed(false);
                     }}
                   >
@@ -181,6 +201,6 @@ async function markReviewed(difficulty) {
       </dialog>
     </>
   );
-}
+})
 
 export default ReviewFlashcard;
