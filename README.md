@@ -26,16 +26,15 @@ implement coins first before UI
  -still not done with achievement for buying a theme 
 
 (next) improve UI
--make tapping/clicking the notes is the "read button"
-    -make them grayed out once read
-    -make the bar red once read
 - make search bar work
-- finish with the rest sections (flashcards, shared flashcards and achievements(Check))
+    - next is for searching a user dialog(Sharing feature)
 - arrange achievements order
-- pop up achievements, level up, and coins recieved.
+- pop up achievements and level up.
+    - for coins, when user levels up display within the pop up the coins they receive and same thing with achievements
 - improve header
     - display multiplier
 - improve ui on dialogs
+- upgrade icons
 
 - implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
     -users can buy themes on a digital store with the digital currency *coins*

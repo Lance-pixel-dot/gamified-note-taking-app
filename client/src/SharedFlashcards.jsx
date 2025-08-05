@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from 'react';
 import ReviewFlashcard from "./ReviewFlashcards";
 import EditFlashcard from "./EditFlashcards";
 
@@ -17,6 +17,7 @@ function ShareFlashcards(props) {
     const res = await fetch(`http://localhost:5000/flashcards/user/${user_id}`);
     const data = await res.json();
     setFlashcards(data);
+    fetchReadStatus(data);
     data.forEach(fc => fetchSharedUsers(fc.flashcard_id));
   }
 
@@ -185,44 +186,106 @@ function ShareFlashcards(props) {
     shareDialog.showModal();
   }
 
+  useEffect(() => {
+        function handleFlashcardRead(event) {
+          const { flashcardId } = event.detail;
+          setReadFlashcardsToday(prev => [...new Set([...prev, flashcardId])]);
+        }
+  
+        window.addEventListener("flashcardRead", handleFlashcardRead);
+  
+        return () => {
+          window.removeEventListener("flashcardRead", handleFlashcardRead);
+        };
+      }, []);
+  
+      useEffect(() => {
+    reviewFlashcardRefs.current = flashcards.map(() => React.createRef());
+  }, [flashcards]);
+  
+  const [readFlashcardsToday, setReadFlashcardsToday] = useState([]);
+  const reviewFlashcardRefs = useRef([]);
+  
+   async function fetchReadStatus(flashcardsList) {
+      try {
+        const readStatuses = await Promise.all(flashcardsList.map(async (card) => {
+          const res = await fetch(`http://localhost:5000/flashcards/can-review?user_id=${user_id}&flashcard_id=${card.flashcard_id}`)
+          const data = await res.json();
+          return {
+            flashcard_id: card.flashcard_id,
+            isRead: !data.canReview
+          };
+        }));
+  
+        const readIds = readStatuses.filter(f => f.isRead).map(f => f.flashcard_id);
+        setReadFlashcardsToday(readIds);
+      } catch (err) {
+        console.error("Failed to fetch read status", err);
+      }
+    }
+  
+    function markFlashcardAsRead(flashcardId) {
+      setReadFlashcardsToday(prev => [...new Set([...prev, flashcardId])]);
+      window.dispatchEvent(new CustomEvent("flashcardRead", { detail: { flashcardId } }));
+    }
+  
+    const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <>
       <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.shareFlashcardsHidden}`}>
         <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
           <section className="flex h-10 gap-2 items-center">
-            <input id="search" className="border border-black rounded-xl h-7 w-full" />
+            <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} />
           </section>
           <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
-            {uniqueFlashcards.map(fc => {
+            {uniqueFlashcards.filter(f => f.title.toLowerCase().includes(searchTerm) || f.tag.toLowerCase().includes(searchTerm))
+            .map((fc, index) => {
+              if (!reviewFlashcardRefs.current[index]) {
+                  reviewFlashcardRefs.current[index] = React.createRef();
+              }
+
+              const isReview = readFlashcardsToday.includes(fc.flashcard_id);
               const isOwner = fc.user_id == user_id;
               const sharedWithMePermission = !isOwner ? fc.permission : null;
 
               return (
-                <div key={fc.flashcard_id} className="border p-2 rounded">
-                  <h2>{fc.title}</h2>
-                  <p className="text-sm text-gray-600 italic">
-                    {isOwner
-                      ? `Shared with: ${sharedUsersByFlashcard[fc.flashcard_id]?.map(entry => {
-                        const user = users.find(u => u.user_id === entry.shared_user_id);
-                        return user ? `${user.username} (${entry.permission})` : "Unknown";
-                      }).join(", ") || "None"}`
-                      : `Owner: ${fc.owner_username}`}
-                  </p>
-                  {isOwner || sharedWithMePermission === "edit" ? (
-                    <>
-                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
-                      <EditFlashcard
-                        flashcard={fc}
-                        updateFlashcardsDisplay={(updated) =>
-                          setFlashcards(prev => prev.map(n =>
-                            n.flashcard_id === updated.flashcard_id ? updated : n
-                          ))
-                        }
-                      />
-                    </>
-                  ) : sharedWithMePermission === "view" ? (
-                    <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend}/>
-                  ) : null}
+                <div key={fc.flashcard_id} className={`border border-black rounded-xl p-2 flex items-center gap-2 ${isReview ? 'bg-gray-200' : 'bg-white'}`} 
+                onClick={() => {
+                reviewFlashcardRefs.current[index]?.current?.open(fc);
+                }}
+                >
+                  <div className={`rounded-xl w-3 h-full border-2 border-black ${isReview ? 'bg-red-500' : 'bg-green-500'}`} />
+
+                  <div className='w-full'>
+                    <h2>{fc.title}</h2>
+                    <span>Tag {fc.tag}</span>
+                    <p className="text-sm text-gray-600 italic">
+                      {isOwner
+                        ? `Shared with: ${sharedUsersByFlashcard[fc.flashcard_id]?.map(entry => {
+                          const user = users.find(u => u.user_id === entry.shared_user_id);
+                          return user ? `${user.username} (${entry.permission})` : "Unknown";
+                        }).join(", ") || "None"}`
+                        : `Owner: ${fc.owner_username}`}
+                    </p>
+                  </div>
+                  <div onClick={(e) => e.stopPropagation()}>
+                    {isOwner || sharedWithMePermission === "edit" ? (
+                      <>
+                        <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={reviewFlashcardRefs.current[index]} markFlashcardAsRead={markFlashcardAsRead}/>
+                        <EditFlashcard
+                          flashcard={fc}
+                          updateFlashcardsDisplay={(updated) =>
+                            setFlashcards(prev => prev.map(n =>
+                              n.flashcard_id === updated.flashcard_id ? updated : n
+                            ))
+                          }
+                        />
+                      </>
+                    ) : sharedWithMePermission === "view" ? (
+                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={reviewFlashcardRefs.current[index]} markFlashcardAsRead={markFlashcardAsRead}/>
+                    ) : null}
+                  </div>
                 </div>
               );
             })}

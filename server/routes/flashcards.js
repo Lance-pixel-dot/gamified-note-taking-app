@@ -146,7 +146,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-     await pool.query("DELETE FROM review_flashcards WHERE flashcard_id = $1", [id]);
+    await pool.query("DELETE FROM review_flashcards WHERE flashcard_id = $1", [id]);
     await pool.query("DELETE FROM shared_flashcards WHERE flashcard_id = $1", [id]);
     await pool.query("DELETE FROM flashcards WHERE flashcard_id = $1", [id]);
     res.json("Flashcard deleted.");

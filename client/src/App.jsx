@@ -168,12 +168,15 @@ async function incrementXP(baseAmount, skipAchievements = false) {
     let xp = currentXP + finalXP;
 
     let coinsToAdd = 0;
+    let leveledUpTo = null;
 
     // Level up calculation
     while (xp >= getXPNeeded(currentLevel)) {
       xp -= getXPNeeded(currentLevel);
       currentLevel += 1;
-      coinsToAdd += currentLevel * 10;  // Clean coin reward formula
+      coinsToAdd += currentLevel * 10; 
+
+      leveledUpTo = currentLevel;
     }
 
     // Update XP/level/streak/last_active
@@ -181,15 +184,16 @@ async function incrementXP(baseAmount, skipAchievements = false) {
     setStats({ xp, level: currentLevel });
     setStreak(newStreak);
 
-    // Update coins (only if not from an achievement)
+    if (leveledUpTo !== null) {
+      triggerLevelUpToast(leveledUpTo, coinsToAdd);
+    }
+
     if (!skipAchievements && coinsToAdd > 0) {
       await updateCoinsInBackend(userId, coinsToAdd);
     }
 
-    // Check and unlock streak achievements
     await checkAndUnlockStreakAchievements(newStreak);
 
-    // Check level-based achievements only if this XP gain wasn't from another achievement
     if (!skipAchievements) {
       await checkAndUnlockLevelAchievements(currentLevel);
     }
@@ -265,7 +269,19 @@ async function incrementXP(baseAmount, skipAchievements = false) {
   fetchXPAndStreak();
 }, []);
 
+const [showLevelUp, setShowLevelUp] = useState(false);
+const [levelUpData, setLevelUpData] = useState({ level: 0, coins: 0 });
+
+const triggerLevelUpToast = (level, coins) => {
+  setLevelUpData({ level, coins });
+  setShowLevelUp(true);
+  setTimeout(() => {
+    setShowLevelUp(false);
+  }, 4000); 
+};
+
   return (
+    <>
     <Router>
       <Routes>
         <Route path="/" element={<WelcomeScreen />} />
@@ -285,8 +301,14 @@ async function incrementXP(baseAmount, skipAchievements = false) {
             />
           }
         />
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
+      {showLevelUp && (
+        <div className="text-sm fixed bottom-16 right-4 z-[61] bg-white text-black border border-black p-3 rounded shadow-lg transition-all duration-300 ease-in-out animate-slide-in">
+    ⭐ Level Up! You’re now Level {levelUpData.level}. +{levelUpData.coins} 💰
+        </div>
+    )}
+    </>
   );
 }
 

@@ -27,9 +27,10 @@ const ReviewFlashcard = forwardRef(function ReviewFlashcard({ flashcard, increme
   }
 
  function emergencyClose() {
-  console.log("Closing dialog...");
   if (dialogRef.current?.open) {
     dialogRef.current.close();
+    setIsFlipped(false)
+    setDisplay("hidden");
   }
 }
 
@@ -93,10 +94,8 @@ const [card, setCard] = useState(null);
 useImperativeHandle(ref, () => ({
   open: (flashcard) => {
     setCard(flashcard);
-    setIsFlipped(false); 
-    setDisplay("flex"); 
-    dialogRef.current?.showModal();
     checkIfReviewed(flashcard.flashcard_id);
+    dialogRef.current?.showModal();
   },
 }));
 
