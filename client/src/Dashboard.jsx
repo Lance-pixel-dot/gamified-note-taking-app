@@ -5,7 +5,7 @@ function Dashboard({ xp, level, progress, incrementXP, streak, coins,  handleCre
   return (
     <>
       <Header xp={xp} level={level} progress={progress} streak={streak} coins={coins}/>
-      <Nav incrementXP={incrementXP} handleCreated={handleCreated} achievementsRef={achievementsRef} updateCoinsInBackend={updateCoinsInBackend}  />
+      <Nav incrementXP={incrementXP} handleCreated={handleCreated} achievementsRef={achievementsRef} updateCoinsInBackend={updateCoinsInBackend} userCoins={coins} />
     </>
   );
 }

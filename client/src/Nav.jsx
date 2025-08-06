@@ -4,8 +4,9 @@ import Flashcard from './Flashcard';
 import ShareNotes from './SharedNotes';
 import ShareFlashcards from './SharedFlashcards';
 import Achievements from './Achievements';
+import ThemesStore from './ThemesStore';
 
-function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend }) {
+function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins }) {
   const getCurrentTab = localStorage.getItem("currentTab");
   const [activeTab, setActiveTab] = useState(getCurrentTab);
 
@@ -54,7 +55,7 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
                     setCurrentMenu('Flashcards');
                   }}
                 >
-                  Flashcard
+                  Flashcards
                 </button>
                 <button
                   className={`block w-full text-left p-2 border-b ${activeTab === 'Shared Notes' ? 'font-bold' : ''}`}
@@ -77,7 +78,7 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
                   Shared with me (flashcards)
                 </button>
                 <button
-                  className={`block w-full text-left p-2 ${activeTab === 'Achievements' ? 'font-bold' : ''}`}
+                  className={`block w-full text-left p-2 border-b ${activeTab === 'Achievements' ? 'font-bold' : ''}`}
                   onClick={() => {
                     setActiveTab('Achievements');
                     setMenuOpen(false);
@@ -86,6 +87,16 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
                 >
                   Achievements
                 </button>
+                <button
+                  className={`block w-full text-left p-2 ${activeTab === 'Themes Store' ? 'font-bold' : ''}`}
+                  onClick={() => {
+                    setActiveTab('Themes Store');
+                    setMenuOpen(false);
+                    setCurrentMenu('Themes Store');
+                  }}
+                  >
+                  Themes Store
+                  </button>
               </div>
           </div>
 
@@ -122,6 +133,10 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
       <Achievements
         ref={achievementsRef}
         achievementsHidden={activeTab !== 'Achievements' ? 'hidden' : ''}
+      />
+      <ThemesStore
+        userCoins={userCoins}
+        storeHidden={activeTab !== 'Themes Store' ? 'hidden' : ''}
       />
     </>
   );

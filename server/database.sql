@@ -72,3 +72,18 @@ CREATE TABLE user_achievements (
   achievement_id INTEGER REFERENCES achievements(achievement_id),
   PRIMARY KEY (user_id, achievement_id)
 );
+
+CREATE TABLE themes (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    css_class TEXT NOT NULL,
+    price INTEGER NOT NULL CHECK (price >= 0),
+);
+
+CREATE TABLE user_themes (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    theme_id INTEGER NOT NULL REFERENCES themes(id) ON DELETE CASCADE,
+    is_selected BOOLEAN NOT NULL DEFAULT FALSE,
+    UNIQUE (user_id, theme_id)
+);
