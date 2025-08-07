@@ -6,7 +6,7 @@ import ShareFlashcards from './SharedFlashcards';
 import Achievements from './Achievements';
 import ThemesStore from './ThemesStore';
 
-function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins }) {
+function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins, setCoins }) {
   const getCurrentTab = localStorage.getItem("currentTab");
   const [activeTab, setActiveTab] = useState(getCurrentTab);
 
@@ -137,6 +137,8 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
       <ThemesStore
         userCoins={userCoins}
         storeHidden={activeTab !== 'Themes Store' ? 'hidden' : ''}
+        updateCoinsInBackend={updateCoinsInBackend}
+        setCoins={setCoins} // Pass setCoins to allow updates from ThemesStore
       />
     </>
   );

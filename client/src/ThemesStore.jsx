@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function ThemesStore({ userCoins, storeHidden }) {
+function ThemesStore({ userCoins, storeHidden, setCoins }) {
   const [themes, setThemes] = useState([]);
   const [ownedThemes, setOwnedThemes] = useState([]);
   const [selectedThemeId, setSelectedThemeId] = useState(null);
@@ -8,71 +8,93 @@ function ThemesStore({ userCoins, storeHidden }) {
   const userId = localStorage.getItem("user_id");
 
   function getColorPalette(cssClass) {
-  const palettes = {
-    "theme-default": ["#1800ad", "#ffffff", "#000000"],
-    "theme-dark": ["#1a1a1a", "#333333", "#fefefe"],
-    "theme-light": ["#ffffff", "#f0f0f0", "#000000"],
-    "theme-cyberpunk": ["#0f0c29", "#ff0080", "#00ffe5"],
-    "theme-terminal": ["#000000", "#00ff00", "#222222"],
-    "theme-forest": ["#2e4600", "#486b00", "#a2c523"],
-    "theme-ocean": ["#003366", "#3399ff", "#66ccff"],
-    "theme-sunset": ["#ff7e5f", "#feb47b", "#ffae70"],
-    "theme-arcade": ["#1c1c1c", "#e60073", "#00ffcc"],
-    "theme-pastel": ["#ffd1dc", "#c1f0f6", "#fff0f5"],
-    "theme-metalgear": ["#2d2d2d", "#728c69", "#c9c9c9"],
-  };
+    const palettes = {
+      "theme-default": ["#1800ad", "#ffffff", "#000000"],
+      "theme-dark": ["#1a1a1a", "#333333", "#fefefe"],
+      "theme-light": ["#ffffff", "#f0f0f0", "#000000"],
+      "theme-cyberpunk": ["#0f0c29", "#ff0080", "#00ffe5"],
+      "theme-terminal": ["#000000", "#00ff00", "#222222"],
+      "theme-forest": ["#2e4600", "#486b00", "#a2c523"],
+      "theme-ocean": ["#003366", "#3399ff", "#66ccff"],
+      "theme-sunset": ["#ff7e5f", "#feb47b", "#ffae70"],
+      "theme-arcade": ["#1c1c1c", "#e60073", "#00ffcc"],
+      "theme-pastel": ["#ffd1dc", "#c1f0f6", "#fff0f5"],
+      "theme-metalgear": ["#2d2d2d", "#728c69", "#c9c9c9"],
+    };
 
-  return palettes[cssClass] || ["#ccc", "#eee", "#aaa"];
-}
+    return palettes[cssClass] || ["#ccc", "#eee", "#aaa"];
+  }
 
   useEffect(() => {
     fetchThemes();
   }, []);
 
   async function fetchThemes() {
-  try {
-    const resAll = await fetch("http://localhost:5000/themes");
-    const allThemes = await resAll.json();
+    try {
+      const resAll = await fetch("http://localhost:5000/themes");
+      const allThemes = await resAll.json();
 
-    const resUser = await fetch(`http://localhost:5000/themes/user/${userId}`);
-    const userThemes = await resUser.json();
+      const resUser = await fetch(`http://localhost:5000/themes/user/${userId}`);
+      const userThemes = await resUser.json();
 
-    setThemes(allThemes);
-    setOwnedThemes(userThemes.map((t) => t.theme_id));
+      setThemes(allThemes);
+      setOwnedThemes(userThemes.map((t) => t.theme_id));
 
-    const selected = userThemes.find((t) => t.is_selected);
-    if (selected) setSelectedThemeId(selected.theme_id);
-  } catch (err) {
-    console.error("Error fetching themes:", err);
+      const selected = userThemes.find((t) => t.is_selected);
+      if (selected) setSelectedThemeId(selected.theme_id);
+    } catch (err) {
+      console.error("Error fetching themes:", err);
+    }
   }
-}
 
-  async function handlePurchase(themeId, price) {
-    if (userCoins < price) {
-      alert("Not enough coins!");
+  const handlePurchase = async (themeId) => {
+    if (!userId || !themeId) {
+      console.error("Missing userId or themeId");
       return;
     }
 
+    const selectedTheme = themes.find((t) => t.id === themeId);
+    if (!selectedTheme) {
+      console.error("Theme not found");
+      return;
+    }
+
+    if (userCoins < selectedTheme.price) {
+      console.warn("Not enough coins!");
+      return;
+    }
+
+    console.log("Purchasing theme:", { userId, themeId });
+
     try {
-      const res = await fetch("/themes/purchase", {
+      const response = await fetch(`http://localhost:5000/themes/purchase`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, themeId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+        userId,  
+        themeId,  
+      }),
       });
 
-      const data = await res.json();
+      console.log("Purchasing theme:", { userId, themeId });
 
-      if (!res.ok) {
-        alert(data.error || "Purchase failed.");
-        return;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to purchase theme");
       }
 
-      if (onThemePurchase) onThemePurchase(price); // Notify parent to deduct coins
-      fetchThemes(); // Refresh state
+      // Deduct coins in frontend (safe, since backend already confirmed success)
+      setCoins((prev) => prev - selectedTheme.price);
+
+      // Refresh theme list
+      fetchThemes();
     } catch (err) {
       console.error("Error purchasing theme:", err);
     }
-  }
+  };
 
   return (
     <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${storeHidden}`}>
@@ -110,7 +132,7 @@ function ThemesStore({ userCoins, storeHidden }) {
                 ) : (
                   <button
                     className="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700"
-                    onClick={() => handlePurchase(theme.id, theme.price)}
+                    onClick={() => handlePurchase(theme.id)}
                   >
                     Buy ({theme.price}🪙)
                   </button>

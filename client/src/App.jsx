@@ -25,6 +25,9 @@ function App() {
   const [coins, setCoins] = useState(0);
 
   const updateCoinsInBackend = async (userId, amount) => {
+
+    console.log("Updating coins in backend:", { userId, amount });
+
   try {
     const response = await fetch(`http://localhost:5000/users/${userId}/coins`, {
       method: "PUT",
@@ -298,6 +301,7 @@ const triggerLevelUpToast = (level, coins) => {
               handleCreated={handleCreated}
               achievementsRef={achievementsRef}
               updateCoinsInBackend={updateCoinsInBackend}
+              setCoins={setCoins} // Pass setCoins to allow updates from ThemesStore
             />
           }
         />

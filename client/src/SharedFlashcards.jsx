@@ -104,6 +104,7 @@ function ShareFlashcards(props) {
         });
 
         props.incrementXP(70);
+        props.updateCoinsInBackend(user_id, 10);
       } 
 
         props.onCreated();

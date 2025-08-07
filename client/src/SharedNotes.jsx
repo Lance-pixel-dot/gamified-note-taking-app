@@ -143,7 +143,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
         //  Unlock achievement and grant XP
         const achievementXp = 70; // or fetch from backend if needed
         if (props.incrementXP) props.incrementXP(achievementXp);
-        if (props.updateCoinsInBackend) props.updateCoinsInBackend(user_id, 20);
+        if (props.updateCoinsInBackend) props.updateCoinsInBackend(user_id, 10);
 
         await fetch("http://localhost:5000/achievements/unlock", {
           method: "POST",

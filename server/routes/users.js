@@ -151,4 +151,18 @@ router.put("/:id/coins", async (req, res) => {
   }
 });
 
+// Set user's coins to a specific value
+router.put("/:id/coins/set", async (req, res) => {
+  const { id } = req.params;
+  const { coins } = req.body;
+
+  const result = await pool.query(
+    "UPDATE users SET coins = $1 WHERE user_id = $2 RETURNING coins",
+    [coins, id]
+  );
+
+  res.json({ coins: result.rows[0].coins });
+});
+
+
 module.exports = router;
