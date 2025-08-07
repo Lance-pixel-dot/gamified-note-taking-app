@@ -14,7 +14,6 @@ const themeRoutes = require("./routes/themes");
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/themes", themeRoutes);
 
 // Routes
 app.use("/users", userRoutes);
@@ -25,6 +24,7 @@ app.use("/shared_flashcards", sharedFlashcardsRoutes);
 app.use("/read_notes", readNotesRoutes);
 app.use("/review_flashcards", reviewFlashcardsRoutes);
 app.use("/achievements", achievementsRoutes);
+app.use("/themes", themeRoutes);
 
 // Start server
 app.listen(5000, () => {

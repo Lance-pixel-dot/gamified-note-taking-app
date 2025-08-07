@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WelcomeScreen from "./WelcomeScreen";
 import Dashboard from "./Dashboard";
 import { format, isToday, isYesterday, parseISO } from "date-fns";
+import { getColorPalette } from "./themeUtil";
 
 // XP needed per level: 100 + 50 * (level - 1)
 function getXPNeeded(level) {
@@ -282,6 +283,18 @@ const triggerLevelUpToast = (level, coins) => {
     setShowLevelUp(false);
   }, 4000); 
 };
+
+//  applying themes
+useEffect(() => {
+  const savedTheme = localStorage.getItem("selectedTheme");
+  if (savedTheme) {
+    const [bg, text, accent] = getColorPalette(savedTheme);
+    document.documentElement.style.setProperty("--bg-color", bg);
+    document.documentElement.style.setProperty("--text-color", text);
+    document.documentElement.style.setProperty("--accent-color", accent);
+  }
+}, []);
+
 
   return (
     <>

@@ -21,15 +21,15 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
     <>
       <section
       id="nav-container"
-      className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-white bg-[#1800ad] w-full"
+      className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-[var(--text-color)] bg-[var(--bg-color)] w-full"
     >
-      <div className="flex justify-between p-3 pb-0 bg-white rounded-t-xl">
-        <div className="bg-[#1800ad] w-full rounded-xl p-3 relative flex items-center">
+      <div className="flex justify-between p-3 pb-0 bg-[var(--accent-color)] rounded-t-xl">
+        <div className="bg-[var(--bg-color)] w-full rounded-xl p-3 relative flex items-center">
           {/* NAV WRAPPER */}
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="text-white text-2xl transition-transform duration-300 ease-in-out"
+              className="text-[var(--text-color)] text-2xl transition-transform duration-300 ease-in-out"
             >
               {menuOpen ? 'X' : '☰'}
             </button>

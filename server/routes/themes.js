@@ -14,21 +14,49 @@ router.get("/", async (req, res) => {
 });
 
 // Get themes owned by a user and which one is selected
-router.get("/user/:id", async (req, res) => {
+router.get("/all/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
   try {
-    const { id } = req.params;
+    const allThemes = await pool.query("SELECT * FROM themes");
+    const userThemes = await pool.query(
+      "SELECT theme_id, is_selected FROM user_themes WHERE user_id = $1",
+      [userId]
+    );
 
-    const result = await pool.query(`
-      SELECT t.*, ut.is_selected
-      FROM user_themes ut
-      JOIN themes t ON t.id = ut.theme_id
-      WHERE ut.user_id = $1
-    `, [id]);
-
-    res.json(result.rows);
+    res.json({
+      allThemes: allThemes.rows,
+      userThemes: userThemes.rows,
+    });
   } catch (err) {
-    console.error("Error fetching user themes:", err.message);
-    res.status(500).json({ error: "Failed to fetch user themes" });
+    console.error("Error fetching themes:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// GET all themes and mark which ones the user owns
+router.get('/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const allThemes = await pool.query('SELECT * FROM themes');
+
+    const ownedThemes = await pool.query(
+      'SELECT theme_id FROM user_themes WHERE user_id = $1',
+      [userId]
+    );
+
+    const ownedThemeIds = ownedThemes.rows.map(t => t.theme_id);
+
+    const themesWithOwnership = allThemes.rows.map(theme => ({
+      ...theme,
+      isOwned: ownedThemeIds.includes(theme.id),
+    }));
+
+    res.json(themesWithOwnership);
+  } catch (err) {
+    console.error('Error fetching themes:', err);
+    res.status(500).json({ error: 'Failed to fetch themes' });
   }
 });
 
