@@ -63,7 +63,7 @@ const Achievements = forwardRef(function Achievements(props, ref) {
       )}
 
       <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.achievementsHidden}`}>
-        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
           <section
             id="achievements-container"
             className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-2 flex flex-col gap-2 items-stretch mt-1"

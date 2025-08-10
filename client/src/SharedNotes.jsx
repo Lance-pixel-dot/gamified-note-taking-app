@@ -24,23 +24,57 @@ function ShareNotes(props){
     const [sharedNotesWithOthers, setSharedNotesWithOthers] = useState([]);
     const [sharedNotesWithMe, setSharedNotesWithMe] = useState([]);
 
-    async function displayNotes(){
-        try {
-            const response = await fetch(`http://localhost:5000/notes/user/${user_id}`);
-            const jsonData = await response.json();
-            setNotes(jsonData);
-            fetchReadNotesStatus(jsonData);
-            jsonData.forEach(note => {
-                fetchSharedUsers(note.note_id);
-            });
-        } catch (err) {
-            console.error(err.message);
-        }
-    }
+    async function displayNotes() {
+  try {
+    const [ownNotes, withMe] = await Promise.all([
+      fetch(`http://localhost:5000/notes/user/${user_id}`).then(r => r.json()),
+      fetch(`http://localhost:5000/shared_notes/with_me/${user_id}`).then(r => r.json())
+    ]);
 
-    useEffect(() => {
-        displayNotes();
-    }, []);
+    setNotes(ownNotes);
+    setSharedNotesWithMe(withMe);
+
+    // fetch read status for all
+    const merged = [...ownNotes, ...withMe];
+    const uniqueNotes = Array.from(new Map(merged.map(n => [n.note_id, n])).values());
+    fetchReadNotesStatus(uniqueNotes);
+
+    // still fetch shared users for each of your notes
+    ownNotes.forEach(note => fetchSharedUsers(note.note_id));
+
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+useEffect(() => {
+  async function loadAllNotes() {
+    try {
+      const [ownNotes, byMe, withMe] = await Promise.all([
+        fetch(`http://localhost:5000/notes/user/${user_id}`).then(r => r.json()),
+        fetch(`http://localhost:5000/shared_notes/shared/by_me/${user_id}`).then(r => r.json()),
+        fetch(`http://localhost:5000/shared_notes/with_me/${user_id}`).then(r => r.json())
+      ]);
+
+      setNotes(ownNotes);
+      setSharedNotesWithOthers(byMe);
+      setSharedNotesWithMe(withMe);
+
+      // fetch read status for ALL notes combined
+      const merged = [...ownNotes, ...byMe, ...withMe];
+      const uniqueNotes = Array.from(new Map(merged.map(n => [n.note_id, n])).values());
+      fetchReadNotesStatus(uniqueNotes);
+
+      // fetch shared users for each of your own notes
+      ownNotes.forEach(note => fetchSharedUsers(note.note_id));
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  loadAllNotes();
+}, []);
 
     function openUsers(){
         const dialog = document.querySelector("#users-dialog");
@@ -283,7 +317,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
     return(
         <>
             <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareNotesHidden}`}>
-                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
                     <section className="flex h-10 gap-2 items-center">
                         <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>

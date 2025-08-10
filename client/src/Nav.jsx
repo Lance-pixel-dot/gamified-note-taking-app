@@ -23,7 +23,7 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
       id="nav-container"
       className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-[var(--text-color)] bg-[var(--bg-color)] w-full"
     >
-      <div className="flex justify-between p-3 pb-0 bg-[var(--accent-color)] rounded-t-xl">
+      <div className="flex justify-between p-3 pb-0 bg-[var(--accent-color)] border border-[var(--header-text-color)] border-b-0 rounded-t-xl">
         <div className="bg-[var(--bg-color)] border border-black w-full rounded-xl p-3 relative flex items-center">
           {/* NAV WRAPPER */}
           <div className="relative">

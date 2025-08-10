@@ -29,11 +29,12 @@ implement coins first before UI
 - make search bar work
     - next is for searching a user dialog(Sharing feature)
 - arrange achievements order
-- pop up achievements and level up.
-    - for coins, when user levels up display within the pop up the coins they receive and same thing with achievements
+- for coins, display amount of coins when reading and creating notes and flashcards same with xp earned.
 - improve header
     - display multiplier
 - improve ui on dialogs
+    -finish flashcards edit and deleting(add dialog for deleting)
+    -improve sharing dialog
 - upgrade icons
 
 - implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )

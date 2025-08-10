@@ -100,7 +100,7 @@ const handleApply = async (themeId) => {
 
     const selectedTheme = themes.find((t) => t.id === themeId);
     if (selectedTheme) {
-      const [bg, text, accent, headerText, readColor, tagColor] = getColorPalette(selectedTheme.css_class);
+      const [bg, text, accent, headerText, readColor, tagColor, buttonBg, buttonText, cancelBtnBg, warningBtnBg] = getColorPalette(selectedTheme.css_class);
 
       document.documentElement.style.setProperty("--bg-color", bg);
       document.documentElement.style.setProperty("--text-color", text);
@@ -108,6 +108,10 @@ const handleApply = async (themeId) => {
       document.documentElement.style.setProperty("--header-text-color", headerText);
       document.documentElement.style.setProperty("--read-color", readColor);
       document.documentElement.style.setProperty("--tag-color", tagColor);
+      document.documentElement.style.setProperty("--button-bg-color", buttonBg);
+      document.documentElement.style.setProperty("--button-text-color", buttonText);
+      document.documentElement.style.setProperty("--cancel-btn-bg-color", cancelBtnBg);
+      document.documentElement.style.setProperty("--warning-btn-bg-color", warningBtnBg);
 
       localStorage.setItem("selectedTheme", selectedTheme.css_class);
     }
@@ -119,7 +123,7 @@ const handleApply = async (themeId) => {
 
   return (
     <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${storeHidden}`}>
-      <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+      <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
         <section
           id="themes-container"
           className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch mt-1"
@@ -135,11 +139,11 @@ const handleApply = async (themeId) => {
               >
                 <div className="flex flex-col w-2/4">
                   <span className="font-semibold text-sm">{theme.name}</span>
-                  <div className="flex mt-1 gap-1">
+                  <div className="flex mt-1 border border-[var(--header-text-color)]">
                     {getColorPalette(theme.css_class).map((color, index) => (
                       <div
                         key={index}
-                        className="w-5 h-5 rounded border border-[var(--header-text-color)]"
+                        className="w-5 h-5"
                         style={{ backgroundColor: color }}
                       />
                     ))}

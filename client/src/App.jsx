@@ -288,13 +288,20 @@ const triggerLevelUpToast = (level, coins) => {
 useEffect(() => {
   const savedTheme = localStorage.getItem("selectedTheme");
   if (savedTheme) {
-    const [bg, text, accent, headerText, readColor, tagColor] = getColorPalette(savedTheme);
+    const [
+      bg, text, accent, headerText, readColor, tagColor,
+      buttonBg, buttonText, cancelBtnBg, warningBtnBg
+    ] = getColorPalette(savedTheme);
     document.documentElement.style.setProperty("--bg-color", bg);
     document.documentElement.style.setProperty("--text-color", text);
     document.documentElement.style.setProperty("--accent-color", accent);
     document.documentElement.style.setProperty("--header-text-color", headerText);
     document.documentElement.style.setProperty("--read-color", readColor);
     document.documentElement.style.setProperty("--tag-color", tagColor);
+    document.documentElement.style.setProperty("--button-bg-color", buttonBg);
+    document.documentElement.style.setProperty("--button-text-color", buttonText);
+    document.documentElement.style.setProperty("--cancel-btn-bg-color", cancelBtnBg);
+    document.documentElement.style.setProperty("--warning-btn-bg-color", warningBtnBg);
   }
 }, []);
 

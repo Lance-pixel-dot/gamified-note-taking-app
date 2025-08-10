@@ -200,9 +200,11 @@ function ShareFlashcards(props) {
         };
       }, []);
   
-      useEffect(() => {
-    reviewFlashcardRefs.current = flashcards.map(() => React.createRef());
-  }, [flashcards]);
+useEffect(() => {
+  if (uniqueFlashcards.length > 0) {
+    fetchReadStatus(uniqueFlashcards);
+  }
+}, [uniqueFlashcards]);
   
   const [readFlashcardsToday, setReadFlashcardsToday] = useState([]);
   const reviewFlashcardRefs = useRef([]);
@@ -235,7 +237,7 @@ function ShareFlashcards(props) {
   return (
     <>
       <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareFlashcardsHidden}`}>
-        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
           <section className="flex h-10 gap-2 items-center">
             <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} />
           </section>

@@ -175,7 +175,7 @@ async function saveFlashcard() {
     return(
         <>
             <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.flashcardHidden}`}>
-                <section className=" bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+                <section className=" bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
                     <section className="flex h-10 gap-2 items-center">
                         <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
@@ -230,18 +230,18 @@ async function saveFlashcard() {
                              })}
                         <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full"
                          onClick={() => createFlashcard()}
-                         >Create New FLashcard</button>
+                         >+ Create New FLashcard</button>
                     </section>
                 </section>
             </section>
 
-            <dialog id="new-flashcard" className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">
+            <dialog id="new-flashcard" className="place-self-center p-4 bg-[var(--bg-color)] text-[var(--text-color)] border border-[var(--text-color)] rounded-xl h-5/6 w-10/12">
                 <form id="flashcard-form" className="flex flex-col gap-4" onSubmit={(e) => {e.preventDefault(); saveFlashcard()}}>
-                    <h2>Create new Flashcard</h2>
+                    <h2 className='font-bold text-lg' >Create new Flashcard</h2>
 
                     <section className="flex flex-col">
-                        <label htmlFor="flashcard-title">Title</label>
-                        <input type="text" id="flashcard-title" className="border border-black rounded p-2"
+                        <label htmlFor="flashcard-title" className='font-bold text-sm'>Title</label>
+                        <input type="text" id="flashcard-title" className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)]"
                         value={title} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -259,10 +259,10 @@ async function saveFlashcard() {
 
                     <section className="flex flex-col">
                         <section className="flex justify-between">
-                            <label htmlFor="front">Front</label>
+                            <label htmlFor="front" className='font-bold text-sm'>Front</label>
                             <span>{question.length}/{MAX_QUESTION_CHARS}</span>
                         </section>
-                        <textarea name="front" id="front" className="border border-black rounded p-2 resize-none h-30"
+                        <textarea name="front" id="front" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs"
                         value={question} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -280,10 +280,10 @@ async function saveFlashcard() {
 
                     <section className="flex flex-col">
                         <section className="flex justify-between">
-                            <label htmlFor="back">Back</label>
+                            <label htmlFor="back" className='font-bold text-sm'>Back</label>
                             <span>{answer.length}/{MAX_ANSWER_CHARS}</span>
                         </section>
-                        <textarea name="back" id="back" className="border border-black rounded p-2 resize-none h-30"
+                        <textarea name="back" id="back" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs"
                         value={answer} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -300,8 +300,8 @@ async function saveFlashcard() {
                     </section>
 
                     <section className="flex flex-col">
-                        <label htmlFor="flashcard-tag">Tag</label>
-                        <input type="text" id="flashcard-tag" className="border border-black rounded p-2"
+                        <label htmlFor="flashcard-tag" className='font-bold text-sm'>Tag</label>
+                        <input type="text" id="flashcard-tag" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs"
                         value={tag} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -317,8 +317,8 @@ async function saveFlashcard() {
                         />
                     </section>
 
-                    <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" type="submit">Save</button>
-                    <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" type="reset" onClick={() => cancelFlashcard()}>Cancel</button>
+                    <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm" type="submit">Save</button>
+                    <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm" type="reset" onClick={() => cancelFlashcard()}>Cancel</button>
                 </form>
             </dialog>
         </>

@@ -118,12 +118,12 @@ useImperativeHandle(ref, () => ({
 
       <dialog
         ref={dialogRef}
-        className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12"
+        className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-5/6 w-10/12"
       >
-        <section className="flex flex-col justify-center items-center h-full gap-2">
+        <section className="flex flex-col justify-center items-center h-full gap-2 ">
           <h2 className="text-xl font-bold mb-2">{card?.title}</h2>
           <div
-            className="w-80 h-48 perspective"
+            className="w-60 h-48 perspective"
             onClick={() => {
               setIsFlipped((prev) => !prev);
               setDisplay("flex");
@@ -135,13 +135,13 @@ useImperativeHandle(ref, () => ({
               }`}
             >
               {/* Front */}
-              <div className="absolute w-full h-full bg-white border border-gray-300 rounded-xl shadow-md backface-hidden flex flex-col justify-center items-center p-4 text-center cursor-pointer">
+              <div className="absolute w-full h-full bg-white border text-black border-gray-300 rounded-xl shadow-md backface-hidden flex flex-col justify-center items-center p-4 text-center cursor-pointer">
                 <h3>Question:</h3>
                 <p className="text-gray-700 text-center">{card?.question}</p>
               </div>
 
               {/* Back */}
-              <div className="absolute w-full h-full bg-blue-100 border border-blue-300 rounded-xl shadow-md backface-hidden rotate-y-180 flex flex-col text-center justify-center items-center p-4 cursor-pointer">
+              <div className="absolute w-full h-full bg-blue-100 border text-black border-blue-300 rounded-xl shadow-md backface-hidden rotate-y-180 flex flex-col text-center justify-center items-center p-4 cursor-pointer">
                 <h3>Answer:</h3>
                 <p className="text-lg font-semibold text-center">{card?.answer}</p>
               </div>
@@ -150,9 +150,9 @@ useImperativeHandle(ref, () => ({
 
           <div className={`${display} flex-col gap-1 items-center`}>
             {!isAllowed ? (
-              <div className="flex flex-col">
-                <p className="text-red-500 text-sm mt-2">You’ve already reviewed this flashcard today.</p>
-                <button className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold" onClick={() => {
+              <div className="flex flex-col gap-4">
+                <p className="text-sm mt-2">You’ve already reviewed this flashcard today.</p>
+                <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold" onClick={() => {
                     setTimeout(() => {
                       emergencyClose();
                     }, 0);
@@ -163,7 +163,7 @@ useImperativeHandle(ref, () => ({
                 <span>How well did you answer?</span>
                 <section className="flex gap-2">
                   <button
-                    className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+                    className="mt-4 bg-green-500 text-white px-4 py-2 rounded border-1 border-black"
                     onClick={async () => {
                       await handleReview(5, "easy");
                       emergencyClose();
@@ -173,7 +173,7 @@ useImperativeHandle(ref, () => ({
                     Easy
                   </button>
                   <button
-                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded border-1 border-black"
                     onClick={async () => {
                       await handleReview(4, "good"); 
                       emergencyClose();
@@ -183,7 +183,7 @@ useImperativeHandle(ref, () => ({
                     Good
                   </button>
                   <button
-                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded border-1 border-black"
                     onClick={async () => {
                       await handleReview(3.5, "hard"); 
                       emergencyClose();

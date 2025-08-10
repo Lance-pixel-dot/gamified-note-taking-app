@@ -129,6 +129,19 @@ useEffect(() => {
         }
     }
 
+    const [deleNoteId, setDeleteNoteId] = useState('');
+
+    function deleteDialog(){
+      const dialog = document.querySelector('#delete-note');
+
+      dialog.showModal();
+    }
+    function cancelDelete(){
+      const dialog = document.querySelector('#delete-note');
+
+      dialog.close();
+    }
+
     function cancelNote(){
         const noteForm = document.querySelector('#note-form');
         const dialog = document.querySelector('#new-note');
@@ -197,7 +210,7 @@ useEffect(() => {
     return(
         <>
             <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.notesHidden}`}>
-                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
                     <section className="flex h-10 gap-2 items-center">
                         <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
@@ -250,7 +263,10 @@ useEffect(() => {
                                     );
                                   }}
                                 />
-                                <button className="w-8" onClick={() => deleteNote(note.note_id)}>
+                                <button className="w-8" onClick={() => {
+                                  setDeleteNoteId(note.note_id);
+                                  deleteDialog();
+                                }}>
                                   <img src={deleteIcon} alt="delete-icon" />
                                 </button>
                               </div>
@@ -271,16 +287,16 @@ useEffect(() => {
                 </section>
             </section>
 
-            <dialog id="new-note" className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">
+            <dialog id="new-note" className="place-self-center p-4 bg-[var(--bg-color)] text-[var(--text-color)] border border-[var(--text-color)] rounded-xl h-5/6 w-10/12">
                 <form id="note-form" className="flex flex-col gap-4" onSubmit={(e) => {e.preventDefault(); saveNote()}}>
-                    <h2>Create new Note</h2>
+                    <h2 className='font-bold text-lg'>Create new Note</h2>
 
                     <section className="flex flex-col">
-                        <label htmlFor="title">Title</label>
+                        <label htmlFor="title" className='font-bold text-sm'>Title</label>
                         <input 
                         type="text" 
                         id="title" 
-                        className="border border-black rounded p-2" 
+                        className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)]" 
                         value={title} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -298,10 +314,10 @@ useEffect(() => {
 
                     <section className="flex flex-col">
                         <section className="flex justify-between">
-                            <label htmlFor="content">Content</label>
+                            <label htmlFor="content" className='font-bold text-sm'>Content</label>
                             <span>{content.length}/{MAX_CHARS}</span>
                         </section>
-                        <textarea name="content" id="content" className="border border-black rounded p-2 resize-none h-55"
+                        <textarea name="content" id="content" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-55 text-xs"
                         placeholder="Type your Content here (max 500 Characters)"
                         value={content}
                         onChange={handleChange}
@@ -311,8 +327,8 @@ useEffect(() => {
                     </section>
 
                     <section className="flex flex-col">
-                        <label htmlFor="tag">Tag</label>
-                        <input type="text" id="tag" className="border border-black rounded p-2"
+                        <label htmlFor="tag" className='font-bold text-sm'>Tag</label>
+                        <input type="text" id="tag" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs"
                         value={tag}
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -328,9 +344,21 @@ useEffect(() => {
                         />
                     </section>
 
-                    <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold" type="submit">Save</button>
-                    <button className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold" type="reset" onClick={() => cancelNote()}>Cancel</button>
+                    <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm" type="submit">Save +3.5xp +1coin</button>
+                    <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm" type="reset" onClick={() => cancelNote()}>Cancel</button>
                 </form>
+            </dialog>
+
+            <dialog id='delete-note' className='place-self-center p-4 bg-[var(--bg-color)] text-[var(--text-color)] border border-[var(--text-color)] rounded-xl w-full'>
+                <div className='flex flex-col gap-4 text-center'>
+                  <h3>Delete This Note?</h3>
+                  <button className='border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--warning-btn-bg-color)]  font-bold text-sm' onClick={() => {
+                    deleteNote(deleNoteId)
+                  }}>Yes</button>
+                  <button className='border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm' onClick={() => {
+                    cancelDelete();
+                  }}>Cancel</button>
+                </div>
             </dialog>
         </>
     );
