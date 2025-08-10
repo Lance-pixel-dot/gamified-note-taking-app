@@ -57,16 +57,16 @@ const Achievements = forwardRef(function Achievements(props, ref) {
     <>
       {/*  Bottom-right toast */}
       {showToast && (
-        <div className="fixed text-xs bottom-4 right-4 z-50 bg-white border border-black-500 text-black px-4 py-2 rounded-xl shadow-lg animate-slide-in">
+        <div className="fixed text-xs bottom-4 right-4 z-50 bg-[var(--bg-color)] border border-black-500 border-[var(--header-text-color)] text-[var(--text-color)] px-4 py-2 rounded-xl shadow-lg animate-slide-in">
           🏆 {achievementMessage} +10 coins!
         </div>
       )}
 
-      <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.achievementsHidden}`}>
-        <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+      <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.achievementsHidden}`}>
+        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
           <section
             id="achievements-container"
-            className="border-2 flex-1 overflow-y-auto rounded-xl p-2 flex flex-col gap-2 items-stretch mt-1"
+            className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-2 flex flex-col gap-2 items-stretch mt-1"
           >
             {achievements.map((ach) => {
               const isUnlocked = ach.unlocked;

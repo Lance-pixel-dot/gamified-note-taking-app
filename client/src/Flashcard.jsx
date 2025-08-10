@@ -174,12 +174,12 @@ async function saveFlashcard() {
 
     return(
         <>
-            <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.flashcardHidden}`}>
-                <section className=" bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+            <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.flashcardHidden}`}>
+                <section className=" bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
+                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
-                    <section id="flashcard-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
+                    <section id="flashcard-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with flashcards */}
                         {flashcards
                              .filter(f => f.title.toLowerCase().includes(searchTerm) || f.tag.toLowerCase().includes(searchTerm))
@@ -192,7 +192,7 @@ async function saveFlashcard() {
                            
                                return (
                                      <div
-                                       className={`border border-black rounded-xl p-2 flex items-center gap-2 ${isReview ? 'bg-gray-200' : 'bg-white'}`}
+                                       className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 ${isReview ? 'bg-[var(--read-color)]' : 'bg-[var(--accent-color)]'}`}
                                        key={flashcard.flashcard_id}
                                        onClick={() => {
                                          reviewFlashcardRefs.current[index]?.current?.open(flashcard);
@@ -201,7 +201,7 @@ async function saveFlashcard() {
                                        <div className={`rounded-xl w-3 h-full border-2 border-black ${isReview ? 'bg-red-500' : 'bg-green-500'}`} />
                                        <div className="w-full">
                                          <h2 className="font-bold text-sm">{flashcard.title}</h2>
-                                         <span className="text-xs text-gray-600 italic">Tag: {flashcard.tag}</span>
+                                         <span className="text-xs text-[var(tag-color)] italic">Tag: {flashcard.tag}</span>
                                        </div>
                                        <div className="flex flex-col gap-2 items-end" onClick={(e) => e.stopPropagation()}>
                                          <EditFlashcard
@@ -228,7 +228,7 @@ async function saveFlashcard() {
                                      </div>
                                );
                              })}
-                        <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold w-full"
+                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full"
                          onClick={() => createFlashcard()}
                          >Create New FLashcard</button>
                     </section>

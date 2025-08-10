@@ -74,23 +74,3 @@ body{
   animation: slide-in 0.4s ease-out forwards;
 }
 
-/* themes */
-.theme-default {
-  --bg-color: #1800ad;
-  --text-color: #1a1a1a;
-}
-
-.theme-dark {
-  --bg-color: #1a1a1a;
-  --text-color: #fefefe;
-}
-
-
-/* variables/reusable classes */
-.bg-theme {
-  background-color: var(--bg-color);
-}
-
-.text-theme {
-  color: var(--text-color);
-}

@@ -282,12 +282,12 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
     return(
         <>
-            <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.shareNotesHidden}`}>
-                <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+            <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareNotesHidden}`}>
+                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
+                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
-                    <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
+                    <section id="note-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {uniqueNotes.filter(note => 
                           note.title.toLowerCase().includes(searchTerm) ||
                           note.tag.toLowerCase().includes(searchTerm)
@@ -303,8 +303,8 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                         const isRead = readNotesToday.includes(note.note_id);
 
                             return (
-                                <div key={note.note_id} className={`border border-black rounded-xl p-2 flex items-center gap-2 ${
-                                isRead ? 'bg-gray-200' : 'bg-white'
+                                <div key={note.note_id} className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 ${
+                                isRead ? 'bg-[var(--read-color)]' : 'bg-[var(--accent-color)]'
                               }`}
                               onClick={() => {
                                 readNoteRefs.current[index]?.current?.open();
@@ -319,8 +319,8 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
                                     <div className="w-full">
                                         <h2 className="font-bold">{note.title}</h2>
-                                        <span className="text-sm text-gray-600 italic">Tag: {note.tag}</span>
-                                        <p className="text-sm text-gray-600 italic">
+                                        <span className="text-sm text-[var(tag-color)] italic">Tag: {note.tag}</span>
+                                        <p className="text-sm text-[var(tag-color)] italic">
                                             {isOwner
                                                 ? `Shared with: ${sharedUsersByNote[note.note_id]?.map(entry => {
                                                     const user = users.find(u => u.user_id === entry.shared_user_id);
@@ -355,7 +355,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                 </div>
                             );
                         })}
-                        <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold w-full" onClick={() => openShare()}>Share Notes</button>
+                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full" onClick={() => openShare()}>Share Notes</button>
                     </section>
                 </section>
             </section>

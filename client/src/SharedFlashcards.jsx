@@ -234,12 +234,12 @@ function ShareFlashcards(props) {
 
   return (
     <>
-      <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.shareFlashcardsHidden}`}>
-        <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+      <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareFlashcardsHidden}`}>
+        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
           <section className="flex h-10 gap-2 items-center">
-            <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} />
+            <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} />
           </section>
-          <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
+          <section id="note-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
             {uniqueFlashcards.filter(f => f.title.toLowerCase().includes(searchTerm) || f.tag.toLowerCase().includes(searchTerm))
             .map((fc, index) => {
               if (!reviewFlashcardRefs.current[index]) {
@@ -251,7 +251,7 @@ function ShareFlashcards(props) {
               const sharedWithMePermission = !isOwner ? fc.permission : null;
 
               return (
-                <div key={fc.flashcard_id} className={`border border-black rounded-xl p-2 flex items-center gap-2 ${isReview ? 'bg-gray-200' : 'bg-white'}`} 
+                <div key={fc.flashcard_id} className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 ${isReview ? 'bg-[var(--read-color)]' : 'bg-[var(--accent-color)]'}`} 
                 onClick={() => {
                 reviewFlashcardRefs.current[index]?.current?.open(fc);
                 }}
@@ -261,7 +261,7 @@ function ShareFlashcards(props) {
                   <div className='w-full'>
                     <h2>{fc.title}</h2>
                     <span>Tag {fc.tag}</span>
-                    <p className="text-sm text-gray-600 italic">
+                    <p className="text-sm text-[var(tag-color)] italic">
                       {isOwner
                         ? `Shared with: ${sharedUsersByFlashcard[fc.flashcard_id]?.map(entry => {
                           const user = users.find(u => u.user_id === entry.shared_user_id);
@@ -290,7 +290,7 @@ function ShareFlashcards(props) {
                 </div>
               );
             })}
-            <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold w-full" onClick={openShare}>Share Flashcards</button>
+            <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full" onClick={openShare}>Share Flashcards</button>
           </section>
         </section>
       </section>

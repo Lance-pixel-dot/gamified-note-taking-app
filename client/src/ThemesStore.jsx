@@ -98,16 +98,17 @@ const handleApply = async (themeId) => {
 
     setSelectedThemeId(themeId);
 
-    // 💡 Apply CSS variables dynamically
     const selectedTheme = themes.find((t) => t.id === themeId);
     if (selectedTheme) {
-      const [bg, text, accent] = getColorPalette(selectedTheme.css_class);
+      const [bg, text, accent, headerText, readColor, tagColor] = getColorPalette(selectedTheme.css_class);
 
       document.documentElement.style.setProperty("--bg-color", bg);
       document.documentElement.style.setProperty("--text-color", text);
       document.documentElement.style.setProperty("--accent-color", accent);
+      document.documentElement.style.setProperty("--header-text-color", headerText);
+      document.documentElement.style.setProperty("--read-color", readColor);
+      document.documentElement.style.setProperty("--tag-color", tagColor);
 
-      // ✅ Save to localStorage to persist across refresh
       localStorage.setItem("selectedTheme", selectedTheme.css_class);
     }
 
@@ -121,7 +122,7 @@ const handleApply = async (themeId) => {
       <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
         <section
           id="themes-container"
-          className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch mt-1"
+          className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch mt-1"
         >
           {themes.map((theme) => {
             const isOwned = ownedThemes.includes(String(theme.id));
@@ -130,15 +131,15 @@ const handleApply = async (themeId) => {
             return (
               <div
                 key={theme.id}
-                className="flex justify-between items-center p-3 border rounded-lg bg-gray-300"
+                className="flex justify-between items-center p-3 border border-[var(--header-text-color)] rounded-lg bg-[var(--accent-color)] text-[var(--header-text-color)]"
               >
-                <div className="flex flex-col">
+                <div className="flex flex-col w-2/4">
                   <span className="font-semibold text-sm">{theme.name}</span>
                   <div className="flex mt-1 gap-1">
                     {getColorPalette(theme.css_class).map((color, index) => (
                       <div
                         key={index}
-                        className="w-5 h-5 rounded"
+                        className="w-5 h-5 rounded border border-[var(--header-text-color)]"
                         style={{ backgroundColor: color }}
                       />
                     ))}

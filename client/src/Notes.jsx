@@ -196,12 +196,12 @@ useEffect(() => {
 
     return(
         <>
-            <section className={`p-3 pt-0 bg-[#1800ad] flash-container ${props.notesHidden}`}>
-                <section className="bg-white rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
+            <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.notesHidden}`}>
+                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-black rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
+                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
                     </section>
-                    <section id="note-container" className="border-2 flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
+                    <section id="note-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with notes */}
                         {notes
                         .filter(note =>
@@ -217,8 +217,8 @@ useEffect(() => {
                         
                           return (
                             <div
-                              className={`border border-black rounded-xl p-2 flex items-center gap-2 ${
-                                isRead ? 'bg-gray-200' : 'bg-white'
+                              className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 ${
+                                isRead ? 'bg-[var(--read-color)]' : 'bg-[var(--accent-color)]'
                               }`}
                               key={note.note_id}
                               onClick={() => {
@@ -233,7 +233,7 @@ useEffect(() => {
                         
                               <div className="w-full">
                                 <h2 className="font-bold text-sm">{note.title}</h2>
-                                <span className="text-xs text-gray-600 italic">Tag: {note.tag}</span>
+                                <span className="text-xs text-[var(tag-color)] italic">Tag: {note.tag}</span>
                               </div>
                             
                               <div
@@ -266,7 +266,7 @@ useEffect(() => {
                             </div>
                           );
                         })}
-                        <button className="border border-black p-2 rounded-xl text-black bg-white font-bold w-full" onClick={() => createNote()}> + Create New Note</button>
+                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full" onClick={() => createNote()}> + Create New Note</button>
                     </section>
                 </section>
             </section>

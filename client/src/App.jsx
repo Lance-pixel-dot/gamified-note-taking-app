@@ -288,13 +288,15 @@ const triggerLevelUpToast = (level, coins) => {
 useEffect(() => {
   const savedTheme = localStorage.getItem("selectedTheme");
   if (savedTheme) {
-    const [bg, text, accent] = getColorPalette(savedTheme);
+    const [bg, text, accent, headerText, readColor, tagColor] = getColorPalette(savedTheme);
     document.documentElement.style.setProperty("--bg-color", bg);
     document.documentElement.style.setProperty("--text-color", text);
     document.documentElement.style.setProperty("--accent-color", accent);
+    document.documentElement.style.setProperty("--header-text-color", headerText);
+    document.documentElement.style.setProperty("--read-color", readColor);
+    document.documentElement.style.setProperty("--tag-color", tagColor);
   }
 }, []);
-
 
   return (
     <>
@@ -321,7 +323,7 @@ useEffect(() => {
         </Routes>
       </Router>
       {showLevelUp && (
-        <div className="text-sm fixed bottom-16 right-4 z-[61] bg-white text-black border border-black p-3 rounded shadow-lg transition-all duration-300 ease-in-out animate-slide-in">
+        <div className="text-xs fixed bottom-16 right-4 z-[61] bg-[var(--bg-color)] border border-[var(--header-text-color)] text-[var(--text-color)] p-3 rounded-xl shadow-lg transition-all duration-300 ease-in-out animate-slide-in">
     ⭐ Level Up! You’re now Level {levelUpData.level}. +{levelUpData.coins} 💰
         </div>
     )}
