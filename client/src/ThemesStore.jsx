@@ -100,7 +100,7 @@ const handleApply = async (themeId) => {
 
     const selectedTheme = themes.find((t) => t.id === themeId);
     if (selectedTheme) {
-      const [bg, text, accent, headerText, readColor, tagColor, buttonBg, buttonText, cancelBtnBg, warningBtnBg] = getColorPalette(selectedTheme.css_class);
+      const [bg, text, accent, headerText, readColor, tagColor, buttonBg, buttonText, cancelBtnBg, warningBtnBg, highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr] = getColorPalette(selectedTheme.css_class);
 
       document.documentElement.style.setProperty("--bg-color", bg);
       document.documentElement.style.setProperty("--text-color", text);
@@ -112,6 +112,12 @@ const handleApply = async (themeId) => {
       document.documentElement.style.setProperty("--button-text-color", buttonText);
       document.documentElement.style.setProperty("--cancel-btn-bg-color", cancelBtnBg);
       document.documentElement.style.setProperty("--warning-btn-bg-color", warningBtnBg);
+      document.documentElement.style.setProperty("--highlight-color", highlightClr);
+      document.documentElement.style.setProperty("--edit-color", editClr);
+      document.documentElement.style.setProperty("--delete-color", deleteClr);
+      document.documentElement.style.setProperty("--coin-color", coinClr);
+      document.documentElement.style.setProperty("--fire-color", fireClr);
+      document.documentElement.style.setProperty("--progress-color", progressClr);
 
       localStorage.setItem("selectedTheme", selectedTheme.css_class);
     }

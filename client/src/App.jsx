@@ -138,6 +138,15 @@ async function checkAndUnlockStreakAchievements(streakCount) {
   }
 }
 
+const [multiplier, setMultiplier] = useState(1);
+
+// compute multiplier from streak and return rounded number (decimal)
+function computeMultiplierFromStreak(streakCount) {
+  const raw = 1.3 + 0.3 * (streakCount - 1);
+  const clamped = Math.max(raw, 1.0);
+  return Math.round(clamped * 100) / 100;
+}
+
 async function incrementXP(baseAmount, skipAchievements = false) {
   const userId = localStorage.getItem("user_id");
   const todayStr = format(new Date(), "yyyy-MM-dd");
@@ -158,9 +167,11 @@ async function incrementXP(baseAmount, skipAchievements = false) {
       newStreak = 0;
     }
 
-    // Apply streak-based XP multiplier
-    const multiplier = 1.3 + 0.3 * (newStreak - 1);
-    const finalXP = baseAmount * multiplier;
+    const rawMultiplier = 1.3 + 0.3 * (newStreak - 1); 
+    const roundedMultiplier = computeMultiplierFromStreak(newStreak);
+    setMultiplier(roundedMultiplier);
+
+    const finalXP = baseAmount * rawMultiplier;
 
     console.log(`Incrementing XP for user ${userId}: base=${baseAmount}, multiplier=${multiplier}, finalXP=${finalXP}`);
 
@@ -264,6 +275,7 @@ async function incrementXP(baseAmount, skipAchievements = false) {
       }
 
       setStreak(newStreak);
+      setMultiplier(computeMultiplierFromStreak(newStreak));
       fetchCoins();
     } catch (err) {
       console.error("Failed to fetch XP or streak:", err.message);
@@ -272,6 +284,10 @@ async function incrementXP(baseAmount, skipAchievements = false) {
 
   fetchXPAndStreak();
 }, []);
+
+useEffect(() => {
+  setMultiplier(computeMultiplierFromStreak(streak));
+}, [streak]);
 
 const [showLevelUp, setShowLevelUp] = useState(false);
 const [levelUpData, setLevelUpData] = useState({ level: 0, coins: 0 });
@@ -290,7 +306,8 @@ useEffect(() => {
   if (savedTheme) {
     const [
       bg, text, accent, headerText, readColor, tagColor,
-      buttonBg, buttonText, cancelBtnBg, warningBtnBg
+      buttonBg, buttonText, cancelBtnBg, warningBtnBg,
+      highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr
     ] = getColorPalette(savedTheme);
     document.documentElement.style.setProperty("--bg-color", bg);
     document.documentElement.style.setProperty("--text-color", text);
@@ -302,6 +319,12 @@ useEffect(() => {
     document.documentElement.style.setProperty("--button-text-color", buttonText);
     document.documentElement.style.setProperty("--cancel-btn-bg-color", cancelBtnBg);
     document.documentElement.style.setProperty("--warning-btn-bg-color", warningBtnBg);
+    document.documentElement.style.setProperty("--highlight-color", highlightClr);
+    document.documentElement.style.setProperty("--edit-color", editClr);
+    document.documentElement.style.setProperty("--delete-color", deleteClr);
+    document.documentElement.style.setProperty("--coin-color", coinClr);
+    document.documentElement.style.setProperty("--fire-color", fireClr);
+    document.documentElement.style.setProperty("--progress-color", progressClr);
   }
 }, []);
 
@@ -322,6 +345,7 @@ useEffect(() => {
               coins={coins}
               handleCreated={handleCreated}
               achievementsRef={achievementsRef}
+              multiplier={multiplier} 
               updateCoinsInBackend={updateCoinsInBackend}
               setCoins={setCoins} // Pass setCoins to allow updates from ThemesStore
             />
