@@ -80,7 +80,7 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
 
       <dialog
         ref={dialogRef}
-        className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12"
+        className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-5/6 w-10/12"
       >
         <form
           ref={formRef}
@@ -97,7 +97,7 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
             <input
               type="text"
               id="flashcard-view-title"
-              className="border border-black rounded p-2"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)]"
               value={title}
               onChange={(e) => {
                 const input = e.target.value;
@@ -116,7 +116,7 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
             <textarea
               name="flashcard-view-front"
               id="flashcard-view-front"
-              className="border border-black rounded p-2 resize-none h-30"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs"
               value={question}
               onChange={(e) => {
                 const input = e.target.value;
@@ -135,7 +135,7 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
             <textarea
               name="flashcard-view-back"
               id="flashcard-view-back"
-              className="border border-black rounded p-2 resize-none h-30"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs"
               value={answer}
               onChange={(e) => {
                 const input = e.target.value;
@@ -151,7 +151,7 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
             <input
               type="text"
               id="flashcard-view-tag"
-              className="border border-black rounded p-2"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)]"
               value={tag}
               onChange={(e) => {
                 const input = e.target.value;
@@ -163,13 +163,13 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
           </section>
 
           <button
-            className="border border-black p-2 rounded-xl text-white bg-green-500 font-bold"
+            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm"
             type="submit"
           >
             Save
           </button>
           <button
-            className="border border-black p-2 rounded-xl text-white bg-red-500 font-bold"
+            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm"
             type="reset"
             onClick={cancelFlashcard}
           >

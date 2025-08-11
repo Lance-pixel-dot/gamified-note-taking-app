@@ -106,6 +106,19 @@ async function saveFlashcard() {
         }
     }
 
+    const [deleFlashId, setFlashNoteId] = useState('');
+    
+     function deleteDialog(){
+       const dialog = document.querySelector('#delete-flashcard');
+
+       dialog.showModal();
+     }
+     function cancelDelete(){
+       const dialog = document.querySelector('#delete-flashcard');
+
+       dialog.close();
+     }
+
     function cancelFlashcard(){
         const flashcardForm = document.querySelector('#flashcard-form');
         const dialog = document.querySelector('#new-flashcard');
@@ -211,7 +224,10 @@ async function saveFlashcard() {
                                            }
                                          />
                                          <button className="border border-black rounded p-1 bg-red-500 text-white ml-1"
-                                           onClick={() => deleteFlashcard(flashcard.flashcard_id)}
+                                           onClick={() => {
+                                            setFlashNoteId(flashcard.flashcard_id);
+                                            deleteDialog();
+                                          }}
                                          >
                                            Delete
                                          </button>
@@ -320,6 +336,18 @@ async function saveFlashcard() {
                     <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm" type="submit">Save</button>
                     <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm" type="reset" onClick={() => cancelFlashcard()}>Cancel</button>
                 </form>
+            </dialog>
+
+            <dialog id='delete-flashcard' className='place-self-center p-4 bg-[var(--bg-color)] text-[var(--text-color)] border border-[var(--text-color)] rounded-xl w-full'>
+                <div className='flex flex-col gap-4 text-center'>
+                  <h3>Delete This Flashcard?</h3>
+                  <button className='border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--warning-btn-bg-color)]  font-bold text-sm' onClick={() => {
+                    deleteFlashcard(deleFlashId)
+                  }}>Yes</button>
+                  <button className='border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm' onClick={() => {
+                    cancelDelete();
+                  }}>Cancel</button>
+                </div>
             </dialog>
         </>
     );

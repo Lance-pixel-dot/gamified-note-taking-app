@@ -150,8 +150,8 @@ useImperativeHandle(ref, () => ({
 
           <div className={`${display} flex-col gap-1 items-center`}>
             {!isAllowed ? (
-              <div className="flex flex-col gap-4">
-                <p className="text-sm mt-2">You’ve already reviewed this flashcard today.</p>
+              <div className="flex flex-col gap-4 text-center">
+                <p className="text-sm mt-2">You’ve already reviewed this flashcard today. Review this again tomorrow to earn xp and coins!</p>
                 <button className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold" onClick={() => {
                     setTimeout(() => {
                       emergencyClose();

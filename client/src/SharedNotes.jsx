@@ -314,6 +314,9 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
       };
     }, []);
 
+    const [shareDialogSearch, setShareDialogSearch] = useState("");
+    const [userDialogSearch, setUserDialogSearch] = useState("");
+
     return(
         <>
             <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareNotesHidden}`}>
@@ -394,63 +397,63 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                 </section>
             </section>
 
-            <dialog id="share-dialog" className="place-self-center p-4 border border-black rounded-xl h-5/6 w-10/12">
+            <dialog id="share-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] tex rounded-xl h-5/6 w-10/12 text-[var(--text-color)] ">
                 <section className="h-full flex flex-col gap-4">
-                    <h2>Select Notes You Want to Share</h2>
-                    <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
-                        {notes.map(notes => (
-                            <div className="border border-black rounded p-2 flex flex-col gap-2" key={notes.note_id}>
+                    <h2 className='text-lg font-bold text-center'>Select a Note You Want to Share</h2>
+                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm' placeholder='search by title or tag' onChange={(e) => setShareDialogSearch(e.target.value.toLowerCase())}/>
+                    <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm">
+                        {notes.filter(note =>
+                            note.title.toLowerCase().includes(shareDialogSearch) ||
+                            note.tag.toLowerCase().includes(shareDialogSearch)
+                            ).map(notes => (
+                            <div className="border border-[var(--text-color)] rounded p-2 flex flex-col gap-2" key={notes.note_id}>
                                 <div className="flex justify-between items-center">
-                                    <h2>{notes.title}</h2>
+                                    <div className='flex flex-col gap-2 w-full'>
+                                        <h2 className='font-bold'>{notes.title}</h2>
+                                        <span className="text-sm text-[var(--text-color)] italic">Tag: {notes.tag}</span>
+                                        {sharedUsersByNote[notes.note_id] && sharedUsersByNote[notes.note_id].length > 0 && (
+                                        <div className="text-sm text-[var(--text-color)] italic">
+                                            Shared with: {sharedUsersByNote[notes.note_id].map(entry => {
+                                                const user = users.find(u => u.user_id === entry.shared_user_id);
+                                                return user ? `${user.username} (${entry.permission})` : "Unknown";
+                                            }).join(", ")}
+                                        </div>
+                                        )}
+                                    </div>
                                     <button
-                                        className="border border-black rounded p-1 bg-blue-500 text-white mt-1 ml-1"
+                                        className="border border-black rounded p-1 bg-[var(--button-bg-color)] text-[var(--button-text-color)]"
                                         onClick={() => {
                                             openUsers();
                                             setSharedNoteID(notes.note_id);
                                         }}
                                     >Share</button>
                                 </div>
-                                {sharedUsersByNote[notes.note_id] && sharedUsersByNote[notes.note_id].length > 0 && (
-                                    <div className="text-sm text-gray-700">
-                                        Shared with: {sharedUsersByNote[notes.note_id].map(entry => {
-                                            const user = users.find(u => u.user_id === entry.shared_user_id);
-                                            return user ? `${user.username} (${entry.permission})` : "Unknown";
-                                        }).join(", ")}
-                                    </div>
-                                )}
                             </div>
                         ))}
                     </div>
-                    <button className="border border-black p-2 rounded-xl text-white bg-orange-500 font-bold" onClick={() => cancelShare()}>Close</button>
+                    <button className="border border-black p-2 rounded-xl bg-[var(--cancel-btn-bg-color)] text-[var(--button-text-color)] font-bold" onClick={() => cancelShare()}>Close</button>
                 </section>
             </dialog>
 
-            <dialog id="users-dialog" className="place-self-center p-4 border border-black rounded-xl h-4/6 w-10/12">
+            <dialog id="users-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/6 w-10/12">
                 <section className="h-full flex flex-col gap-4">
-                    <h2>Select the Person who you want Share with</h2>
-                    <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2">
-                        {users.map(user => {
+                    <h2 className='text-lg font-bold text-center'>Select the Person who you want Share with</h2>
+                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm' placeholder='search by username' onChange={(e) => setUserDialogSearch(e.target.value.toLowerCase())}/>
+                    <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm">
+                        {users.filter(user =>
+                        user.username.toLowerCase().includes(userDialogSearch)
+                            ).map(user => {
                             if(user.user_id != user_id) {
                                 const existingEntry = (sharedUsersByNote[sharedNoteID] || []).find(entry => entry.shared_user_id === user.user_id);
                                 const isAdded = !!existingEntry;
                                 const permission = existingEntry?.permission || "view";
 
                                 return (
-                                    <div className="border border-black rounded p-2 flex justify-between items-center" key={user.user_id}>
-                                        <h2>{user.username}</h2>
-                                        <div>
-                                            <select
-                                                value={permission}
-                                                onChange={(e) => {
-                                                    saveSharedNote(sharedNoteID, user.user_id, e.target.value);
-                                                }}
-                                                className={`border rounded p-1 mr-2 ${isAdded ? 'inline-block' : 'hidden'} text-center`}
-                                            >
-                                                <option value="view">View</option>
-                                                <option value="edit">View and Edit</option>
-                                            </select>
+                                    <div className="border border-[var(--text-color)] rounded p-2 flex items-center" key={user.user_id}>
+                                        <h2 className='w-full text-xs'>{user.username}</h2>
+                                        <div className='flex justify-end flex-col gap-1 '>
                                             <button
-                                                className={`border border-black rounded p-1 ${!isAdded ? 'bg-green-500' : 'bg-red-500'} text-white mt-1 ml-1`}
+                                                className={`border border-black rounded text-[var(--button-text-color)] ${!isAdded ? 'bg-[var(--button-bg-color)]' : 'bg-[var(--cancel-btn-bg-color)] '} text-[var(--button-text-color)] p-1 text-xs`}
                                                 onClick={() => {
                                                     if (!isAdded) {
                                                         saveSharedNote(sharedNoteID, user.user_id, permission);
@@ -463,13 +466,23 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                             >
                                                 {!isAdded ? "Add" : "Undo"}
                                             </button>
+                                            <select
+                                                value={permission}
+                                                onChange={(e) => {
+                                                    saveSharedNote(sharedNoteID, user.user_id, e.target.value);
+                                                }}
+                                                className={`border rounded p-1 ${isAdded ? 'inline-block' : 'hidden'} text-center bg-[var(--bg-color)] text-xs`}
+                                            >
+                                                <option value="view">View</option>
+                                                <option value="edit">View and Edit</option>
+                                            </select>
                                         </div>
                                     </div>
                                 );
                             }
                         })}
                     </div>
-                    <button className="border border-black p-2 rounded-xl text-white bg-blue-500 font-bold" onClick={() => closeUsers()}>Done</button>
+                    <button className="border border-black p-2 rounded-xl bg-[var(--button-bg-color)] text-[var(--button-text-color)] font-bold" onClick={() => closeUsers()}>Done</button>
                 </section>
             </dialog>
         </>
