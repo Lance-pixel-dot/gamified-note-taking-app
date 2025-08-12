@@ -322,7 +322,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
             <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareNotesHidden}`}>
                 <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}></input>
+                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
                     </section>
                     <section id="note-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {uniqueNotes.filter(note => 

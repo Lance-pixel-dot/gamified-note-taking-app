@@ -179,11 +179,11 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
         </form>
       </dialog>
       
-      <dialog id="flash-error-message" className="place-self-center p-4 border border-black rounded-xl text-center" ref={errorRef}>
+      <dialog id="flash-error-message" className="place-self-center p-4 border border-[var(--text-color)] text-[var(--text-color)] bg-[var(--bg-color)] rounded-xl text-center" ref={errorRef}>
               <div className="flex flex-col gap-4">
                 <h2 className="font-bold">Error</h2>
                 <p className="w-50">This change/edit couldn't be saved because it's either the owner deleted this content or does not exist anymore</p>
-                <button className="font-bold bg-orange-500 text-white rounded border border-black" onClick={closeError}>Ok</button>
+                <button className="font-bold h-10 bg-[var(--warning-btn-bg-color)] text-[var(--button-text-color)] rounded border border-black" onClick={closeError}>Ok</button>
               </div>
       </dialog>
     </>

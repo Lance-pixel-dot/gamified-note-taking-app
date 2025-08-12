@@ -39,6 +39,11 @@ implement coins first before UI
 
 - implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
     -users can buy themes on a digital store with the digital currency *coins*
+    -change price
+    -save last used theme by user (local storage only)
+
+- make read notes doesn't delete when delete notes same with flashcards
+  - check the error shared feature too
 
 - make it responsive
 - add logout button (maybe)
