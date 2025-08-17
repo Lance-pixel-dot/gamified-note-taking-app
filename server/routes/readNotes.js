@@ -65,8 +65,8 @@ router.post("/mark-read", async (req, res) => {
     // Reading achievements
     const readingAchievements = [
       { id: 11, count: 1 },   
-      { id: 13, count: 10 },  // 10
-      { id: 14, count: 50 }   // 50
+      { id: 13, count: 10},  // 10
+      { id: 14, count: 50}   // 50
     ];
 
     // Track newly unlocked achievements

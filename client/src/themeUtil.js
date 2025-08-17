@@ -3,7 +3,7 @@ export function getColorPalette(className) {
     case "theme-dark":
       return [
         "#1a1a1a", "#ffffff", "#4f46e5", "#ffffff", "#2d2d3f", "#9ca3af", "#4f46e5", "#ffffff", "#dc2626", "#f59e0b",
-        "#fde047", "#f6f6f6ff", "#ef4444", "#fbbf24", "orange", "#10b981"
+        "#acb694ff", "#f6f6f6ff", "#ef4444", "#fbbf24", "orange", "#10b981"
       ];
     case "theme-cyberpunk":
       return [
@@ -43,17 +43,17 @@ export function getColorPalette(className) {
     case "theme-retro-terminal":
       return [
         "#d1ffcc", "#1a1a1a", "#00aa00", "#ffffff", "#b0e6b0", "#008800", "#00aa00", "#ffffff", "#cc0000", "#ffaa00",
-        "#ffff66", "#00ff00", "#ff0000", "#ffcc00", "#ff6600", "#33ff33"
+        "#a2a270ff", "#00ff00", "#ff0000", "#ffcc00", "#ff6600", "#33ff33"
       ];
     case "theme-terminal":
       return [
         "#676b6b", "#ffffff", "#000000", "#00ff00", "#4a4f4f", "#80ff80", "#00aa00", "#ffffff", "#cc0000", "#ffaa00",
-        "#ffff99", "#00ff00", "#ff3333", "#ffdd00", "#ff6600", "#00ff00"
+        "#56564fff", "#00ff00", "#ff3333", "#ffdd00", "#ff6600", "#00ff00"
       ];
     default:
       return [
         "#1800ad", "#ffffff", "#ffffff", "#000000", "#d1d5db", "#6b7280", "green", "white", "red", "orange",
-        "#8e8383ff", "blue", "red", "#ada624", "orange", "limegreen"
+        "#b6a1a1ff", "blue", "red", "#ada624", "orange", "limegreen"
       ]; // fallback
   }
 }

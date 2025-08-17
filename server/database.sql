@@ -44,16 +44,16 @@ CREATE TABLE shared_flashcards (
 
 CREATE TABLE read_notes (
     read_id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(user_id),
-    note_id INTEGER REFERENCES notes(note_id),
+    user_id INTEGER,
+    note_id INTEGER,
     last_read_date TIMESTAMP,
     UNIQUE(user_id, note_id)
 );
 
 CREATE TABLE review_flashcards (
     review_id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(user_id),
-    flashcard_id INTEGER REFERENCES flashcards(flashcard_id),
+    user_id INTEGER,
+    flashcard_id INTEGER,
     last_read_date TIMESTAMP,
     easy_count INTEGER DEFAULT 0,
     UNIQUE(user_id, flashcard_id)
@@ -64,7 +64,7 @@ CREATE TABLE achievements (
   name TEXT NOT NULL,
   description TEXT,
   xp_reward INTEGER DEFAULT 0,
-  type TEXT -- e.g., "note", "review", "streak"
+  type TEXT
 );
 
 CREATE TABLE user_achievements (
@@ -86,4 +86,14 @@ CREATE TABLE user_themes (
     theme_id INTEGER NOT NULL REFERENCES themes(id) ON DELETE CASCADE,
     is_selected BOOLEAN NOT NULL DEFAULT FALSE,
     UNIQUE (user_id, theme_id)
+);
+
+CREATE TABLE created_notes (
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    total_notes INTEGER DEFAULT 0
+);
+
+CREATE TABLE created_flashcards (
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    total_notes INTEGER DEFAULT 0
 );

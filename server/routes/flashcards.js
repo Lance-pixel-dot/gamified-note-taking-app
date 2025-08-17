@@ -16,27 +16,36 @@ router.post("/", async (req, res) => {
       [user_id, title, question, answer, tag]
     );
 
-    // 2. Count total flashcards for user
-    const countRes = await client.query(
-      "SELECT COUNT(*) FROM flashcards WHERE user_id = $1",
+    // 2. Update or insert into created_flashcards
+    await client.query(
+      `INSERT INTO created_flashcards (user_id, total_flashcards)
+       VALUES ($1, 1)
+       ON CONFLICT (user_id)
+       DO UPDATE SET total_flashcards = created_flashcards.total_flashcards + 1`,
       [user_id]
     );
-    const flashcardCount = parseInt(countRes.rows[0].count);
 
-    // 3. Define achievement milestones
+    // 3. Get updated count
+    const countRes = await client.query(
+      "SELECT total_flashcards FROM created_flashcards WHERE user_id = $1",
+      [user_id]
+    );
+    const flashcardCount = countRes.rows[0].total_flashcards;
+
+    // 4. Define achievement milestones
     const achievementMilestones = [
-      { id: 6, count: 1 },   
-      { id: 7, count: 50 }   // 50
+      { id: 6, count: 1 },   //1
+      { id: 7, count: 50 }   //50
     ];
 
-    // 4. Get already unlocked achievements
+    // 5. Get already unlocked achievements
     const achievedRes = await client.query(
       "SELECT achievement_id FROM user_achievements WHERE user_id = $1",
       [user_id]
     );
     const alreadyUnlocked = achievedRes.rows.map(row => row.achievement_id);
 
-    // 5. Unlock new achievements
+    // 6. Unlock new achievements
     const newlyUnlocked = [];
 
     for (const { id, count } of achievementMilestones) {
@@ -146,7 +155,6 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query("DELETE FROM review_flashcards WHERE flashcard_id = $1", [id]);
     await pool.query("DELETE FROM shared_flashcards WHERE flashcard_id = $1", [id]);
     await pool.query("DELETE FROM flashcards WHERE flashcard_id = $1", [id]);
     res.json("Flashcard deleted.");

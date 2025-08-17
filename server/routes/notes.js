@@ -11,34 +11,52 @@ router.post("/", async (req, res) => {
 
     await client.query("BEGIN");
 
-    // Insert new note
+    // 1. Insert new note
     const newNote = await client.query(
       "INSERT INTO notes (user_id, title, content, tag) VALUES ($1, $2, $3, $4) RETURNING *",
       [user_id, title, content, tag]
     );
 
-    // Count total notes for the user
-    const countResult = await client.query(
-      "SELECT COUNT(*) FROM notes WHERE user_id = $1",
+    // 2. Update or insert into created_notes
+    const existing = await client.query(
+      "SELECT total_notes FROM created_notes WHERE user_id = $1",
       [user_id]
     );
-    const noteCount = parseInt(countResult.rows[0].count);
 
-    // Milestone-based achievements (for note creation)
+    if (existing.rows.length > 0) {
+      await client.query(
+        "UPDATE created_notes SET total_notes = total_notes + 1 WHERE user_id = $1",
+        [user_id]
+      );
+    } else {
+      await client.query(
+        "INSERT INTO created_notes (user_id, total_notes) VALUES ($1, 1)",
+        [user_id]
+      );
+    }
+
+    // 3. Get updated count
+    const countResult = await client.query(
+      "SELECT total_notes FROM created_notes WHERE user_id = $1",
+      [user_id]
+    );
+    const noteCount = countResult.rows[0].total_notes;
+
+    // 4. Milestone-based achievements
     const noteAchievements = [
-      { id: 1, count: 1 },   
-      { id: 2, count: 10 },   // 10
-      { id: 12, count: 50 }   // 50
+      { id: 1, count: 1 },
+      { id: 2, count: 10 }, //10
+      { id: 12, count: 50 } //50
     ];
 
-    // Get already unlocked achievements
+    // 5. Get already unlocked achievements
     const achieved = await client.query(
       "SELECT achievement_id FROM user_achievements WHERE user_id = $1",
       [user_id]
     );
     const alreadyAchieved = achieved.rows.map(row => row.achievement_id);
 
-    // Track which achievements were unlocked
+    // 6. Track new ones
     const newlyUnlocked = [];
 
     for (const achievement of noteAchievements) {
@@ -47,13 +65,12 @@ router.post("/", async (req, res) => {
           "INSERT INTO user_achievements (user_id, achievement_id) VALUES ($1, $2)",
           [user_id, achievement.id]
         );
-        newlyUnlocked.push(achievement.id); // Track it
+        newlyUnlocked.push(achievement.id);
       }
     }
 
     await client.query("COMMIT");
 
-    // Return only unlocked achievements
     res.json({
       note: newNote.rows[0],
       newAchievements: newlyUnlocked
@@ -123,7 +140,6 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query("DELETE FROM read_notes WHERE note_id = $1", [id]);
     await pool.query("DELETE FROM shared_notes WHERE note_id = $1", [id]);
     await pool.query("DELETE FROM notes WHERE note_id = $1", [id]);
     res.json("Note deleted.");

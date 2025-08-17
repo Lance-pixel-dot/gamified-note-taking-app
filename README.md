@@ -42,6 +42,8 @@ implement coins first before UI
     -change price
     -save last used theme by user (local storage only)
 
+- don't forget to change toast border color
+
 - make read notes doesn't delete when delete notes same with flashcards
   - check the error shared feature too
 
