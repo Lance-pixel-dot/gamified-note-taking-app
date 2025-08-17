@@ -157,4 +157,30 @@ router.post("/select", async (req, res) => {
   }
 });
 
+// Get user's currently selected theme
+router.get("/selected/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT t.* 
+       FROM themes t
+       INNER JOIN user_themes ut ON t.id = ut.theme_id
+       WHERE ut.user_id = $1 AND ut.is_selected = TRUE
+       LIMIT 1`,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json(null); // no selected theme yet
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error fetching selected theme:", err.message);
+    res.status(500).json({ error: "Failed to fetch selected theme" });
+  }
+});
+
+
 module.exports = router;

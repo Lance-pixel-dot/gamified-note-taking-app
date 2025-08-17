@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getColorPalette } from "./themeUtil";
 
 function ThemesStore({ userCoins, storeHidden, setCoins }) {
@@ -7,24 +7,6 @@ function ThemesStore({ userCoins, storeHidden, setCoins }) {
   const [selectedThemeId, setSelectedThemeId] = useState(null);
 
   const userId = localStorage.getItem("user_id");
-
-  // function getColorPalette(cssClass) {
-  //   const palettes = {
-  //     "theme-default": ["#1800ad", "#ffffff", "#000000"],
-  //     "theme-dark": ["#1a1a1a", "#333333", "#fefefe"],
-  //     "theme-light": ["#ffffff", "#f0f0f0", "#000000"],
-  //     "theme-cyberpunk": ["#0f0c29", "#ff0080", "#00ffe5"],
-  //     "theme-terminal": ["#000000", "#00ff00", "#222222"],
-  //     "theme-forest": ["#2e4600", "#486b00", "#a2c523"],
-  //     "theme-ocean": ["#003366", "#3399ff", "#66ccff"],
-  //     "theme-sunset": ["#ff7e5f", "#feb47b", "#ffae70"],
-  //     "theme-arcade": ["#1c1c1c", "#e60073", "#00ffcc"],
-  //     "theme-pastel": ["#ffd1dc", "#c1f0f6", "#fff0f5"],
-  //     "theme-metalgear": ["#2d2d2d", "#728c69", "#c9c9c9"],
-  //   };
-
-  //   return palettes[cssClass] || ["#ccc", "#eee", "#aaa"];
-  // }
 
   useEffect(() => {
     fetchThemes();
@@ -47,7 +29,17 @@ async function fetchThemes() {
     setOwnedThemes(userThemes.map((t) => String(t.theme_id)));
 
     const selected = userThemes.find((t) => t.is_selected);
-    if (selected) setSelectedThemeId(selected.theme_id);
+
+    if (selected) {
+      setSelectedThemeId(selected.theme_id);
+    } else {
+      // fallback to default theme
+      const defaultTheme = allThemes.find((t) => t.css_class === "theme-default");
+      if (defaultTheme) {
+        setSelectedThemeId(defaultTheme.id);
+        handleApply(defaultTheme.id);
+      }
+    }
   } catch (err) {
     console.error("Error fetching themes:", err);
   }
@@ -61,6 +53,7 @@ async function fetchThemes() {
 
     if (userCoins < selectedTheme.price) {
       console.warn("Not enough coins!");
+      errorActivate();
       return;
     }
 
@@ -127,7 +120,18 @@ const handleApply = async (themeId) => {
   }
 };
 
+  const errorRef = useRef(null);
+
+  function errorActivate(){
+    errorRef.current.showModal();
+  }
+
+  function closeError(){
+    errorRef.current.close();
+  }
+
   return (
+    <>
     <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${storeHidden}`}>
       <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
         <section
@@ -157,12 +161,12 @@ const handleApply = async (themeId) => {
                 </div>
                 {isOwned ? (
                 isSelected ? (
-                  <span className="text-sm font-semibold text-green-600">
-                    ✅ Selected
+                  <span className="text-sm font-semibold text-[var(--text-color)]">
+                    Selected
                   </span>
                 ) : (
                   <button
-                    className="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700"
+                    className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded "
                     onClick={() => handleApply(theme.id)}
                   >
                     Apply
@@ -170,14 +174,14 @@ const handleApply = async (themeId) => {
                 )
               ) : theme.price === 0 ? (
                 <button
-                  className="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700"
+                  className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded "
                   onClick={() => handlePurchase(theme.id)}
                 >
                   Apply
                 </button>
               ) : (
                 <button
-                  className="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700"
+                  className="bg-[var(--button-bg-color)] text-[var(--button-text-color)] text-xs w-2/5 px-1 py-1 rounded"
                   onClick={() => handlePurchase(theme.id)}
                 >
                   Buy ({theme.price}🪙)
@@ -189,6 +193,14 @@ const handleApply = async (themeId) => {
         </section>
       </section>
     </section>
+
+    <dialog id="error-purchase" className="place-self-center p-4 border border-[var(--text-color)] text-[var(--text-color)] bg-[var(--bg-color)] rounded-xl text-center" ref={errorRef}>
+        <div className="flex flex-col gap-4">
+          <p className="w-50">You don't have enough coins!</p>
+          <button className="font-bold h-10 bg-[var(--warning-btn-bg-color)] text-[var(--button-text-color)] rounded border border-black" onClick={closeError}>Ok</button>
+        </div>
+    </dialog>
+    </>
   );
 }
 

@@ -4,6 +4,8 @@ import Header from "./Header";
 import logo from "./assets/logo/mk-logo.svg";
 import { motion, AnimatePresence } from "framer-motion";
 import { set } from "date-fns";
+import { applyDefaultTheme } from "./themeUtil";
+import { getColorPalette } from "./themeUtil";
 
 function WelcomeScreen(){
 
@@ -28,10 +30,10 @@ function WelcomeScreen(){
             if(response.ok){
                 setUsername("");
                 setPassword("");
-                window.location = "/";
                 localStorage.setItem("username", username);
                 localStorage.setItem("user_id", result.user_id);
                 localStorage.setItem("currentTab", 'Notes');
+                window.location = "/";
             } else {
                 setRegError(result.error);
             }
@@ -39,6 +41,58 @@ function WelcomeScreen(){
         } catch (err) {
             console.error(err.message);
         }
+    }
+
+
+    async function applyUserTheme(userId) {
+    try {
+        const res = await fetch(`http://localhost:5000/themes/all/${userId}`);
+        const data = await res.json();
+
+        const userThemes = data.userThemes || [];
+        const allThemes = data.allThemes || [];
+
+        // find selected theme
+        const selected = userThemes.find((t) => t.is_selected);
+
+        let themeToApply;
+        if (selected) {
+            themeToApply = allThemes.find((t) => t.id === selected.theme_id);
+        } else {
+            themeToApply = allThemes.find((t) => t.css_class === "theme-default");
+        }
+
+        if (themeToApply) {
+            const palette = getColorPalette(themeToApply.css_class);
+
+            const [
+                bg, text, accent, headerText, readColor, tagColor,
+                buttonBg, buttonText, cancelBtnBg, warningBtnBg,
+                highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr
+            ] = palette;
+
+            document.documentElement.style.setProperty("--bg-color", bg);
+            document.documentElement.style.setProperty("--text-color", text);
+            document.documentElement.style.setProperty("--accent-color", accent);
+            document.documentElement.style.setProperty("--header-text-color", headerText);
+            document.documentElement.style.setProperty("--read-color", readColor);
+            document.documentElement.style.setProperty("--tag-color", tagColor);
+            document.documentElement.style.setProperty("--button-bg-color", buttonBg);
+            document.documentElement.style.setProperty("--button-text-color", buttonText);
+            document.documentElement.style.setProperty("--cancel-btn-bg-color", cancelBtnBg);
+            document.documentElement.style.setProperty("--warning-btn-bg-color", warningBtnBg);
+            document.documentElement.style.setProperty("--highlight-color", highlightClr);
+            document.documentElement.style.setProperty("--edit-color", editClr);
+            document.documentElement.style.setProperty("--delete-color", deleteClr);
+            document.documentElement.style.setProperty("--coin-color", coinClr);
+            document.documentElement.style.setProperty("--fire-color", fireClr);
+            document.documentElement.style.setProperty("--progress-color", progressClr);
+
+            localStorage.setItem("selectedTheme", themeToApply.css_class);
+        }
+    } catch (err) {
+        console.error("Error applying theme:", err);
+    }
     }
 
     //log in user
@@ -59,6 +113,7 @@ function WelcomeScreen(){
         const result = await response.json();
 
         if (response.ok) {
+            await applyUserTheme(result.user.user_id);
             setLoginUsername("");
             setLoginPassword("");
             window.location = "/";
@@ -125,6 +180,7 @@ function WelcomeScreen(){
             setDirection("right");
         }
         setActiveSection(section);
+        
     };
 
     return(

@@ -3,25 +3,50 @@ const router = express.Router();
 const pool = require("../db");
 
 // Create a user
+// Create a user
 router.post("/", async (req, res) => {
+  const client = await pool.connect();
   try {
-
     const { username, password } = req.body;
 
-    const userExists = await pool.query("SELECT * FROM users WHERE LOWER(username) = $1", [username.toLowerCase()]);
+    const userExists = await client.query(
+      "SELECT * FROM users WHERE LOWER(username) = $1",
+      [username.toLowerCase()]
+    );
 
-    if (userExists.rows.length > 0){
-      return res.status(409).json({ error: "Username already taken" }); // 409 = Conflict
+    if (userExists.rows.length > 0) {
+      return res.status(409).json({ error: "Username already taken" });
     }
 
-    const newUser = await pool.query(
-      "INSERT INTO users (username, password, xp, level, streak_count, last_active) VALUES ($1, $2, 0, 1, 0, CURRENT_DATE) RETURNING *",
+    await client.query("BEGIN");
+
+    // 1. Create user
+    const newUser = await client.query(
+      `INSERT INTO users (username, password, xp, level, streak_count, last_active, coins) 
+       VALUES ($1, $2, 0, 1, 0, CURRENT_DATE, 0) RETURNING *`,
       [username, password]
     );
 
+    const userId = newUser.rows[0].user_id;
+
+    // 2. Give default and dark themes (assuming theme_id 1 = Default, 2 = Dark)
+    await client.query(
+      `INSERT INTO user_themes (user_id, theme_id, is_selected)
+       VALUES 
+         ($1, 1, TRUE),   -- Default theme, auto-selected
+         ($1, 2, FALSE)   -- Dark theme, available but not selected`,
+      [userId]
+    );
+
+    await client.query("COMMIT");
+
     res.json(newUser.rows[0]);
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error(err.message);
+    res.status(500).json({ error: "Error creating user" });
+  } finally {
+    client.release();
   }
 });
 

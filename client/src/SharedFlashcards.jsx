@@ -339,7 +339,7 @@ useEffect(() => {
         </section>
       </dialog>
 
-      <dialog id="users-dialog-flashcard" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/6 w-10/12">
+      <dialog id="users-dialog-flashcard" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/5 w-10/12">
         <section className="h-full flex flex-col gap-4">
           <h2 className='text-lg font-bold text-center'>Select the Person who you want Share with</h2>
           <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm' placeholder='search by username' onChange={(e) => setSearchTermUsersDialog(e.target.value.toLowerCase())}/>

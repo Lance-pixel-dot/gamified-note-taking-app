@@ -397,7 +397,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                 </section>
             </section>
 
-            <dialog id="share-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] tex rounded-xl h-5/6 w-10/12 text-[var(--text-color)] ">
+            <dialog id="share-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] tex rounded-xl h-5/6 w-10/12 text-[var(--text-color)]">
                 <section className="h-full flex flex-col gap-4">
                     <h2 className='text-lg font-bold text-center'>Select a Note You Want to Share</h2>
                     <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm' placeholder='search by title or tag' onChange={(e) => setShareDialogSearch(e.target.value.toLowerCase())}/>
@@ -435,7 +435,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                 </section>
             </dialog>
 
-            <dialog id="users-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/6 w-10/12">
+            <dialog id="users-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/5 w-10/12">
                 <section className="h-full flex flex-col gap-4">
                     <h2 className='text-lg font-bold text-center'>Select the Person who you want Share with</h2>
                     <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm' placeholder='search by username' onChange={(e) => setUserDialogSearch(e.target.value.toLowerCase())}/>

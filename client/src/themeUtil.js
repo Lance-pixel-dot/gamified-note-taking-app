@@ -1,5 +1,10 @@
 export function getColorPalette(className) {
   switch (className) {
+    case "theme-default":
+      return [
+        "#1800ad", "#ffffff", "#ffffff", "#000000", "#d1d5db", "#6b7280", "green", "white", "red", "orange",
+        "#b6a1a1ff", "blue", "red", "#ada624", "orange", "limegreen"
+      ];
     case "theme-dark":
       return [
         "#1a1a1a", "#ffffff", "#4f46e5", "#ffffff", "#2d2d3f", "#9ca3af", "#4f46e5", "#ffffff", "#dc2626", "#f59e0b",
@@ -57,6 +62,33 @@ export function getColorPalette(className) {
       ]; // fallback
   }
 }
+
+export const applyDefaultTheme = () => {
+  localStorage.setItem("selectedTheme", "theme-default");
+  const [
+    bg, text, accent, headerText, readColor, tagColor,
+    buttonBg, buttonText, cancelBtnBg, warningBtnBg,
+    highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr
+  ] = getColorPalette("default");
+
+  document.documentElement.style.setProperty("--bg-color", bg);
+  document.documentElement.style.setProperty("--text-color", text);
+  document.documentElement.style.setProperty("--accent-color", accent);
+  document.documentElement.style.setProperty("--header-text-color", headerText);
+  document.documentElement.style.setProperty("--read-color", readColor);
+  document.documentElement.style.setProperty("--tag-color", tagColor);
+  document.documentElement.style.setProperty("--button-bg-color", buttonBg);
+  document.documentElement.style.setProperty("--button-text-color", buttonText);
+  document.documentElement.style.setProperty("--cancel-btn-bg-color", cancelBtnBg);
+  document.documentElement.style.setProperty("--warning-btn-bg-color", warningBtnBg);
+  document.documentElement.style.setProperty("--highlight-color", highlightClr);
+  document.documentElement.style.setProperty("--edit-color", editClr);
+  document.documentElement.style.setProperty("--delete-color", deleteClr);
+  document.documentElement.style.setProperty("--coin-color", coinClr);
+  document.documentElement.style.setProperty("--fire-color", fireClr);
+  document.documentElement.style.setProperty("--progress-color", progressClr);
+
+};
 
 // 1–10 → original colors
 // 11 → Highlight
