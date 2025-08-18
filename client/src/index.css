@@ -77,5 +77,11 @@ body{
 dialog::backdrop {
   backdrop-filter: blur(8px);
   background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.toast-dialog::backdrop {
+  backdrop-filter: none;
+  background-color: transparent;
 }
 

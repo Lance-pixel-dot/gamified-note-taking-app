@@ -80,8 +80,8 @@ router.post("/mark-reviewed", async (req, res) => {
     // Check for review-based achievements
     const reviewAchievements = [
       { id: 8, count: 1 },
-      { id: 9, count: 3 }, //50
-      { id: 4, count: 5 }, //200
+      { id: 9, count: 50 }, //50
+      { id: 4, count: 200}, //200
     ];
 
     for (const { id, count } of reviewAchievements) {
