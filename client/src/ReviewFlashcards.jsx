@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
 import { isSameDay, parseISO } from "date-fns";
 
-const ReviewFlashcard = forwardRef(function ReviewFlashcard({ flashcard, incrementXP, onCreated, updateCoinsInBackend, markFlashcardAsRead }, ref) {
+const ReviewFlashcard = forwardRef(function ReviewFlashcard({ flashcard, incrementXP, onCreated, updateCoinsInBackend, markFlashcardAsRead, api }, ref) {
   const dialogRef = useRef(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [display, setDisplay] = useState("hidden");
@@ -12,7 +12,7 @@ const ReviewFlashcard = forwardRef(function ReviewFlashcard({ flashcard, increme
 
   async function checkIfReviewed() {
     try {
-      const res = await fetch(`http://localhost:5000/review_flashcards/can-review?user_id=${user_id}&flashcard_id=${flashcard.flashcard_id}`);
+      const res = await fetch(`${api}/review_flashcards/can-review?user_id=${user_id}&flashcard_id=${flashcard.flashcard_id}`);
       const data = await res.json();
       setIsAllowed(data.canReview);
     } catch (err) {
@@ -47,7 +47,7 @@ async function handleReview(baseXP, difficulty) {
 
 async function markReviewed(difficulty) {
   try {
-    const res = await fetch("http://localhost:5000/review_flashcards/mark-reviewed", {
+    const res = await fetch(`${api}/review_flashcards/mark-reviewed`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

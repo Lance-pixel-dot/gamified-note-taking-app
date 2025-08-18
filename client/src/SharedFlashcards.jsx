@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReviewFlashcard from "./ReviewFlashcards";
 import EditFlashcard from "./EditFlashcards";
+import Icon from '@mdi/react';
+import { mdiShareVariant } from '@mdi/js';
 
 function ShareFlashcards(props) {
   const user_id = localStorage.getItem("user_id");
@@ -14,7 +16,7 @@ function ShareFlashcards(props) {
   const [sharedUsers, setSharedUsers] = useState([]);
 
   async function displayFlashcards() {
-    const res = await fetch(`http://localhost:5000/flashcards/user/${user_id}`);
+    const res = await fetch(`${props.api}/flashcards/user/${user_id}`);
     const data = await res.json();
     setFlashcards(data);
     fetchReadStatus(data);
@@ -22,13 +24,13 @@ function ShareFlashcards(props) {
   }
 
   async function displayUsers() {
-    const res = await fetch("http://localhost:5000/users");
+    const res = await fetch(`${props.api}/users`);
     const data = await res.json();
     setUsers(data);
   }
 
   async function fetchSharedUsers(flashcard_id) {
-    const res = await fetch(`http://localhost:5000/shared_flashcards/${flashcard_id}`);
+    const res = await fetch(`${props.api}/shared_flashcards/${flashcard_id}`);
     const data = await res.json();
     setSharedUsersByFlashcard(prev => ({
       ...prev,
@@ -40,13 +42,13 @@ function ShareFlashcards(props) {
   }
 
   async function fetchSharedFlashcardsWithOthers() {
-    const res = await fetch(`http://localhost:5000/shared_flashcards/shared/by_me/${user_id}`);
+    const res = await fetch(`${props.api}/shared_flashcards/shared/by_me/${user_id}`);
     const data = await res.json();
     setSharedFlashcardsWithOthers(data);
   }
 
   async function fetchSharedFlashcardsWithMe() {
-    const res = await fetch(`http://localhost:5000/shared_flashcards/with_me/${user_id}`);
+    const res = await fetch(`${props.api}/shared_flashcards/with_me/${user_id}`);
     const data = await res.json();
     setSharedFlashcardsWithMe(data);
   }
@@ -89,12 +91,12 @@ function ShareFlashcards(props) {
 
     try {
       //  Check if user already has the "Help a Friend" achievement
-      const check = await fetch(`http://localhost:5000/achievements/has-helped-friend?user_id=${user_id}`);
+      const check = await fetch(`${props.api}/achievements/has-helped-friend?user_id=${user_id}`);
       const checkData = await check.json();
 
       if (!checkData.hasAchievement) {
         //  Unlock the achievement and grant XP
-        await fetch("http://localhost:5000/achievements/unlock", {
+        await fetch(`${props.api}/achievements/unlock`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -131,7 +133,7 @@ function ShareFlashcards(props) {
 }
 
   async function unshareFlashcard(flashcard_id, shared_user_id) {
-    const res = await fetch("http://localhost:5000/shared_flashcards", {
+    const res = await fetch(`${props.api}/shared_flashcards`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ flashcard_id, shared_user_id })
@@ -212,7 +214,7 @@ useEffect(() => {
    async function fetchReadStatus(flashcardsList) {
       try {
         const readStatuses = await Promise.all(flashcardsList.map(async (card) => {
-          const res = await fetch(`http://localhost:5000/flashcards/can-review?user_id=${user_id}&flashcard_id=${card.flashcard_id}`)
+          const res = await fetch(`${props.api}/flashcards/can-review?user_id=${user_id}&flashcard_id=${card.flashcard_id}`)
           const data = await res.json();
           return {
             flashcard_id: card.flashcard_id,
@@ -281,8 +283,9 @@ useEffect(() => {
                   <div onClick={(e) => e.stopPropagation()}>
                     {isOwner || sharedWithMePermission === "edit" ? (
                       <>
-                        <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={reviewFlashcardRefs.current[index]} markFlashcardAsRead={markFlashcardAsRead}/>
+                        <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={reviewFlashcardRefs.current[index]} markFlashcardAsRead={markFlashcardAsRead} api={props.api}/>
                         <EditFlashcard
+                          api={props.api}
                           flashcard={fc}
                           updateFlashcardsDisplay={(updated) =>
                             setFlashcards(prev => prev.map(n =>
@@ -292,13 +295,13 @@ useEffect(() => {
                         />
                       </>
                     ) : sharedWithMePermission === "view" ? (
-                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={reviewFlashcardRefs.current[index]} markFlashcardAsRead={markFlashcardAsRead}/>
+                      <ReviewFlashcard flashcard={fc} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={reviewFlashcardRefs.current[index]} markFlashcardAsRead={markFlashcardAsRead} api={props.api}/>
                     ) : null}
                   </div>
                 </div>
               );
             })}
-            <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full" onClick={openShare}>Share Flashcards</button>
+            <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full flex justify-center gap-2" onClick={openShare}> <Icon path={mdiShareVariant} size={1} /> Share Flashcards</button>
           </section>
         </section>
       </section>

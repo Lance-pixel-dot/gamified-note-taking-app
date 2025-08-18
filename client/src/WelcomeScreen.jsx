@@ -7,7 +7,7 @@ import { set } from "date-fns";
 import { applyDefaultTheme } from "./themeUtil";
 import { getColorPalette } from "./themeUtil";
 
-function WelcomeScreen(){
+function WelcomeScreen({api}){
 
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ function WelcomeScreen(){
     async function regUser(){
         try {
             const body = { username , password };
-            const response = await fetch("http://localhost:5000/users", {
+            const response = await fetch(`${api}/users`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
@@ -46,7 +46,7 @@ function WelcomeScreen(){
 
     async function applyUserTheme(userId) {
     try {
-        const res = await fetch(`http://localhost:5000/themes/all/${userId}`);
+        const res = await fetch(`${api}/themes/all/${userId}`);
         const data = await res.json();
 
         const userThemes = data.userThemes || [];
@@ -104,7 +104,7 @@ function WelcomeScreen(){
 
         try {
             const body = { username: loginUsername, password: loginPassword };
-            const response = await fetch("http://localhost:5000/users/login", {
+            const response = await fetch(`${api}/users/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),

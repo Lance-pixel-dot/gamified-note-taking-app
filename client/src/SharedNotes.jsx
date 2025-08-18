@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReadNotes from "./ReadNotes";
 import EditNote from "./EditNotes";
+import Icon from '@mdi/react';
+import { mdiShareVariant } from '@mdi/js';
 
 function ShareNotes(props){
 
@@ -27,8 +29,8 @@ function ShareNotes(props){
     async function displayNotes() {
   try {
     const [ownNotes, withMe] = await Promise.all([
-      fetch(`http://localhost:5000/notes/user/${user_id}`).then(r => r.json()),
-      fetch(`http://localhost:5000/shared_notes/with_me/${user_id}`).then(r => r.json())
+      fetch(`${props.api}/notes/user/${user_id}`).then(r => r.json()),
+      fetch(`${props.api}/shared_notes/with_me/${user_id}`).then(r => r.json())
     ]);
 
     setNotes(ownNotes);
@@ -51,9 +53,9 @@ useEffect(() => {
   async function loadAllNotes() {
     try {
       const [ownNotes, byMe, withMe] = await Promise.all([
-        fetch(`http://localhost:5000/notes/user/${user_id}`).then(r => r.json()),
-        fetch(`http://localhost:5000/shared_notes/shared/by_me/${user_id}`).then(r => r.json()),
-        fetch(`http://localhost:5000/shared_notes/with_me/${user_id}`).then(r => r.json())
+        fetch(`${props.api}/notes/user/${user_id}`).then(r => r.json()),
+        fetch(`${props.api}/shared_notes/shared/by_me/${user_id}`).then(r => r.json()),
+        fetch(`${props.api}/shared_notes/with_me/${user_id}`).then(r => r.json())
       ]);
 
       setNotes(ownNotes);
@@ -92,7 +94,7 @@ useEffect(() => {
 
     async function displayUsers(){
         try {
-            const response = await fetch(`http://localhost:5000/users`);
+            const response = await fetch(`${props.api}/users`);
             const jsonData = await response.json();
             setUsers(jsonData);
         } catch (err) {
@@ -106,7 +108,7 @@ useEffect(() => {
 
     async function fetchSharedUsers(note_id) {
         try {
-            const res = await fetch(`http://localhost:5000/shared_notes/${note_id}`);
+            const res = await fetch(`${props.api}/shared_notes/${note_id}`);
             if (!res.ok) throw new Error("Failed to fetch shared users");
             const data = await res.json();
             setSharedUsersByNote(prev => ({
@@ -123,7 +125,7 @@ useEffect(() => {
 
     async function fetchSharedNotesWithOthers() {
         try {
-            const res = await fetch(`http://localhost:5000/shared_notes/shared/by_me/${user_id}`);
+            const res = await fetch(`${props.api}/shared_notes/shared/by_me/${user_id}`);
             const data = await res.json();
             setSharedNotesWithOthers(data);
         } catch (err) {
@@ -133,7 +135,7 @@ useEffect(() => {
 
     async function fetchSharedNotesWithMe() {
         try {
-            const res = await fetch(`http://localhost:5000/shared_notes/with_me/${user_id}`);
+            const res = await fetch(`${props.api}/shared_notes/with_me/${user_id}`);
             const data = await res.json();
             setSharedNotesWithMe(data);
         } catch (err) {
@@ -162,7 +164,7 @@ useEffect(() => {
 async function saveSharedNote(note_id, shared_user_id, permission = "view") {
   try {
     const body = { note_id, shared_user_id, permission };
-    const response = await fetch("http://localhost:5000/shared_notes", {
+    const response = await fetch(`${props.api}/shared_notes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -170,7 +172,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
     if (response.ok) {
       //  Check if user already unlocked "Help a Friend" (achievement_id: 15)
-      const checkRes = await fetch(`http://localhost:5000/achievements/has-helped-friend?user_id=${user_id}`);
+      const checkRes = await fetch(`${props.api}/achievements/has-helped-friend?user_id=${user_id}`);
       const checkData = await checkRes.json();
 
       if (!checkData.hasAchievement) {
@@ -179,7 +181,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
         if (props.incrementXP) props.incrementXP(achievementXp);
         if (props.updateCoinsInBackend) props.updateCoinsInBackend(user_id, 10);
 
-        await fetch("http://localhost:5000/achievements/unlock", {
+        await fetch(`${props.api}/achievements/unlock`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -220,7 +222,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
     async function unshareNote(note_id, shared_user_id) {
         try {
-            const response = await fetch("http://localhost:5000/shared_notes", {
+            const response = await fetch(`${props.api}/shared_notes`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ note_id, shared_user_id })
@@ -273,7 +275,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
     async function fetchReadNotesStatus(notesList) {
       try {
         const readStatuses = await Promise.all(notesList.map(async (note) => {
-          const res = await fetch(`http://localhost:5000/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
+          const res = await fetch(`${props.api}/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
           const data = await res.json();
           return {
             note_id: note.note_id,
@@ -372,8 +374,9 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                         {isOwner || sharedWithMePermission === "edit" ? (
                                             <>
                                                 <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={readNoteRefs.current[index]}
-                                                markNoteAsRead={markNoteAsRead}/>
+                                                markNoteAsRead={markNoteAsRead} api={props.api}/>
                                                 <EditNote
+                                                    api={props.api}
                                                     note={note}
                                                     updateNotesDisplay={(updatedNote) =>
                                                         setNotes((prev) =>
@@ -386,13 +389,14 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                             </>
                                         ) : sharedWithMePermission === "view" ? (
                                             <ReadNotes note={note} incrementXP={props.incrementXP} onCreated={props.onCreated} updateCoinsInBackend={props.updateCoinsInBackend} ref={readNoteRefs.current[index]}
-                                            markNoteAsRead={markNoteAsRead}/>
+                                            markNoteAsRead={markNoteAsRead} api={props.api}/>
                                         ) : null}
                                     </div>
                                 </div>
                             );
                         })}
-                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full" onClick={() => openShare()}>Share Notes</button>
+                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full flex justify-center gap-2" onClick={() => openShare()}>
+                                  <Icon path={mdiShareVariant} size={1} />Share Notes</button>
                     </section>
                 </section>
             </section>
@@ -438,8 +442,8 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
             <dialog id="users-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/5 w-10/12">
                 <section className="h-full flex flex-col gap-4">
                     <h2 className='text-lg font-bold text-center'>Select the Person who you want Share with</h2>
-                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm' placeholder='search by username' onChange={(e) => setUserDialogSearch(e.target.value.toLowerCase())}/>
-                    <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm">
+                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full md:text-base' placeholder='search by username' onChange={(e) => setUserDialogSearch(e.target.value.toLowerCase())}/>
+                    <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm md:text-base">
                         {users.filter(user =>
                         user.username.toLowerCase().includes(userDialogSearch)
                             ).map(user => {
@@ -450,10 +454,10 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
                                 return (
                                     <div className="border border-[var(--text-color)] rounded p-2 flex items-center" key={user.user_id}>
-                                        <h2 className='w-full text-xs'>{user.username}</h2>
+                                        <h2 className='w-full text-xs md:text-base'>{user.username}</h2>
                                         <div className='flex justify-end flex-col gap-1 '>
                                             <button
-                                                className={`border border-black rounded text-[var(--button-text-color)] ${!isAdded ? 'bg-[var(--button-bg-color)]' : 'bg-[var(--cancel-btn-bg-color)] '} text-[var(--button-text-color)] p-1 text-xs`}
+                                                className={`border border-black rounded text-[var(--button-text-color)] ${!isAdded ? 'bg-[var(--button-bg-color)]' : 'bg-[var(--cancel-btn-bg-color)] '} text-[var(--button-text-color)] p-1 text-xs md:text-base`}
                                                 onClick={() => {
                                                     if (!isAdded) {
                                                         saveSharedNote(sharedNoteID, user.user_id, permission);
@@ -471,7 +475,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                                                 onChange={(e) => {
                                                     saveSharedNote(sharedNoteID, user.user_id, e.target.value);
                                                 }}
-                                                className={`border rounded p-1 ${isAdded ? 'inline-block' : 'hidden'} text-center bg-[var(--bg-color)] text-xs`}
+                                                className={`border rounded p-1 ${isAdded ? 'inline-block' : 'hidden'} text-center bg-[var(--bg-color)] text-xs md:text-base`}
                                             >
                                                 <option value="view">View</option>
                                                 <option value="edit">View and Edit</option>

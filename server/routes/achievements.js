@@ -19,7 +19,16 @@ router.get("/user/:user_id", async (req, res) => {
       FROM achievements a
       LEFT JOIN user_achievements ua 
         ON a.achievement_id = ua.achievement_id AND ua.user_id = $1
-      ORDER BY a.achievement_id
+      ORDER BY 
+        CASE a.type
+          WHEN 'note' THEN 1
+          WHEN 'flashcard' THEN 2
+          WHEN 'lvl' THEN 3
+          WHEN 'streak' THEN 4
+          WHEN 'share' THEN 5
+          ELSE 6
+        END,
+        a.achievement_id
       `,
       [user_id]
     );

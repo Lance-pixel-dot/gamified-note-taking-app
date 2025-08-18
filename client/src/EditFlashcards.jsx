@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
+function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
   const dialogRef = useRef(null);
   const formRef = useRef(null);
   const errorRef = useRef(null);
@@ -40,7 +40,7 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay }) {
     try {
       const body = { title, question, answer, tag };
       const response = await fetch(
-        `http://localhost:5000/flashcards/${flashcard.flashcard_id}`,
+        `${api}/flashcards/${flashcard.flashcard_id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

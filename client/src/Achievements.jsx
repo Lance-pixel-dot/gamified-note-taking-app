@@ -1,4 +1,12 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from "react";
+import Icon from '@mdi/react';
+import { mdiNoteText } from '@mdi/js';
+import { mdiCardMultiple } from '@mdi/js';
+import { mdiTrophy } from '@mdi/js';
+import { mdiTrophyAward } from '@mdi/js';
+import { mdiFire } from '@mdi/js';
+import { mdiHandshake } from '@mdi/js';
+import { mdiLock } from '@mdi/js';
 
 const Achievements = forwardRef(function Achievements(props, ref) {
   const [achievements, setAchievements] = useState([]);
@@ -11,7 +19,7 @@ const Achievements = forwardRef(function Achievements(props, ref) {
   async function fetchAchievements() {
     try {
       const userId = localStorage.getItem("user_id");
-      const response = await fetch(`http://localhost:5000/achievements/user/${userId}`);
+      const response = await fetch(`${props.api}/achievements/user/${userId}`);
       const data = await response.json();
 
       const prevUnlockedIds = prevUnlockedRef.current;
@@ -45,12 +53,12 @@ const Achievements = forwardRef(function Achievements(props, ref) {
   }));
 
   const typeEmojis = {
-    note: "📝",
-    flashcard: "📚",
-    streak: "🔥",
-    lvl: "⭐",
-    share: "🤝",
-    default: "🎖️",
+    note: <Icon path={mdiNoteText} size={1} />,
+    flashcard: <Icon path={mdiCardMultiple} size={1} />,
+    streak: <Icon path={mdiFire} size={1} />,
+    lvl: <Icon path={mdiTrophyAward} size={1} />,
+    share: <Icon path={mdiHandshake} size={1} />,
+    default: <Icon path={mdiTrophy} size={1} />,
   };
 
   return (
@@ -80,17 +88,18 @@ const Achievements = forwardRef(function Achievements(props, ref) {
                   }
                 >
                   <div>
-                    <h3 className="font-semibold text-sm">
+                    <h3 className="font-semibold text-sm flex gap-2">
                       {typeEmojis[ach.type] || typeEmojis.default} {ach.name}
                     </h3>
                     <p className="text-xs">{ach.description}</p>
                   </div>
                   <span
-                    className={`text-xs font-bold w-5/12 text-end ${
+                    className={`text-xs font-bold w-5/12 text-end flex items-center justify-end ${
                       isUnlocked ? "text-purple-700" : "text-gray-500"
                     }`}
                   >
-                    {isUnlocked ? `+${ach.xp_reward} XP` : "🔒Locked"}
+                    {isUnlocked ? "" : <Icon path={mdiLock} size={1} />}
+                    {isUnlocked ? `+${ach.xp_reward} XP` : "Locked"}
                   </span>
                 </div>
               );

@@ -6,7 +6,7 @@ import ShareFlashcards from './SharedFlashcards';
 import Achievements from './Achievements';
 import ThemesStore from './ThemesStore';
 
-function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins, setCoins }) {
+function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins, setCoins, api }) {
   const getCurrentTab = localStorage.getItem("currentTab");
   const [activeTab, setActiveTab] = useState(getCurrentTab);
 
@@ -111,34 +111,40 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
+        api={api}
       />
       <Flashcard
         flashcardHidden={activeTab !== 'Flashcards' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
+        api={api}
       />
       <ShareNotes
         shareNotesHidden={activeTab !== 'Shared Notes' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
+        api={api}
       />
       <ShareFlashcards
         shareFlashcardsHidden={activeTab !== 'Shared Flashcards' ? 'hidden' : ''}
         incrementXP={incrementXP}
         onCreated={handleCreated}
         updateCoinsInBackend={updateCoinsInBackend}
+        api={api}
       />
       <Achievements
         ref={achievementsRef}
         achievementsHidden={activeTab !== 'Achievements' ? 'hidden' : ''}
+        api={api}
       />
       <ThemesStore
         userCoins={userCoins}
         storeHidden={activeTab !== 'Themes Store' ? 'hidden' : ''}
         updateCoinsInBackend={updateCoinsInBackend}
         setCoins={setCoins} // Pass setCoins to allow updates from ThemesStore
+        api={api}
       />
     </>
   );

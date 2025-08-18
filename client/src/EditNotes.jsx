@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import edit from './assets/icons/edit.svg';
 
-function EditNote({ note, updateNotesDisplay }) {
+function EditNote({ note, updateNotesDisplay, api }) {
   const dialogRef = useRef(null); // Ref for dialog
   const errorRef = useRef(null);
 
@@ -12,7 +12,7 @@ function EditNote({ note, updateNotesDisplay }) {
   async function updateNote() {
     try {
       const body = { title, content, tag };
-      const response = await fetch(`http://localhost:5000/notes/${note.note_id}`, {
+      const response = await fetch(`${api}/notes/${note.note_id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

@@ -289,7 +289,7 @@ useEffect(() => {
   setMultiplier(computeMultiplierFromStreak(streak));
 }, [streak]);
 
-const [showLevelUp, setShowLevelUp] = useState(false);
+const [showLevelUp, setShowLevelUp] = useState(true);
 const [levelUpData, setLevelUpData] = useState({ level: 0, coins: 0 });
 
 const triggerLevelUpToast = (level, coins) => {
@@ -328,11 +328,14 @@ useEffect(() => {
   }
 }, []);
 
+
+ const api = "http://localhost:5000";
+
   return (
     <>
     <Router>
       <Routes>
-        <Route path="/" element={<WelcomeScreen />} />
+        <Route path="/" element={<WelcomeScreen api={api} />} />
         <Route
           path="/Dashboard"
           element={
@@ -347,17 +350,23 @@ useEffect(() => {
               achievementsRef={achievementsRef}
               multiplier={multiplier} 
               updateCoinsInBackend={updateCoinsInBackend}
-              setCoins={setCoins} // Pass setCoins to allow updates from ThemesStore
+              setCoins={setCoins} 
+              api={api}
             />
           }
         />
         </Routes>
       </Router>
       {showLevelUp && (
-        <div className="text-xs fixed bottom-16 right-4 z-[61] bg-[var(--bg-color)] border border-[var(--header-text-color)] text-[var(--text-color)] p-3 rounded-xl shadow-lg transition-all duration-300 ease-in-out animate-slide-in">
-    ⭐ Level Up! You’re now Level {levelUpData.level}. +{levelUpData.coins} 💰
-        </div>
-    )}
+         <div
+           className="fixed bottom-16 right-4 pointer-events-none
+                      bg-[var(--bg-color)] border border-[var(--text-color)]
+                      text-[var(--text-color)] p-3 rounded-xl shadow-lg toast
+                      animate-slide-in"
+         >
+           ⭐ Level Up! You’re now Level {levelUpData.level}. +{levelUpData.coins} 💰
+         </div>
+      )}
     </>
   );
 }

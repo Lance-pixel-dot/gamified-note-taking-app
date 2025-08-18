@@ -22,7 +22,7 @@ function Notes(props)
     try {
     const body = { user_id, title, content, tag };
 
-    const response = await fetch("http://localhost:5000/notes", {
+    const response = await fetch(`${props.api}/notes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -73,7 +73,7 @@ function Notes(props)
 
     async function displayNotes(){
         try {
-            const response = await fetch(`http://localhost:5000/notes/user/${user_id}`);
+            const response = await fetch(`${props.api}/notes/user/${user_id}`);
             const jsonData = await response.json();
 
             setNotes(jsonData);
@@ -114,7 +114,7 @@ useEffect(() => {
     //delete note
     async function deleteNote(id) {
         try {
-            const deleteNote = await fetch(`http://localhost:5000/notes/${id}`, {
+            const deleteNote = await fetch(`${props.api}/notes/${id}`, {
                 method: "DELETE"
             });
 
@@ -179,7 +179,7 @@ useEffect(() => {
   async function fetchReadNotesStatus(notesList) {
   try {
     const readStatuses = await Promise.all(notesList.map(async (note) => {
-      const res = await fetch(`http://localhost:5000/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
+      const res = await fetch(`${props.api}/read_notes/can-read-note?user_id=${user_id}&note_id=${note.note_id}`);
       const data = await res.json();
       return {
         note_id: note.note_id,
@@ -254,6 +254,7 @@ useEffect(() => {
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <EditNote
+                                  api={props.api}
                                   note={note}
                                   updateNotesDisplay={(updatedNote) => {
                                     setNotes((prev) =>
@@ -286,6 +287,7 @@ useEffect(() => {
                                 updateCoinsInBackend={props.updateCoinsInBackend}
                                 ref={readNoteRefs.current[index]}
                                 markNoteAsRead={markNoteAsRead}
+                                api={props.api}
                               />
                             </div>
                           );

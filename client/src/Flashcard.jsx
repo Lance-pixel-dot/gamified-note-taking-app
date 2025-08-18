@@ -20,7 +20,7 @@ function Flashcard(props){
 async function saveFlashcard() {
   try {
     const body = { user_id, title, question, answer, tag };
-    const response = await fetch("http://localhost:5000/flashcards", {
+    const response = await fetch(`${props.api}/flashcards`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -78,7 +78,7 @@ async function saveFlashcard() {
 
     async function displayFlashcards(){
         try {
-            const response = await fetch(`http://localhost:5000/flashcards/user/${user_id}`);
+            const response = await fetch(`${props.api}/flashcards/user/${user_id}`);
             const jsonData = await response.json();
 
             setFlashcards(jsonData);
@@ -95,7 +95,7 @@ async function saveFlashcard() {
     //delete flashcard
     async function deleteFlashcard(id) {
         try {
-            const deleteFlashcard = await fetch(`http://localhost:5000/flashcards/${id}`, {
+            const deleteFlashcard = await fetch(`${props.api}/flashcards/${id}`, {
                 method: "DELETE"
             });
 
@@ -163,7 +163,7 @@ async function saveFlashcard() {
  async function fetchReadStatus(flashcardsList) {
     try {
       const readStatuses = await Promise.all(flashcardsList.map(async (card) => {
-        const res = await fetch(`http://localhost:5000/flashcards/can-review?user_id=${user_id}&flashcard_id=${card.flashcard_id}`)
+        const res = await fetch(`${props.api}/flashcards/can-review?user_id=${user_id}&flashcard_id=${card.flashcard_id}`)
         const data = await res.json();
         return {
           flashcard_id: card.flashcard_id,
@@ -218,6 +218,7 @@ async function saveFlashcard() {
                                        </div>
                                        <div className="flex flex-col gap-2 items-end" onClick={(e) => e.stopPropagation()}>
                                          <EditFlashcard
+                                           api={props.api}
                                            flashcard={flashcard}
                                            updateFlashcardsDisplay={(updated) =>
                                              setFlashcards(prev => prev.map(card => card.flashcard_id === updated.flashcard_id ? updated : card))
@@ -240,6 +241,7 @@ async function saveFlashcard() {
                                        </div>
                                      
                                        <ReviewFlashcard
+                                         api={props.api}
                                          flashcard={flashcard}
                                          ref={reviewFlashcardRefs.current[index]}
                                          incrementXP={props.incrementXP}

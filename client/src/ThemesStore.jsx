@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { getColorPalette } from "./themeUtil";
 
-function ThemesStore({ userCoins, storeHidden, setCoins }) {
+function ThemesStore({ userCoins, storeHidden, setCoins, api }) {
   const [themes, setThemes] = useState([]);
   const [ownedThemes, setOwnedThemes] = useState([]);
   const [selectedThemeId, setSelectedThemeId] = useState(null);
@@ -14,7 +14,7 @@ function ThemesStore({ userCoins, storeHidden, setCoins }) {
 
 async function fetchThemes() {
   try {
-    const res = await fetch(`http://localhost:5000/themes/all/${userId}`);
+    const res = await fetch(`${api}/themes/all/${userId}`);
     const data = await res.json();
 
     if (!res.ok || !data) throw new Error(data.error || "Failed to fetch themes");
@@ -58,7 +58,7 @@ async function fetchThemes() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/themes/purchase`, {
+      const response = await fetch(`${api}/themes/purchase`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ async function fetchThemes() {
 
 const handleApply = async (themeId) => {
   try {
-    const response = await fetch(`http://localhost:5000/themes/select`, {
+    const response = await fetch(`${api}/themes/select`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

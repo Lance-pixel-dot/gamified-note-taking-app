@@ -111,6 +111,8 @@ router.post("/mark-reviewed", async (req, res) => {
 
       const totalEasy = parseInt(easyTotalRes.rows[0].sum) || 0;
 
+      console.log(`Total easy reviews for user ${user_id}: ${totalEasy}`);
+
       if (totalEasy >= 100) {
         const checkEasy = await pool.query(
           `SELECT 1 FROM user_achievements WHERE user_id = $1 AND achievement_id = 10`,
