@@ -93,7 +93,7 @@ const handleApply = async (themeId) => {
 
     const selectedTheme = themes.find((t) => t.id === themeId);
     if (selectedTheme) {
-      const [bg, text, accent, headerText, readColor, tagColor, buttonBg, buttonText, cancelBtnBg, warningBtnBg, highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr] = getColorPalette(selectedTheme.css_class);
+      const [bg, text, accent, headerText, readColor, tagColor, buttonBg, buttonText, cancelBtnBg, warningBtnBg, highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr, logoClr] = getColorPalette(selectedTheme.css_class);
 
       document.documentElement.style.setProperty("--bg-color", bg);
       document.documentElement.style.setProperty("--text-color", text);
@@ -111,6 +111,7 @@ const handleApply = async (themeId) => {
       document.documentElement.style.setProperty("--coin-color", coinClr);
       document.documentElement.style.setProperty("--fire-color", fireClr);
       document.documentElement.style.setProperty("--progress-color", progressClr);
+      document.documentElement.style.setProperty("--logo-color", logoClr);
 
       localStorage.setItem("selectedTheme", selectedTheme.css_class);
     }
@@ -132,8 +133,8 @@ const handleApply = async (themeId) => {
 
   return (
     <>
-    <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${storeHidden}`}>
-      <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
+    <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${storeHidden} lg:w-9/12 lg:place-self-end`}>
+      <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
         <section
           id="themes-container"
           className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch mt-1"
@@ -150,13 +151,19 @@ const handleApply = async (themeId) => {
                 <div className="flex flex-col w-2/4">
                   <span className="font-semibold text-sm">{theme.name}</span>
                   <div className="flex mt-1 border border-[var(--header-text-color)] md:w-max">
-                    {getColorPalette(theme.css_class).map((color, index) => (
-                      <div
-                        key={index}
-                        className="w-5 h-5"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
+                    {getColorPalette(theme.css_class).map((color, index) => {
+                      // fallback if empty, undefined, or a filter string
+                      const isFilter = typeof color === "string" && color.includes("(");
+                      const safeColor = !color || isFilter ? "#0025cc" : color;
+                    
+                      return (
+                        <div
+                          key={index}
+                          className="w-5 h-5"
+                          style={{ backgroundColor: safeColor }}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
                 {isOwned ? (

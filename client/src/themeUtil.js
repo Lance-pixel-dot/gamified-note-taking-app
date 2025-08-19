@@ -8,7 +8,7 @@ export function getColorPalette(className) {
     case "theme-dark":
       return [
         "#1a1a1a", "#ffffff", "#4f46e5", "#ffffff", "#2d2d3f", "#9ca3af", "#4f46e5", "#ffffff", "#dc2626", "#f59e0b",
-        "#acb694ff", "#f6f6f6ff", "#ef4444", "#fbbf24", "orange", "#10b981"
+        "#acb694ff", "#f6f6f6ff", "#ef4444", "#fbbf24", "orange", "#10b981", "brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7484%) hue-rotate(259deg) brightness(101%) contrast(98%)"
       ];
     case "theme-cyberpunk":
       return [
@@ -53,7 +53,7 @@ export function getColorPalette(className) {
     case "theme-terminal":
       return [
         "#676b6b", "#ffffff", "#000000", "#00ff00", "#4a4f4f", "#80ff80", "#00aa00", "#ffffff", "#cc0000", "#ffaa00",
-        "#56564fff", "#00ff00", "#ff3333", "#ffdd00", "#ff6600", "#00ff00"
+        "#56564fff", "#00ff00", "#ff3333", "#ffdd00", "#ff6600", "#00ff00", "brightness(0) saturate(100%) invert(32%) sepia(93%) saturate(1616%) hue-rotate(95deg) brightness(103%) contrast(102%)"
       ];
     default:
       return [
@@ -68,7 +68,7 @@ export const applyDefaultTheme = () => {
   const [
     bg, text, accent, headerText, readColor, tagColor,
     buttonBg, buttonText, cancelBtnBg, warningBtnBg,
-    highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr
+    highlightClr, editClr, deleteClr, coinClr, fireClr, progressClr, logoClr
   ] = getColorPalette("default");
 
   document.documentElement.style.setProperty("--bg-color", bg);
@@ -87,7 +87,7 @@ export const applyDefaultTheme = () => {
   document.documentElement.style.setProperty("--coin-color", coinClr);
   document.documentElement.style.setProperty("--fire-color", fireClr);
   document.documentElement.style.setProperty("--progress-color", progressClr);
-
+  document.documentElement.style.setProperty("--logo-color", logoClr);
 };
 
 // 1–10 → original colors
@@ -97,3 +97,4 @@ export const applyDefaultTheme = () => {
 // 14 → Coins icon
 // 15 → Fire icon
 // 16 → Level progress bar
+// 17 → logo color

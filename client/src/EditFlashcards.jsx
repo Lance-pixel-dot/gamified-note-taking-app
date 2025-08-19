@@ -94,11 +94,11 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
           <h2 className="font-bold text-lg md:text-xl">Flashcard Details</h2>
 
           <section className="flex flex-col">
-            <label htmlFor="flashcard-view-title" className="font-bold text-sm md:text-base">Title</label>
+            <label htmlFor="flashcard-view-title" className="font-bold text-sm md:text-base xl:text-lg">Title</label>
             <input
               type="text"
               id="flashcard-view-title"
-              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm xl:text-base"
               value={title}
               onChange={(e) => {
                 const input = e.target.value;
@@ -111,13 +111,13 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
 
           <section className="flex flex-col">
             <section className="flex justify-between">
-              <label htmlFor="flashcard-view-front" className="font-bold text-sm md:text-base">Front</label>
+              <label htmlFor="flashcard-view-front" className="font-bold text-sm md:text-base xl:text-lg">Front</label>
               <span>{question.length}/{MAX_QUESTION_CHARS}</span>
             </section>
             <textarea
               name="flashcard-view-front"
               id="flashcard-view-front"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm xl:text-base"
               value={question}
               onChange={(e) => {
                 const input = e.target.value;
@@ -130,13 +130,13 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
 
           <section className="flex flex-col">
             <section className="flex justify-between">
-              <label htmlFor="flashcard-view-back" className="font-bold text-sm md:text-base">Back</label>
+              <label htmlFor="flashcard-view-back" className="font-bold text-sm md:text-base xl:text-lg">Back</label>
               <span>{answer.length}/{MAX_ANSWER_CHARS}</span>
             </section>
             <textarea
               name="flashcard-view-back"
               id="flashcard-view-back"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm xl:text-base"
               value={answer}
               onChange={(e) => {
                 const input = e.target.value;
@@ -148,11 +148,11 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
           </section>
 
           <section className="flex flex-col">
-            <label htmlFor="flashcard-view-tag" className="font-bold text-sm md:text-base">Tag</label>
+            <label htmlFor="flashcard-view-tag" className="font-bold text-sm md:text-base xl:text-lg">Tag</label>
             <input
               type="text"
               id="flashcard-view-tag"
-              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm xl:text-base"
               value={tag}
               onChange={(e) => {
                 const input = e.target.value;

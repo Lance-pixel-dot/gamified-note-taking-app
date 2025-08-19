@@ -78,11 +78,11 @@ const ReadNotes = forwardRef(({ note, userId, incrementXP, onCreated, updateCoin
       >
         <section className="flex flex-col justify-between h-full gap-4">
           <h1 className="text-xl font-bold">{note.title}</h1>
-          <span className="text-sm italic">Tag: {note.tag}</span>
-          <p className="border border-[var(--text-color)] rounded p-2 break-words h-4/5 text-xs md:text-sm">
+          <span className="text-sm italic xl:text-base">Tag: {note.tag}</span>
+          <p className="border border-[var(--text-color)] rounded p-2 break-words h-4/5 text-xs md:text-sm xl:text-base">
             {note.content}
           </p>
-          <span className="text-[var(--text-color)] text-xs text-center md:text-sm" >{isRead ? "Read this again tomorrow to earn xp and coins!" : ""}</span>
+          <span className="text-[var(--text-color)] text-xs text-center md:text-sm xl:text-base" >{isRead ? "Read this again tomorrow to earn xp and coins!" : ""}</span>
           <button
             className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm flex justify-center gap-2 md:text-base"
             onClick={async () => {

@@ -73,11 +73,11 @@ function EditNote({ note, updateNotesDisplay, api }) {
           <h2 className="font-bold text-lg md:text-xl">Edit Note</h2>
 
           <section className="flex flex-col">
-            <label htmlFor="view-title" className="font-bold text-sm md:text-base">Title</label>
+            <label htmlFor="view-title" className="font-bold text-sm md:text-base xl:text-lg">Title</label>
             <input
               type="text"
               id="view-title"
-              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm xl:text-base"
               value={title}
               onChange={(e) => {
                 const input = e.target.value;
@@ -90,12 +90,12 @@ function EditNote({ note, updateNotesDisplay, api }) {
 
           <section className="flex flex-col">
             <section className="flex justify-between">
-              <label htmlFor="view-content" className="font-bold text-sm md:text-base">Content</label>
+              <label htmlFor="view-content" className="font-bold text-sm md:text-base xl:text-lg">Content</label>
               <span>{content.length}/{MAX_CHARS}</span>
             </section>
             <textarea
               id="view-content"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-55 text-xs md:text-sm"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-55 text-xs md:text-sm xl:text-base"
               value={content}
               onChange={(e) => {
                 const input = e.target.value;
@@ -107,11 +107,11 @@ function EditNote({ note, updateNotesDisplay, api }) {
           </section>
 
           <section className="flex flex-col">
-            <label htmlFor="view-tag" className="font-bold text-sm md:text-base">Tag</label>
+            <label htmlFor="view-tag" className="font-bold text-sm md:text-base xl:text-lg">Tag</label>
             <input
               type="text"
               id="view-tag"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs md:text-sm"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs md:text-sm xl:text-base"
               value={tag}
               onChange={(e) => {
                 const input = e.target.value;

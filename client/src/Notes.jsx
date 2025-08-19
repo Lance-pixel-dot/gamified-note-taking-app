@@ -209,10 +209,10 @@ useEffect(() => {
 
     return(
         <>
-            <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.notesHidden}`}>
-                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
+            <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.notesHidden} lg:w-9/12 lg:place-self-end`}>
+                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag'></input>
+                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full xl:text-lg" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag'></input>
                     </section>
                     <section id="note-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with notes */}
@@ -230,7 +230,7 @@ useEffect(() => {
                         
                           return (
                             <div
-                              className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 ${
+                              className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 cursor-pointer ${
                                 isRead ? 'bg-[var(--read-color)]' : 'bg-[var(--accent-color)]'
                               }`}
                               key={note.note_id}
@@ -245,8 +245,8 @@ useEffect(() => {
                               ></div>
                         
                               <div className="w-full">
-                                <h2 className="font-bold text-sm md:text-base">{note.title}</h2>
-                                <span className="text-xs text-[var(tag-color)] italic md:text-sm">Tag: {note.tag}</span>
+                                <h2 className="font-bold text-sm md:text-base xl:text-lg">{note.title}</h2>
+                                <span className="text-xs text-[var(tag-color)] italic md:text-sm xl:text-base">Tag: {note.tag}</span>
                               </div>
                             
                               <div
@@ -292,7 +292,7 @@ useEffect(() => {
                             </div>
                           );
                         })}
-                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full" onClick={() => createNote()}> + Create New Note</button>
+                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full xl:text-lg" onClick={() => createNote()}> + Create New Note</button>
                     </section>
                 </section>
             </section>
@@ -302,11 +302,11 @@ useEffect(() => {
                     <h2 className='font-bold text-lg md:text-xl'>Create new Note</h2>
 
                     <section className="flex flex-col">
-                        <label htmlFor="title" className='font-bold text-sm md:text-base'>Title</label>
+                        <label htmlFor="title" className='font-bold text-sm md:text-base xl:text-large'>Title</label>
                         <input 
                         type="text" 
                         id="title" 
-                        className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm" 
+                        className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm xl:text-base" 
                         value={title} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -324,10 +324,10 @@ useEffect(() => {
 
                     <section className="flex flex-col">
                         <section className="flex justify-between">
-                            <label htmlFor="content" className='font-bold text-sm md:text-base'>Content</label>
+                            <label htmlFor="content" className='font-bold text-sm md:text-base xl:text-large'>Content</label>
                             <span>{content.length}/{MAX_CHARS}</span>
                         </section>
-                        <textarea name="content" id="content" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-55 text-xs md:text-sm"
+                        <textarea name="content" id="content" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-55 text-xs md:text-sm xl:text-base"
                         placeholder="Type your Content here (max 500 Characters)"
                         value={content}
                         onChange={handleChange}
@@ -337,8 +337,8 @@ useEffect(() => {
                     </section>
 
                     <section className="flex flex-col">
-                        <label htmlFor="tag" className='font-bold text-sm md:text-base'>Tag</label>
-                        <input type="text" id="tag" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs md:text-sm"
+                        <label htmlFor="tag" className='font-bold text-sm md:text-base xl:text-large'>Tag</label>
+                        <input type="text" id="tag" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs md:text-sm xl:text-base"
                         value={tag}
                         onChange={(e) => {
                                 const input = e.target.value;

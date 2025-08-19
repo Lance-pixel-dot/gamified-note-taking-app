@@ -248,8 +248,8 @@ useEffect(() => {
 
   return (
     <>
-      <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareFlashcardsHidden}`}>
-        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
+      <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareFlashcardsHidden} lg:w-9/12 lg:place-self-end`}>
+        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
           <section className="flex h-10 gap-2 items-center">
             <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' />
           </section>

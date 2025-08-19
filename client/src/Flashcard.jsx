@@ -187,10 +187,10 @@ async function saveFlashcard() {
 
     return(
         <>
-            <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.flashcardHidden}`}>
-                <section className=" bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0">
+            <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.flashcardHidden} lg:w-9/12 lg:place-self-end`}>
+                <section className=" bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
                     <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl h-7 w-full" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
+                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl h-7 w-full xl:text-lg" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
                     </section>
                     <section id="flashcard-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with flashcards */}
@@ -205,7 +205,7 @@ async function saveFlashcard() {
                            
                                return (
                                      <div
-                                       className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 ${isReview ? 'bg-[var(--read-color)]' : 'bg-[var(--accent-color)]'}`}
+                                       className={`border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl p-2 flex items-center gap-2 cursor-pointer ${isReview ? 'bg-[var(--read-color)]' : 'bg-[var(--accent-color)]'}`}
                                        key={flashcard.flashcard_id}
                                        onClick={() => {
                                          reviewFlashcardRefs.current[index]?.current?.open(flashcard);
@@ -213,8 +213,8 @@ async function saveFlashcard() {
                                      >
                                        <div className={`rounded-xl w-3 h-full border-2 border-black ${isReview ? 'bg-red-500' : 'bg-green-500'}`} />
                                        <div className="w-full">
-                                         <h2 className="font-bold text-sm w-9/12 md:text-base">{flashcard.title}</h2>
-                                         <span className="text-xs text-[var(tag-color)] italic md:text-sm">Tag: {flashcard.tag}</span>
+                                         <h2 className="font-bold text-sm w-9/12 md:text-base xl:text-lg">{flashcard.title}</h2>
+                                         <span className="text-xs text-[var(tag-color)] italic md:text-sm xl:text-base">Tag: {flashcard.tag}</span>
                                        </div>
                                        <div className="flex flex-col gap-2 items-end" onClick={(e) => e.stopPropagation()}>
                                          <EditFlashcard
@@ -252,7 +252,7 @@ async function saveFlashcard() {
                                      </div>
                                );
                              })}
-                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full"
+                        <button className="border border-[var(--header-text-color)] p-2 rounded-xl text-[var(--header-text-color)] bg-[var(--accent-color)] font-bold w-full xl:text-lg"
                          onClick={() => createFlashcard()}
                          >+ Create New FLashcard</button>
                     </section>
@@ -264,8 +264,8 @@ async function saveFlashcard() {
                     <h2 className='font-bold text-lg md:text-xl' >Create new Flashcard</h2>
 
                     <section className="flex flex-col">
-                        <label htmlFor="flashcard-title" className='font-bold text-sm md:text-base'>Title</label>
-                        <input type="text" id="flashcard-title" className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm"
+                        <label htmlFor="flashcard-title" className='font-bold text-sm md:text-base xl:text-lg'>Title</label>
+                        <input type="text" id="flashcard-title" className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm xl:text-base"
                         value={title} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -283,10 +283,10 @@ async function saveFlashcard() {
 
                     <section className="flex flex-col">
                         <section className="flex justify-between">
-                            <label htmlFor="front" className='font-bold text-sm md:text-base'>Front</label>
+                            <label htmlFor="front" className='font-bold text-sm md:text-base xl:text-lg'>Front</label>
                             <span>{question.length}/{MAX_QUESTION_CHARS}</span>
                         </section>
-                        <textarea name="front" id="front" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm"
+                        <textarea name="front" id="front" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm xl:text-base"
                         value={question} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -304,10 +304,10 @@ async function saveFlashcard() {
 
                     <section className="flex flex-col">
                         <section className="flex justify-between">
-                            <label htmlFor="back" className='font-bold text-sm md:text-base'>Back</label>
+                            <label htmlFor="back" className='font-bold text-sm md:text-base xl:text-lg'>Back</label>
                             <span>{answer.length}/{MAX_ANSWER_CHARS}</span>
                         </section>
-                        <textarea name="back" id="back" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm"
+                        <textarea name="back" id="back" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm xl:text-base"
                         value={answer} 
                         onChange={(e) => {
                                 const input = e.target.value;
@@ -324,8 +324,8 @@ async function saveFlashcard() {
                     </section>
 
                     <section className="flex flex-col">
-                        <label htmlFor="flashcard-tag" className='font-bold text-sm md:text-base'>Tag</label>
-                        <input type="text" id="flashcard-tag" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs md:text-sm"
+                        <label htmlFor="flashcard-tag" className='font-bold text-sm md:text-base xl:text-lg'>Tag</label>
+                        <input type="text" id="flashcard-tag" className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs md:text-sm xl:text-base"
                         value={tag} 
                         onChange={(e) => {
                                 const input = e.target.value;

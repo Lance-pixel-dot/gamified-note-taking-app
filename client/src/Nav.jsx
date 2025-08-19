@@ -5,6 +5,7 @@ import ShareNotes from './SharedNotes';
 import ShareFlashcards from './SharedFlashcards';
 import Achievements from './Achievements';
 import ThemesStore from './ThemesStore';
+import logo from "./assets/logo/mk-logo.svg";
 
 function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins, setCoins, api }) {
   const getCurrentTab = localStorage.getItem("currentTab");
@@ -17,11 +18,77 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
   // Save currentTab whenever it changes
   localStorage.setItem("currentTab", activeTab);
 
+  const renderMenuButtons = () => (
+  <>
+    <div className='border-b border-[var(--header-text-color)] p-2'><img src={logo} alt="Mind Keep Logo" className="logo"/></div>
+    <button
+      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Notes' ? 'font-bold' : ''}`}
+      onClick={() => {
+        setActiveTab('Notes');
+        setMenuOpen(false);
+        setCurrentMenu('Notes');
+      }}
+    >
+      Notes
+    </button>
+    <button
+      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Flashcards' ? 'font-bold' : ''}`}
+      onClick={() => {
+        setActiveTab('Flashcards');
+        setMenuOpen(false);
+        setCurrentMenu('Flashcards');
+      }}
+    >
+      Flashcards
+    </button>
+    <button
+      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Shared Notes' ? 'font-bold' : ''}`}
+      onClick={() => {
+        setActiveTab('Shared Notes');
+        setMenuOpen(false);
+        setCurrentMenu('Shared Notes');
+      }}
+    >
+      Shared with me (notes)
+    </button>
+    <button
+      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Shared Flashcards' ? 'font-bold' : ''}`}
+      onClick={() => {
+        setActiveTab('Shared Flashcards');
+        setMenuOpen(false);
+        setCurrentMenu('Shared Flashcards');
+      }}
+    >
+      Shared with me (flashcards)
+    </button>
+    <button
+      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Achievements' ? 'font-bold' : ''}`}
+      onClick={() => {
+        setActiveTab('Achievements');
+        setMenuOpen(false);
+        setCurrentMenu('Achievements');
+      }}
+    >
+      Achievements
+    </button>
+    <button
+      className={`block w-full text-left p-2 border-[var(--header-text-color)] ${activeTab === 'Themes Store' ? 'font-bold' : ''}`}
+      onClick={() => {
+        setActiveTab('Themes Store');
+        setMenuOpen(false);
+        setCurrentMenu('Themes Store');
+      }}
+    >
+      Themes Store
+    </button>
+  </>
+);
+
   return (
     <>
       <section
       id="nav-container"
-      className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-[var(--text-color)] bg-[var(--bg-color)] w-full"
+      className="place-self-center pl-3 pr-3 flex flex-col gap-1 text-[var(--text-color)] bg-[var(--bg-color)] w-full lg:hidden"
     >
       <div className="flex justify-between p-3 pb-0 bg-[var(--accent-color)] border border-[var(--header-text-color)] border-b-0 rounded-t-xl">
         <div className="bg-[var(--bg-color)] border border-black w-full rounded-xl p-3 relative flex items-center">
@@ -35,7 +102,7 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
             </button>
 
             {/* DROPDOWN MENU (FLOATING ABOVE SCREEN) */}
-            <div className={`absolute top-full left-0 mt-2 w-64 bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl border border-[car(--text-color)] shadow-xl z-50 overflow-visible transition-all duration-300 ease-in-out transform -ml-4.5 ${menuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+            <div className={`absolute top-full left-0 mt-2 w-64 bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl border border-[var(--text-color)] shadow-xl z-50 overflow-visible transition-all duration-300 ease-in-out transform -ml-4.5 ${menuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
             <div className="absolute top-0 left-4 -translate-y-full w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[var(--text-color)]"></div>
                 <button
                   className={`block w-full text-left p-2 border-b ${activeTab === 'Notes' ? 'font-bold' : ''}`}
@@ -104,6 +171,10 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
         </div>
       </div>
     </section>
+
+    <div className="hidden lg:flex lg:flex-col lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:bg-[var(--accent-color)] lg:border-r lg:border-[var(--header-text-color)] text-[var(--header-text-color)] lg:shadow-xl lg:p-4 lg:rounded-r-xl lg:text-base xl:w-96 xl:text-lg">
+    {renderMenuButtons()}
+    </div>
 
       {/* COMPONENTS */}
       <Notes
