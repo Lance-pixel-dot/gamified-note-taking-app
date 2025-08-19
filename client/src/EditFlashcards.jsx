@@ -91,14 +91,14 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
             updateFlashcard();
           }}
         >
-          <h2>Flashcard Details</h2>
+          <h2 className="font-bold text-lg md:text-xl">Flashcard Details</h2>
 
           <section className="flex flex-col">
-            <label htmlFor="flashcard-view-title">Title</label>
+            <label htmlFor="flashcard-view-title" className="font-bold text-sm md:text-base">Title</label>
             <input
               type="text"
               id="flashcard-view-title"
-              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)]"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm"
               value={title}
               onChange={(e) => {
                 const input = e.target.value;
@@ -111,13 +111,13 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
 
           <section className="flex flex-col">
             <section className="flex justify-between">
-              <label htmlFor="flashcard-view-front">Front</label>
+              <label htmlFor="flashcard-view-front" className="font-bold text-sm md:text-base">Front</label>
               <span>{question.length}/{MAX_QUESTION_CHARS}</span>
             </section>
             <textarea
               name="flashcard-view-front"
               id="flashcard-view-front"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm"
               value={question}
               onChange={(e) => {
                 const input = e.target.value;
@@ -130,13 +130,13 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
 
           <section className="flex flex-col">
             <section className="flex justify-between">
-              <label htmlFor="flashcard-view-back">Back</label>
+              <label htmlFor="flashcard-view-back" className="font-bold text-sm md:text-base">Back</label>
               <span>{answer.length}/{MAX_ANSWER_CHARS}</span>
             </section>
             <textarea
               name="flashcard-view-back"
               id="flashcard-view-back"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-30 text-xs md:text-sm"
               value={answer}
               onChange={(e) => {
                 const input = e.target.value;
@@ -148,11 +148,11 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
           </section>
 
           <section className="flex flex-col">
-            <label htmlFor="flashcard-view-tag">Tag</label>
+            <label htmlFor="flashcard-view-tag" className="font-bold text-sm md:text-base">Tag</label>
             <input
               type="text"
               id="flashcard-view-tag"
-              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)]"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm"
               value={tag}
               onChange={(e) => {
                 const input = e.target.value;
@@ -164,13 +164,13 @@ function EditFlashcard({ flashcard, updateFlashcardsDisplay, api }) {
           </section>
 
           <button
-            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm"
+            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm md:text-base"
             type="submit"
           >
             Save
           </button>
           <button
-            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm"
+            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm md:text-base"
             type="reset"
             onClick={cancelFlashcard}
           >

@@ -123,7 +123,7 @@ useImperativeHandle(ref, () => ({
         <section className="flex flex-col justify-center items-center h-full gap-2 ">
           <h2 className="text-xl font-bold mb-2">{card?.title}</h2>
           <div
-            className="w-60 h-48 perspective"
+            className="w-60 h-48 perspective md:w-9/12 md:h-3/5"
             onClick={() => {
               setIsFlipped((prev) => !prev);
               setDisplay("flex");
@@ -161,7 +161,7 @@ useImperativeHandle(ref, () => ({
             ) : (
               <>
                 <span>How well did you answer?</span>
-                <section className="flex flex-col gap-2 w-full">
+                <section className="flex flex-col gap-2 w-full md:w-8/12">
                   <button
                     className="mt-4 bg-green-500 text-white px-4 py-2 rounded border-1 border-black flex gap-2 justify-center font-bold"
                     onClick={async () => {

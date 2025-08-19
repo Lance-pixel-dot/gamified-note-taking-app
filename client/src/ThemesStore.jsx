@@ -149,7 +149,7 @@ const handleApply = async (themeId) => {
               >
                 <div className="flex flex-col w-2/4">
                   <span className="font-semibold text-sm">{theme.name}</span>
-                  <div className="flex mt-1 border border-[var(--header-text-color)]">
+                  <div className="flex mt-1 border border-[var(--header-text-color)] md:w-max">
                     {getColorPalette(theme.css_class).map((color, index) => (
                       <div
                         key={index}
@@ -161,12 +161,12 @@ const handleApply = async (themeId) => {
                 </div>
                 {isOwned ? (
                 isSelected ? (
-                  <span className="text-sm font-semibold text-[var(--text-color)]">
+                  <span className="text-sm font-semibold text-[var(--text-color)] md:text-base">
                     Selected
                   </span>
                 ) : (
                   <button
-                    className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded "
+                    className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded md:text-base"
                     onClick={() => handleApply(theme.id)}
                   >
                     Apply
@@ -174,14 +174,14 @@ const handleApply = async (themeId) => {
                 )
               ) : theme.price === 0 ? (
                 <button
-                  className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded "
+                  className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded md:text-base"
                   onClick={() => handlePurchase(theme.id)}
                 >
                   Apply
                 </button>
               ) : (
                 <button
-                  className="bg-[var(--button-bg-color)] text-[var(--button-text-color)] text-xs w-2/5 px-1 py-1 rounded"
+                  className="bg-[var(--button-bg-color)] text-[var(--button-text-color)] text-xs w-2/5 px-1 py-1 rounded md:text-base md:w-2/12"
                   onClick={() => handlePurchase(theme.id)}
                 >
                   Buy ({theme.price}🪙)

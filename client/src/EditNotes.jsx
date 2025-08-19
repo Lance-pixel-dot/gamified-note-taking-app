@@ -70,14 +70,14 @@ function EditNote({ note, updateNotesDisplay, api }) {
             updateNote();
           }}
         >
-          <h2 className="font-bold text-lg">Edit Note</h2>
+          <h2 className="font-bold text-lg md:text-xl">Edit Note</h2>
 
           <section className="flex flex-col">
-            <label htmlFor="view-title" className="font-bold text-sm">Title</label>
+            <label htmlFor="view-title" className="font-bold text-sm md:text-base">Title</label>
             <input
               type="text"
               id="view-title"
-              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)]"
+              className="border rounded p-2 text-xs border-[var(--text-color)] text-[var(--text-color)] md:text-sm"
               value={title}
               onChange={(e) => {
                 const input = e.target.value;
@@ -90,12 +90,12 @@ function EditNote({ note, updateNotesDisplay, api }) {
 
           <section className="flex flex-col">
             <section className="flex justify-between">
-              <label htmlFor="view-content" className="font-bold text-sm">Content</label>
+              <label htmlFor="view-content" className="font-bold text-sm md:text-base">Content</label>
               <span>{content.length}/{MAX_CHARS}</span>
             </section>
             <textarea
               id="view-content"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-55 text-xs"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 resize-none h-55 text-xs md:text-sm"
               value={content}
               onChange={(e) => {
                 const input = e.target.value;
@@ -107,11 +107,11 @@ function EditNote({ note, updateNotesDisplay, api }) {
           </section>
 
           <section className="flex flex-col">
-            <label htmlFor="view-tag" className="font-bold text-sm">Tag</label>
+            <label htmlFor="view-tag" className="font-bold text-sm md:text-base">Tag</label>
             <input
               type="text"
               id="view-tag"
-              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs"
+              className="border border-[var(--text-color)] text-[var(--text-color)] rounded p-2 text-xs md:text-sm"
               value={tag}
               onChange={(e) => {
                 const input = e.target.value;
@@ -122,10 +122,10 @@ function EditNote({ note, updateNotesDisplay, api }) {
             />
           </section>
 
-          <button type="submit" className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm">
+          <button type="submit" className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm md:text-base">
             Save
           </button>
-          <button type="button" onClick={cancelNote} className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm">
+          <button type="button" onClick={cancelNote} className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--cancel-btn-bg-color)] font-bold text-sm md:text-base">
             Close
           </button>
         </form>

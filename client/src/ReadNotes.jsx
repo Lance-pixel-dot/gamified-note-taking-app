@@ -77,14 +77,14 @@ const ReadNotes = forwardRef(({ note, userId, incrementXP, onCreated, updateCoin
         className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-5/6 w-10/12"
       >
         <section className="flex flex-col justify-between h-full gap-4">
-          <h1 className="text-lg font-bold">{note.title}</h1>
+          <h1 className="text-xl font-bold">{note.title}</h1>
           <span className="text-sm italic">Tag: {note.tag}</span>
-          <p className="border border-[var(--text-color)] rounded p-2 break-words h-4/5 text-xs">
+          <p className="border border-[var(--text-color)] rounded p-2 break-words h-4/5 text-xs md:text-sm">
             {note.content}
           </p>
-          <span className="text-[var(--text-color)] text-xs text-center" >{isRead ? "Read this again tomorrow to earn xp and coins!" : ""}</span>
+          <span className="text-[var(--text-color)] text-xs text-center md:text-sm" >{isRead ? "Read this again tomorrow to earn xp and coins!" : ""}</span>
           <button
-            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm flex justify-center gap-2"
+            className="border border-black p-2 rounded-xl text-[var(--button-text-color)] bg-[var(--button-bg-color)] font-bold text-sm flex justify-center gap-2 md:text-base"
             onClick={async () => {
               await handleRead(); 
               closeDialog(); 

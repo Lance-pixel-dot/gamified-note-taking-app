@@ -100,7 +100,7 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
               </div>
           </div>
 
-          <h2 className="absolute left-1/2 transform -translate-x-1/2 font-bold text-[var(--text-color)] text-sm">{currentMenu}</h2>
+          <h2 className="absolute left-1/2 transform -translate-x-1/2 font-bold text-[var(--text-color)] text-sm md:text-base">{currentMenu}</h2>
         </div>
       </div>
     </section>
