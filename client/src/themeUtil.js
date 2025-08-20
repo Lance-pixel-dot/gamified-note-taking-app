@@ -8,42 +8,42 @@ export function getColorPalette(className) {
     case "theme-dark":
       return [
         "#1a1a1a", "#ffffff", "#4f46e5", "#ffffff", "#2d2d3f", "#9ca3af", "#4f46e5", "#ffffff", "#dc2626", "#f59e0b",
-        "#acb694ff", "#f6f6f6ff", "#ef4444", "#fbbf24", "orange", "#10b981", "brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7484%) hue-rotate(259deg) brightness(101%) contrast(98%)"
+        "#a0afb2ff", "#f6f6f6ff", "#ef4444", "#fbbf24", "orange", "#10b981", "brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7484%) hue-rotate(259deg) brightness(101%) contrast(98%)"
       ];
     case "theme-cyberpunk":
       return [
         "#0f0c29", "#ffffff", "#ff0080", "black", "#d64d92", "#ff99cc", "#ff0080", "#ffffff", "#ff0033", "#ffcc00",
-        "#ffff66", "#000000ff", "#070707ff", "#000000ff", "#33ff99", "#33ff99"
+        "#a70c6bff", "#000000ff", "#070707ff", "#000000ff", "#33ff99", "#33ff99", "brightness(0) saturate(100%)"
       ];
     case "theme-forest":
       return [
         "#2e4600", "#ffffff", "#a2c523", "#000000", "#0eb321", "#d0ff8a", "#a2c523", "#000000", "#e53e3e", "#dd6b20",
-        "#ffee99", "#050710ff", "#7b0c0cff", "#917816ff", "#8c4512ff", "#16a34a"
+        "#80753eff", "#050710ff", "#7b0c0cff", "#917816ff", "#8c4512ff", "#16a34a"
       ];
     case "theme-ocean":
       return [
         "#003366", "#ffffff", "#66ccff", "#000000", "#628df0", "#cceeff", "#66ccff", "#000000", "#e53e3e", "#f6ad55",
-        "#fef9c3", "#000000ff", "#ae0505ff", "#a28514ff", "#ab4f0eff", "#0ea5e9"
+        "#576aa2ff", "#000000ff", "#ae0505ff", "#a28514ff", "#ab4f0eff", "#0ea5e9"
       ];
     case "theme-sunset":
       return [
         "#ff7e5f", "#1a1a1a", "#ffae42", "#000000", "#ffd9b3", "#ffe4b8", "#ffae42", "#1a1a1a", "#e53e3e", "#f6ad55",
-        "#fde68a", "#000000ff", "#000000ff", "#020202ff", "#853206ff", "#fb923c"
+        "#7e6811ff", "#000000ff", "#000000ff", "#020202ff", "#853206ff", "#fb923c"
       ];
     case "theme-arcade":
       return [
         "#2b2b2b", "#ffffff", "#00ffcc", "#000000", "#48d9c5", "#99fff2", "#00ffcc", "#000000", "#ff0044", "#ffbb33",
-        "#ffff33", "#4c00ffff", "#ff0044", "#827417ff", "#acae10ff", "#00ff00"
+        "#1b6a81ff", "#4c00ffff", "#ff0044", "#827417ff", "#acae10ff", "#00ff00"
       ];
     case "theme-pastel":
       return [
         "#f8d7e0", "#1a1a1a", "#b3e5fc", "#000000", "#efd0d9", "#a4d4f0", "#b3e5fc", "#1a1a1a", "#f28b82", "#fbbc04",
-        "#fff3b0", "#1b9cffff", "#fb7165ff", "#b6a640ff", "#c07f4aff", "#81b29a"
+        "#8f833eff", "#1b9cffff", "#fb7165ff", "#b6a640ff", "#c07f4aff", "#81b29a"
       ];
     case "theme-metalgear":
       return [
         "#2d2d2d", "#ffffff", "#c9c9c9", "#000000", "#b8aeae", "#e0e0e0", "#c9c9c9", "#000000", "#ff4444", "#ffbb33",
-        "#fef9c3", "#525761ff", "#ac2222ff", "#ad9a19ff", "#9d4b11ff", "#a3a3a3"
+        "#585529ff", "#525761ff", "#ac2222ff", "#ad9a19ff", "#9d4b11ff", "#a3a3a3"
       ];
     case "theme-retro-terminal":
       return [

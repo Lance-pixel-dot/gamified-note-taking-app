@@ -149,18 +149,16 @@ const handleApply = async (themeId) => {
                 className="flex justify-between items-center p-3 border border-[var(--header-text-color)] rounded-lg bg-[var(--accent-color)] text-[var(--header-text-color)]"
               >
                 <div className="flex flex-col w-2/4">
-                  <span className="font-semibold text-sm">{theme.name}</span>
+                  <span className="font-semibold text-sm xl:text-base">{theme.name}</span>
                   <div className="flex mt-1 border border-[var(--header-text-color)] md:w-max">
                     {getColorPalette(theme.css_class).map((color, index) => {
-                      // fallback if empty, undefined, or a filter string
-                      const isFilter = typeof color === "string" && color.includes("(");
-                      const safeColor = !color || isFilter ? "#0025cc" : color;
-                    
+                      const isFilter = typeof color === "string" && color.includes("("); // e.g. "filter(...)" or "rgb(...)"?
+
                       return (
                         <div
                           key={index}
-                          className="w-5 h-5"
-                          style={{ backgroundColor: safeColor }}
+                          className={`w-5 h-5 ${isFilter || !color ? "hidden" : ""}`}
+                          style={!isFilter && color ? { backgroundColor: color } : {}}
                         />
                       );
                     })}
@@ -168,12 +166,12 @@ const handleApply = async (themeId) => {
                 </div>
                 {isOwned ? (
                 isSelected ? (
-                  <span className="text-sm font-semibold text-[var(--text-color)] md:text-base">
+                  <span className="text-sm font-semibold text-[var(--text-color)] md:text-base xl:text-lg">
                     Selected
                   </span>
                 ) : (
                   <button
-                    className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded md:text-base"
+                    className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded md:text-base xl:text-lg"
                     onClick={() => handleApply(theme.id)}
                   >
                     Apply
@@ -181,7 +179,7 @@ const handleApply = async (themeId) => {
                 )
               ) : theme.price === 0 ? (
                 <button
-                  className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded md:text-base"
+                  className="bg-green-600 text-[var(--text-color)] text-sm px-3 py-1 rounded md:text-base xl:text-lg"
                   onClick={() => handlePurchase(theme.id)}
                 >
                   Apply

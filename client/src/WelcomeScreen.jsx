@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { data, useNavigate } from 'react-router-dom';
 import Header from "./Header";
 import logo from "./assets/logo/mk-logo.svg";
@@ -6,10 +6,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { set } from "date-fns";
 import { applyDefaultTheme } from "./themeUtil";
 import { getColorPalette } from "./themeUtil";
+import Icon from "@mdi/react";
+import { mdiLoading } from "@mdi/js";
 
 function WelcomeScreen({api}){
 
     const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(true); // global loading splash
 
     //register user
     const [username, setUsername] = useState("");
@@ -183,6 +187,31 @@ function WelcomeScreen({api}){
         
     };
 
+        // Simulate loading: wait for window load + maybe small delay
+    useEffect(() => {
+        const handleLoad = () => {
+            // Tiny delay so spinner feels intentional
+            setTimeout(() => setLoading(false), 700);
+        };
+
+        if (document.readyState === "complete") {
+            handleLoad();
+        } else {
+            window.addEventListener("load", handleLoad);
+        }
+
+        return () => window.removeEventListener("load", handleLoad);
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="h-screen w-screen flex flex-col items-center justify-center bg-white text-black">
+                <Icon path={mdiLoading} size={2} spin={true} />
+                <p className="mt-4 text-gray-500">Loading Mind Keep...</p>
+            </div>
+        );
+    }
+
     return(
         <>
         <section className="welcome-container relative overflow-hidden h-screen w-screen">
@@ -197,11 +226,11 @@ function WelcomeScreen({api}){
                     exit="exit"
                     className="h-screen bg-white text-black flex flex-col justify-center items-center"
                     >
-                    <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                        <img src={logo} alt="Mind Keep Logo" className="w-max mb-4" />
+                    <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded md:text-xl">
+                        <img src={logo} alt="Mind Keep Logo" className="w-max mb-4 md:w-6/12" />
                         <p className="slogan">Secure, manage, and grow your mind’s contents.</p>
-                        <button className="border border-black text-black p-2 rounded w-full mt-2" onClick={() => {setActiveSection("login"); goToSection("login")}}>Log In</button>
-                        <button className="bg-[#1f48ff] text-white p-2 rounded w-full" onClick={() => {setActiveSection("register"); goToSection("register")}}>Register</button>
+                        <button className="border border-black text-black p-2 rounded w-full mt-2 md:w-6/12" onClick={() => {setActiveSection("login"); goToSection("login")}}>Log In</button>
+                        <button className="bg-[#1f48ff] text-white p-2 rounded w-full md:w-6/12" onClick={() => {setActiveSection("register"); goToSection("register")}}>Register</button>
                     </div>
                     </motion.section>
                 )}
@@ -217,7 +246,7 @@ function WelcomeScreen({api}){
                       className="h-screen bg-white text-black flex flex-col justify-center items-center"
                     >
                     <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4">Log in to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
+                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4 md:h-2/5">Log in to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
                         <form className="flex flex-col justify-center items-center gap-4 text-center" onSubmit={(e) => {
                             e.preventDefault();
                             loginUser();
@@ -270,7 +299,7 @@ function WelcomeScreen({api}){
                   className="h-screen bg-white text-black flex flex-col justify-center items-center"
                 >
                     <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4">Register to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
+                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4 md:h-2/5">Register to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
                         <form className="flex flex-col justify-center items-center gap-4 text-center"
                             onSubmit={(e) => {
                                 e.preventDefault();

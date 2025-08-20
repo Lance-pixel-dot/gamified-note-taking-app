@@ -99,3 +99,9 @@ dialog::backdrop {
 }
 }
 
+@media (min-width: 768px) {
+.slogan{
+  font-size: small;
+}
+}
+
