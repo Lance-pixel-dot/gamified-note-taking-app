@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import EditFlashcard from "./EditFlashcards";
 import ReviewFlashcard from "./ReviewFlashcards";
+import Icon from '@mdi/react';
+import { mdiMagnify } from '@mdi/js';
 
 function Flashcard(props){
 
@@ -188,9 +190,12 @@ async function saveFlashcard() {
     return(
         <>
             <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.flashcardHidden} lg:w-9/12 lg:place-self-end`}>
-                <section className=" bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
-                    <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)] rounded-xl h-7 w-full xl:text-lg" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
+                <section className=" bg-[var(--accent-color)] rounded-b-xl h-full flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
+                    <section className="flex h-10 items-center">
+                        <input id="search" className="border border-[var(--header-text-color)] border-r-0 text-[var(--header-text-color)] rounded-l-xl h-7 w-full xl:text-lg focus:outline-none" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
+                        <div className='border border-[var(--header-text-color)] border-l-0 rounded-r-xl h-7 items-center'>
+                          <Icon path={mdiMagnify} size={1} />
+                        </div>
                     </section>
                     <section id="flashcard-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {/* fills with flashcards */}

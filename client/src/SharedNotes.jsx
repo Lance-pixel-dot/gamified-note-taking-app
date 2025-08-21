@@ -4,6 +4,7 @@ import EditNote from "./EditNotes";
 import Icon from '@mdi/react';
 import { mdiShareVariant } from '@mdi/js';
 import { mdiTrophy } from '@mdi/js';
+import { mdiMagnify } from '@mdi/js';
 
 function ShareNotes(props){
 
@@ -322,14 +323,17 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
     const [shareDialogSearch, setShareDialogSearch] = useState("");
     const [userDialogSearch, setUserDialogSearch] = useState("");
 
-    const [showToast, setShowToast] = useState(true);
+    const [showToast, setShowToast] = useState(false);
 
     return(
         <>
             <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareNotesHidden} lg:w-9/12 lg:place-self-end`}>
-                <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
-                    <section className="flex h-10 gap-2 items-center">
-                        <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full xl:text-lg" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
+                <section className="bg-[var(--accent-color)] rounded-b-xl h-full flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
+                    <section className="flex h-10 items-center">
+                        <input id="search" className="border border-[var(--header-text-color)] border-r-0 text-[var(--header-text-color)]  rounded-l-xl h-7 w-full xl:text-lg focus:outline-none" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
+                        <div className='border border-[var(--header-text-color)] border-l-0 rounded-r-xl h-7 items-center'>
+                            <Icon path={mdiMagnify} size={1} />
+                        </div>
                     </section>
                     <section id="note-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
                         {uniqueNotes.filter(note => 
@@ -409,7 +413,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
             <dialog id="share-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] tex rounded-xl h-5/6 w-10/12 text-[var(--text-color)]">
                 <section className="h-full flex flex-col gap-4">
                     <h2 className='text-lg font-bold text-center'>Select a Note You Want to Share</h2>
-                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm xl:text-base' placeholder='search by title or tag' onChange={(e) => setShareDialogSearch(e.target.value.toLowerCase())}/>
+                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm xl:text-base' placeholder='Search by Title or Tag' onChange={(e) => setShareDialogSearch(e.target.value.toLowerCase())}/>
                     <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm md:text-base">
                         {notes.filter(note =>
                             note.title.toLowerCase().includes(shareDialogSearch) ||
@@ -446,8 +450,8 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
 
             <dialog id="users-dialog" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/5 w-10/12">
                 <section className="h-full flex flex-col gap-4">
-                    <h2 className='text-lg font-bold text-center'>Select the Person who you want Share with</h2>
-                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full md:text-base xl:text-lg' placeholder='search by username' onChange={(e) => setUserDialogSearch(e.target.value.toLowerCase())}/>
+                    <h2 className='text-lg font-bold text-center'>Select the Person who you want Share a Note</h2>
+                    <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full md:text-base xl:text-lg' placeholder='Search by Username' onChange={(e) => setUserDialogSearch(e.target.value.toLowerCase())}/>
                     <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm md:text-base xl:text-lg">
                         {users.filter(user =>
                         user.username.toLowerCase().includes(userDialogSearch)

@@ -12,6 +12,7 @@ import { mdiCardMultiple } from '@mdi/js';
 import { mdiAccountGroup } from '@mdi/js';
 import { mdiTrophy } from '@mdi/js';
 import { mdiStorefrontOutline } from '@mdi/js';
+import { mdiExitToApp } from '@mdi/js';
 
 function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins, setCoins, api }) {
   const getCurrentTab = localStorage.getItem("currentTab");
@@ -21,78 +22,103 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
 
   const [currentMenu, setCurrentMenu] = useState(`${getCurrentTab}`);
 
+  const exitRef = useRef(null);
+
   // Save currentTab whenever it changes
   localStorage.setItem("currentTab", activeTab);
 
+  function confirmExit(){
+    exitRef.current.showModal();
+  }
+
+  function closeExit(){
+    exitRef.current.close();
+  }
+
+  function logOut(){
+    window.location = "/";
+  }
+
   const renderMenuButtons = () => (
   <>
-    <div className='border-b border-[var(--header-text-color)] p-2'><img src={logo} alt="Mind Keep Logo" className="logo"/></div>
-    <button
-      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Notes' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)] ' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
-      onClick={() => {
-        setActiveTab('Notes');
-        setMenuOpen(false);
-        setCurrentMenu('Notes');
-      }}
-    >
-      <Icon path={mdiNoteText} size={1} />
-      Notes
-    </button>
-    <button
-      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Flashcards' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
-      onClick={() => {
-        setActiveTab('Flashcards');
-        setMenuOpen(false);
-        setCurrentMenu('Flashcards');
-      }}
-    >
-      <Icon path={mdiCardMultiple} size={1}/>
-      Flashcards
-    </button>
-    <button
-      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Shared Notes' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center `}
-      onClick={() => {
-        setActiveTab('Shared Notes');
-        setMenuOpen(false);
-        setCurrentMenu('Shared Notes');
-      }}
-    >
-      <Icon path={mdiAccountGroup} size={1} />
-      Shared with me (notes)
-    </button>
-    <button
-      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Shared Flashcards' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
-      onClick={() => {
-        setActiveTab('Shared Flashcards');
-        setMenuOpen(false);
-        setCurrentMenu('Shared Flashcards');
-      }}
-    >
-      <Icon path={mdiAccountGroup} size={1} />
-      Shared with me (flashcards)
-    </button>
-    <button
-      className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Achievements' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
-      onClick={() => {
-        setActiveTab('Achievements');
-        setMenuOpen(false);
-        setCurrentMenu('Achievements');
-      }}
-    >
-      <Icon path={mdiTrophy} size={1} />
-      Achievements
-    </button>
-    <button
-      className={`block w-full text-left p-2 border-[var(--header-text-color)] ${activeTab === 'Themes Store' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
-      onClick={() => {
-        setActiveTab('Themes Store');
-        setMenuOpen(false);
-        setCurrentMenu('Themes Store');
-      }}
-    >
-      <Icon path={mdiStorefrontOutline} size={1} />
-      Themes Store
-    </button>
+    <div>
+      <div className='border-b border-[var(--header-text-color)] p-2'><img src={logo} alt="Mind Keep Logo" className="logo"/></div>
+      <button
+        className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Notes' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)] ' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
+        onClick={() => {
+          setActiveTab('Notes');
+          setMenuOpen(false);
+          setCurrentMenu('Notes');
+        }}
+      >
+        <Icon path={mdiNoteText} size={1} />
+        Notes
+      </button>
+      <button
+        className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Flashcards' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
+        onClick={() => {
+          setActiveTab('Flashcards');
+          setMenuOpen(false);
+          setCurrentMenu('Flashcards');
+        }}
+      >
+        <Icon path={mdiCardMultiple} size={1}/>
+        Flashcards
+      </button>
+      <button
+        className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Shared Notes' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center `}
+        onClick={() => {
+          setActiveTab('Shared Notes');
+          setMenuOpen(false);
+          setCurrentMenu('Shared Notes');
+        }}
+      >
+        <Icon path={mdiAccountGroup} size={1} />
+        Shared with me (notes)
+      </button>
+      <button
+        className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Shared Flashcards' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
+        onClick={() => {
+          setActiveTab('Shared Flashcards');
+          setMenuOpen(false);
+          setCurrentMenu('Shared Flashcards');
+        }}
+      >
+        <Icon path={mdiAccountGroup} size={1} />
+        Shared with me (flashcards)
+      </button>
+      <button
+        className={`block w-full text-left p-2 border-b border-[var(--header-text-color)] ${activeTab === 'Achievements' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
+        onClick={() => {
+          setActiveTab('Achievements');
+          setMenuOpen(false);
+          setCurrentMenu('Achievements');
+        }}
+      >
+        <Icon path={mdiTrophy} size={1} />
+        Achievements
+      </button>
+      <button
+        className={`block w-full text-left p-2 border-[var(--header-text-color)] ${activeTab === 'Themes Store' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
+        onClick={() => {
+          setActiveTab('Themes Store');
+          setMenuOpen(false);
+          setCurrentMenu('Themes Store');
+        }}
+      >
+        <Icon path={mdiStorefrontOutline} size={1} />
+        Themes Store
+      </button>
+    </div>
+    <div>
+      <button
+        className={`w-full text-left p-2 border-[var(--header-text-color)] hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
+        onClick={confirmExit}
+      >
+        <Icon path={mdiExitToApp} size={1} />
+        Log out
+      </button>
+    </div>
   </>
 );
 
@@ -200,9 +226,17 @@ const menuIcons = {
       </div>
     </section>
 
-    <div className="hidden lg:flex lg:flex-col lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:bg-[var(--accent-color)] lg:border-r lg:border-[var(--header-text-color)] text-[var(--header-text-color)] lg:shadow-xl lg:p-4 lg:rounded-r-xl lg:text-base xl:w-96 xl:text-lg">
+    <div className="hidden lg:flex lg:flex-col lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:bg-[var(--accent-color)] lg:border-r lg:border-[var(--header-text-color)] text-[var(--header-text-color)] lg:shadow-xl lg:p-4 lg:rounded-r-xl lg:text-base xl:w-96 xl:text-lg lg:justify-between">
     {renderMenuButtons()}
     </div>
+
+    <dialog id="flash-error-message" className="place-self-center p-4 border border-[var(--text-color)] text-[var(--text-color)] bg-[var(--bg-color)] rounded-xl text-center" ref={exitRef}>
+              <div className="flex flex-col gap-4">
+                <p className="w-50 font-bold">Log out?</p>
+                <button className="font-bold h-10 bg-[var(--warning-btn-bg-color)] text-[var(--button-text-color)] rounded border border-black" onClick={logOut}>Yes</button>
+                <button className="font-bold h-10 bg-[var(--cancel-btn-bg-color)] text-[var(--button-text-color)] rounded border border-black" onClick={closeExit}>Cancel</button>
+              </div>
+    </dialog>
 
       {/* COMPONENTS */}
       <Notes
@@ -245,6 +279,13 @@ const menuIcons = {
         setCoins={setCoins} // Pass setCoins to allow updates from ThemesStore
         api={api}
       />
+      <button
+        className="ml-3 rounded-xl text-left p-2 border border-[var(--header-text-color)] bg-[var(--accent-color)] flex gap-1 items-center lg:hidden w-28 font-bold"
+        onClick={confirmExit}
+      >
+        <Icon path={mdiExitToApp} size={1} />
+        Log out
+      </button>
     </>
   );
 }

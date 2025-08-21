@@ -134,7 +134,7 @@ const handleApply = async (themeId) => {
   return (
     <>
     <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${storeHidden} lg:w-9/12 lg:place-self-end`}>
-      <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
+      <section className="bg-[var(--accent-color)] rounded-b-xl h-full flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
         <section
           id="themes-container"
           className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch mt-1"

@@ -4,6 +4,7 @@ import EditFlashcard from "./EditFlashcards";
 import Icon from '@mdi/react';
 import { mdiShareVariant } from '@mdi/js';
 import { mdiTrophy } from '@mdi/js';
+import { mdiMagnify } from '@mdi/js';
 
 function ShareFlashcards(props) {
   const user_id = localStorage.getItem("user_id");
@@ -244,14 +245,17 @@ useEffect(() => {
     const [searchTermShareDialog, setSearchTermShareDialog] = useState('');
     const [searchTermUsersDialog, setSearchTermUsersDialog] = useState('');
 
-    const [showToast, setShowToast] = useState(true);
+    const [showToast, setShowToast] = useState(false);
 
   return (
     <>
       <section className={`p-3 pt-0 bg-[var(--bg-color)] flash-container ${props.shareFlashcardsHidden} lg:w-9/12 lg:place-self-end`}>
-        <section className="bg-[var(--accent-color)] rounded-b-xl h-5/6 flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
-          <section className="flex h-10 gap-2 items-center">
-            <input id="search" className="border border-[var(--header-text-color)] text-[var(--header-text-color)]  rounded-xl h-7 w-full xl:text-lg" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' />
+        <section className="bg-[var(--accent-color)] rounded-b-xl h-full flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
+          <section className="flex h-10 items-center">
+            <input id="search" className="border border-[var(--header-text-color)] border-r-0 text-[var(--header-text-color)]  rounded-l-xl h-7 w-full xl:text-lg focus:outline-none" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' />
+            <div className='border border-[var(--header-text-color)] border-l-0 rounded-r-xl h-7 items-center'>
+              <Icon path={mdiMagnify} size={1} />
+            </div>
           </section>
           <section id="note-container" className="border-2 border-[var(--header-text-color)] flex-1 overflow-y-auto rounded-xl p-4 flex flex-col gap-2 items-stretch">
             {uniqueFlashcards.filter(f => f.title.toLowerCase().includes(searchTerm) || f.tag.toLowerCase().includes(searchTerm))
@@ -313,7 +317,7 @@ useEffect(() => {
       <dialog id="share-dialog-flashcard" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] tex rounded-xl h-5/6 w-10/12 text-[var(--text-color)]">
         <section className="h-full flex flex-col gap-4">
           <h2 className='text-lg font-bold text-center'>Select a Flashcard You Want to Share</h2>
-          <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm xl:text-base' placeholder='search by title or tag' onChange={(e) => setSearchTermMain(e.target.value.toLowerCase())}/>
+          <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm xl:text-base' placeholder='Search by Title or Tag' onChange={(e) => setSearchTermMain(e.target.value.toLowerCase())}/>
           <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm md:text-base">
             {flashcards.filter(f =>
               f.title.toLowerCase().includes(searchTermMain) ||
@@ -349,7 +353,7 @@ useEffect(() => {
       <dialog id="users-dialog-flashcard" className="place-self-center p-4 border border-[var(--text-color)] bg-[var(--bg-color)] text-[var(--text-color)] rounded-xl h-4/5 w-10/12">
         <section className="h-full flex flex-col gap-4">
           <h2 className='text-lg font-bold text-center'>Select the Person who you want Share with</h2>
-          <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm xl:text-lg' placeholder='search by username' onChange={(e) => setSearchTermUsersDialog(e.target.value.toLowerCase())}/>
+          <input type="text" name="search" id="search" className='border border-[var(--text-color)] text-[var(--text-color)] rounded-lg h-10 w-full text-sm xl:text-lg' placeholder='Search by Username' onChange={(e) => setSearchTermUsersDialog(e.target.value.toLowerCase())}/>
           <div className="border-2 h-5/6 rounded-xl overflow-y-auto p-4 flex flex-col gap-2 text-sm md:text-base xl:text-lg">
             {users.filter(user => user.username.toLowerCase().includes(searchTermUsersDialog)).map(user => {
               if (user.user_id != user_id) {

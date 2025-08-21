@@ -2,58 +2,9 @@ Hello there
 
 To do's
 
-create collaboration features(done!)
-(before going through this make sure you do the leveling, steaks and spaced repetition first! do this when there's extra time)
--add comments
--add reactions
-(do the same for flashcards)            
-
-implement xp/leveling
-
-dateNFS stuff:
-implement spaced repetition
-    -dfasugeestionbykdjhAksjdhfI.
-implement streaks (still monitoring)
-    - x1.3 first multiplier, adds by 0.3 everyday
-    - resets to back to 1.3 when streak ended 
-
-implement achievements 
-    -organize achievements order
-
-implement leaderboard (maybe) (or this might be as well the users tab) 
-
-implement coins first before UI
- -still not done with achievement for buying a theme 
-
-(next) improve UI
-- make search bar work
-    - next is for searching a user dialog(Sharing feature)
-- arrange achievements order
-- for coins, display amount of coins when reading and creating notes and flashcards same with xp earned.
-- improve header
-    - display multiplier
-- improve ui on dialogs
-    -finish flashcards edit and deleting(add dialog for deleting)
-    -improve sharing dialog
-- upgrade icons
-
-- implement rewards system (add digital currency *coins* for doing notes and flashcards or by completing achievements or by leveling up )
-    -users can buy themes on a digital store with the digital currency *coins*
-    -change price
-    -save last used theme by user (local storage only)
-
-- don't forget to change toast border color
-
-- make read notes doesn't delete when delete notes same with flashcards
-  - check the error shared feature too
-
-- make it responsive
-- add logout button (maybe)
-
-(!) Every time the user left the web app, the web app will refresh back to log in screen
+- make all theme prices be all 150 coins only
+- add dialogs for purchasing themes
+- create leaderboards
+    - display every user's total of read notes, reviewed flashcards, highest streak, and ascend them by level (highest level highest place)
 
 learn database hosting (supabase)
-
-add daily goals (optional)
-
-if have more time (implement AI chat bot assistant)
