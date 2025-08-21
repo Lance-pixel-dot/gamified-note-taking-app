@@ -5,6 +5,7 @@ import ShareNotes from './SharedNotes';
 import ShareFlashcards from './SharedFlashcards';
 import Achievements from './Achievements';
 import ThemesStore from './ThemesStore';
+import LeaderBoard from './Leaderboard';
 import logo from "./assets/logo/mk-logo.svg";
 import Icon from '@mdi/react';
 import { mdiNoteText } from '@mdi/js';
@@ -109,6 +110,17 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
         <Icon path={mdiStorefrontOutline} size={1} />
         Themes Store
       </button>
+      <button
+        className={`block w-full text-left p-2 border-t border-[var(--header-text-color)] ${activeTab === 'Leaderboard' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} flex gap-1 items-center`}
+        onClick={() => {
+          setActiveTab('Leaderboard');
+          setMenuOpen(false);
+          setCurrentMenu('Leaderboard');
+        }}
+        >
+      <Icon path={mdiStorefrontOutline} size={1} />  
+      Leaderboard
+      </button>
     </div>
     <div>
       <button
@@ -207,7 +219,7 @@ const menuIcons = {
                   Achievements
                 </button>
                 <button
-                  className={`block w-full text-left p-2 ${activeTab === 'Themes Store' ? 'font-bold' : ''} flex gap-1 items-center`}
+                  className={`block w-full text-left p-2 border-b ${activeTab === 'Themes Store' ? 'font-bold' : ''} flex gap-1 items-center`}
                   onClick={() => {
                     setActiveTab('Themes Store');
                     setMenuOpen(false);
@@ -217,6 +229,17 @@ const menuIcons = {
                   <Icon path={mdiStorefrontOutline} size={1} />  
                   Themes Store
                   </button>
+                <button
+                  className={`block w-full text-left p-2 ${activeTab === 'Leaderboard' ? 'font-bold' : ''} flex gap-1 items-center`}
+                  onClick={() => {
+                    setActiveTab('Leaderboard');
+                    setMenuOpen(false);
+                    setCurrentMenu('Leaderboard');
+                  }}
+                  >
+                  <Icon path={mdiStorefrontOutline} size={1} />  
+                  Leaderboard
+                </button>
               </div>
           </div>
 
@@ -277,6 +300,10 @@ const menuIcons = {
         storeHidden={activeTab !== 'Themes Store' ? 'hidden' : ''}
         updateCoinsInBackend={updateCoinsInBackend}
         setCoins={setCoins} // Pass setCoins to allow updates from ThemesStore
+        api={api}
+      />
+      <LeaderBoard
+        leaderboardHidden={activeTab !== 'Leaderboard' ? 'hidden' : ''}
         api={api}
       />
       <button

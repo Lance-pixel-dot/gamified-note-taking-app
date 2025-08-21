@@ -10,6 +10,8 @@ const readNotesRoutes = require("./routes/readNotes");
 const reviewFlashcardsRoutes = require("./routes/reviewFlashcards");
 const achievementsRoutes = require("./routes/achievements");
 const themeRoutes = require("./routes/themes");
+const leaderboardRoutes = require("./routes/leaderboard");
+
 
 // Middleware
 app.use(cors());
@@ -25,6 +27,7 @@ app.use("/read_notes", readNotesRoutes);
 app.use("/review_flashcards", reviewFlashcardsRoutes);
 app.use("/achievements", achievementsRoutes);
 app.use("/themes", themeRoutes);
+app.use("/leaderboard", leaderboardRoutes);
 
 // Start server
 app.listen(5000, () => {
