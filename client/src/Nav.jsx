@@ -280,7 +280,7 @@ const menuIcons = {
         api={api}
       />
       <button
-        className="ml-3 rounded-xl text-left p-2 border border-[var(--header-text-color)] bg-[var(--accent-color)] flex gap-1 items-center lg:hidden w-28 font-bold"
+        className="ml-3 rounded-xl text-left p-2 border border-[var(--header-text-color)] bg-[var(--accent-color)] text-[var(--header-text-color)] flex gap-1 items-center lg:hidden w-28 font-bold"
         onClick={confirmExit}
       >
         <Icon path={mdiExitToApp} size={1} />

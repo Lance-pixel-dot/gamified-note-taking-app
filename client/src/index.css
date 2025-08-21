@@ -97,6 +97,9 @@ dialog::backdrop {
   .flash-container {
   height: 500px;
 }
+.error-username, .error-password {
+  font-size: small;
+}
 }
 
 @media (min-width: 1280px) {

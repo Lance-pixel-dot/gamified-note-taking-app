@@ -246,8 +246,8 @@ function WelcomeScreen({api}){
                       className="h-screen bg-white text-black flex flex-col justify-center items-center"
                     >
                     <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4 md:h-2/5 md:text-lg">Log in to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
-                        <form className="flex flex-col justify-center items-center gap-4 text-center" onSubmit={(e) => {
+                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4 md:h-2/6 md:text-lg md:mb-0">Log in to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
+                        <form className="flex flex-col justify-center items-center gap-4 text-center md:gap-1" onSubmit={(e) => {
                             e.preventDefault();
                             loginUser();
                             }}
@@ -299,8 +299,8 @@ function WelcomeScreen({api}){
                   className="h-screen bg-white text-black flex flex-col justify-center items-center"
                 >
                     <div className="flex flex-col justify-center items-center gap-2 p-4 border border-white rounded">
-                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4 md:h-2/5 md:text-lg">Register to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
-                        <form className="flex flex-col justify-center items-center gap-4 text-center"
+                        <h2 className="mb-4 flex flex-col items-center justify-center w-full gap-4 md:h-2/6 md:text-lg md:mb-0">Register to <img src={logo} alt="Mind Keep Logo" className="h-3/5"/></h2>
+                        <form className="flex flex-col justify-center items-center gap-4 text-center md:gap-1"
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 if(isValid && isUsernameValid){
@@ -346,7 +346,7 @@ function WelcomeScreen({api}){
                                     </p>
                                 )}
                             </div>
-                            {errorReg && <p className="text-red-500 text-xs mt-1">{errorReg}</p>}
+                            {errorReg && <p className="text-red-500 text-xs mt-1 xl:text-sm">{errorReg}</p>}
                             <button type="submit" className="border bg-[#1f48ff] p-2 rounded w-full text-white">Register</button>
                             <button
                             type="reset"
