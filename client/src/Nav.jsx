@@ -112,7 +112,7 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
         Themes Store
       </button>
       <button
-        className={`block w-full text-left p-2 border-t border-[var(--header-text-color)] ${activeTab === 'Leaderboard' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} flex gap-1 items-center`}
+        className={`block w-full text-left p-2 border-t border-[var(--header-text-color)] ${activeTab === 'Leaderboard' ? 'font-bold bg-[var(--highlight-color)] text-[var(--accent-color)]' : ''} hover:bg-[var(--highlight-color)] hover:text-[var(--accent-color)] flex gap-1 items-center`}
         onClick={() => {
           setActiveTab('Leaderboard');
           setMenuOpen(false);
