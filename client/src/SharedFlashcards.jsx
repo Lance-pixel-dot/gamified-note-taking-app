@@ -78,7 +78,7 @@ function ShareFlashcards(props) {
   async function saveSharedFlashcard(flashcard_id, shared_user_id, permission = "view") {
   const body = { flashcard_id, shared_user_id, permission };
 
-  const response = await fetch("http://localhost:5000/shared_flashcards", {
+  const response = await fetch(`${props.api}/shared_flashcards`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)

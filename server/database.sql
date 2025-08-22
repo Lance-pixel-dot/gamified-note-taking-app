@@ -54,7 +54,7 @@ CREATE TABLE review_flashcards (
     review_id SERIAL PRIMARY KEY,
     user_id INTEGER,
     flashcard_id INTEGER,
-    last_read_date TIMESTAMP,
+    last_review_date TIMESTAMP,
     easy_count INTEGER DEFAULT 0,
     UNIQUE(user_id, flashcard_id)
 );
@@ -95,5 +95,5 @@ CREATE TABLE created_notes (
 
 CREATE TABLE created_flashcards (
     user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    total_notes INTEGER DEFAULT 0
+    total_flashcards INTEGER DEFAULT 0
 );
