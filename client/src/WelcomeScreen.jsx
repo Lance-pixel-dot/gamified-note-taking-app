@@ -187,10 +187,8 @@ function WelcomeScreen({api}){
         
     };
 
-        // Simulate loading: wait for window load + maybe small delay
     useEffect(() => {
         const handleLoad = () => {
-            // Tiny delay so spinner feels intentional
             setTimeout(() => setLoading(false), 700);
         };
 

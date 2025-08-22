@@ -29,8 +29,6 @@ function App() {
 
   const updateCoinsInBackend = async (userId, amount) => {
 
-    console.log("Updating coins in backend:", { userId, amount });
-
   try {
     const response = await fetch(`http://localhost:5000/users/${userId}/coins`, {
       method: "PUT",
@@ -84,7 +82,7 @@ async function checkAndUnlockLevelAchievements(level) {
             }),
           });
 
-          // Now grant XP without triggering achievement check again
+          // grant XP without triggering achievement check again
           await incrementXP(achievement.xp, true);
 
           await updateCoinsInBackend(user_id, 10);
@@ -174,8 +172,6 @@ async function incrementXP(baseAmount, skipAchievements = false) {
     setMultiplier(roundedMultiplier);
 
     const finalXP = baseAmount * rawMultiplier;
-
-    console.log(`Incrementing XP for user ${userId}: base=${baseAmount}, multiplier=${multiplier}, finalXP=${finalXP}`);
 
     // Fetch user's current XP and level
     const res2 = await fetch(`http://localhost:5000/users/${userId}`);

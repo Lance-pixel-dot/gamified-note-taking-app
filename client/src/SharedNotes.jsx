@@ -84,7 +84,6 @@ useEffect(() => {
         const dialog = document.querySelector("#users-dialog");
         const dialogShare = document.querySelector("#share-dialog");
         dialog.showModal();
-        // dialogShare.close();
     }
 
     function closeUsers(){
