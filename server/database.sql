@@ -77,7 +77,7 @@ CREATE TABLE themes (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     css_class TEXT NOT NULL,
-    price INTEGER NOT NULL CHECK (price >= 0),
+    price INTEGER NOT NULL CHECK (price >= 0)
 );
 
 CREATE TABLE user_themes (
