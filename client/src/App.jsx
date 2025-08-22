@@ -12,6 +12,8 @@ function getXPNeeded(level) {
   return 100 + (level - 1) * 50;
 }
 
+ const api = "https://gamified-note-taking-app.onrender.com";
+
 function App() {
   const [stats, setStats] = useState({
     xp: 0,
@@ -30,7 +32,7 @@ function App() {
   const updateCoinsInBackend = async (userId, amount) => {
 
   try {
-    const response = await fetch(`http://localhost:5000/users/${userId}/coins`, {
+    const response = await fetch(`${api}/users/${userId}/coins`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ amount }),
@@ -47,7 +49,7 @@ function App() {
 const fetchCoins = async () => {
   const userId = localStorage.getItem("user_id");
   try {
-    const res = await fetch(`http://localhost:5000/users/${userId}/coins`);
+    const res = await fetch(`${api}/users/${userId}/coins`);
     const data = await res.json();
     setCoins(data.coins);
   } catch (err) {
@@ -68,12 +70,12 @@ async function checkAndUnlockLevelAchievements(level) {
     if (level >= achievement.requiredLevel) {
       try {
         const res = await fetch(
-          `http://localhost:5000/achievements/has?user_id=${user_id}&achievement_id=${achievement.id}`
+          `${api}/achievements/has?user_id=${user_id}&achievement_id=${achievement.id}`
         );
         const data = await res.json();
 
         if (!data.hasAchievement) {
-          await fetch("http://localhost:5000/achievements/unlock", {
+          await fetch(`${api}/achievements/unlock`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -109,11 +111,11 @@ async function checkAndUnlockStreakAchievements(streakCount) {
   for (const achievement of streakAchievements) {
     if (streakCount >= achievement.threshold) {
       try {
-        const res = await fetch(`http://localhost:5000/achievements/has?user_id=${userId}&achievement_id=${achievement.id}`);
+        const res = await fetch(`${api}/achievements/has?user_id=${userId}&achievement_id=${achievement.id}`);
         const data = await res.json();
 
         if (!data.hasAchievement) {
-          await fetch("http://localhost:5000/achievements/unlock", {
+          await fetch(`${api}/achievements/unlock`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ user_id: userId, achievement_id: achievement.id }),
@@ -153,7 +155,7 @@ async function incrementXP(baseAmount, skipAchievements = false) {
 
   try {
     // Fetch current streak info
-    const res = await fetch(`http://localhost:5000/users/${userId}/streak`);
+    const res = await fetch(`${api}/users/${userId}/streak`);
     const data = await res.json();
 
     const lastActiveDate = data.last_active ? parseISO(data.last_active) : null;
@@ -174,7 +176,7 @@ async function incrementXP(baseAmount, skipAchievements = false) {
     const finalXP = baseAmount * rawMultiplier;
 
     // Fetch user's current XP and level
-    const res2 = await fetch(`http://localhost:5000/users/${userId}`);
+    const res2 = await fetch(`${api}/users/${userId}`);
     const userData = await res2.json();
     let currentXP = parseFloat(userData.xp);
     let currentLevel = parseInt(userData.level);
@@ -221,7 +223,7 @@ async function incrementXP(baseAmount, skipAchievements = false) {
 
   const updateXPInBackend = async (userId, xp, level, streak_count, last_active) => {
     try {
-      const response = await fetch(`http://localhost:5000/users/${userId}/xp`, {
+      const response = await fetch(`${api}/users/${userId}/xp`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -245,11 +247,11 @@ async function incrementXP(baseAmount, skipAchievements = false) {
     const todayStr = format(new Date(), "yyyy-MM-dd");
 
     try {
-      const res1 = await fetch(`http://localhost:5000/users/${user_id}`);
+      const res1 = await fetch(`${api}/users/${user_id}`);
       const data1 = await res1.json();
       setStats({ xp: data1.xp, level: data1.level });
 
-      const res2 = await fetch(`http://localhost:5000/users/${user_id}/streak`);
+      const res2 = await fetch(`${api}/users/${user_id}/streak`);
       const data2 = await res2.json();
 
       const lastActiveDate = data2.last_active ? parseISO(data2.last_active) : null;
@@ -326,9 +328,6 @@ useEffect(() => {
     document.documentElement.style.setProperty("--logo-color", logoClr);
   }
 }, []);
-
-
- const api = "http://localhost:5000";
 
   return (
     <>
