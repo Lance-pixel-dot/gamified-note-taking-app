@@ -3,7 +3,6 @@ const router = express.Router();
 const pool = require("../db");
 
 // Create a user
-// Create a user
 router.post("/", async (req, res) => {
   const client = await pool.connect();
   try {

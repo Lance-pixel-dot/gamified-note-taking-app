@@ -51,7 +51,6 @@ router.get("/coins", async (req, res) => {
 });
 
 // Leaderboard by Level (with stats)
-// Leaderboard by Level (with stats + achievements)
 router.get("/level", async (req, res) => {
   try {
     const leaderboard = await pool.query(
