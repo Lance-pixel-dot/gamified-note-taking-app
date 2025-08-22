@@ -14,6 +14,7 @@ import { mdiAccountGroup } from '@mdi/js';
 import { mdiTrophy } from '@mdi/js';
 import { mdiStorefrontOutline } from '@mdi/js';
 import { mdiExitToApp } from '@mdi/js';
+import { mdiCrownCircle } from '@mdi/js';
 
 function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend, userCoins, setCoins, api }) {
   const getCurrentTab = localStorage.getItem("currentTab");
@@ -118,7 +119,7 @@ function Nav({ incrementXP, handleCreated, achievementsRef, updateCoinsInBackend
           setCurrentMenu('Leaderboard');
         }}
         >
-      <Icon path={mdiStorefrontOutline} size={1} />  
+      <Icon path={mdiCrownCircle} size={1} />  
       Leaderboard
       </button>
     </div>
@@ -141,6 +142,7 @@ const menuIcons = {
   "Shared Flashcards": mdiAccountGroup,
   Achievements: mdiTrophy,
   "Themes Store": mdiStorefrontOutline,
+  "Leaderboard": mdiCrownCircle,
 };
 
   return (
@@ -237,7 +239,7 @@ const menuIcons = {
                     setCurrentMenu('Leaderboard');
                   }}
                   >
-                  <Icon path={mdiStorefrontOutline} size={1} />  
+                  <Icon path={mdiCrownCircle} size={1} />  
                   Leaderboard
                 </button>
               </div>
