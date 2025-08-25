@@ -18,7 +18,19 @@ const themeRoutes = require("./routes/themes");
 const leaderboardRoutes = require("./routes/leaderboard");
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  "https://mind-keep.onrender.com", // frontend on Render
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
+app.use(express.json());
+
 app.use(express.json());
 
 // Routes
