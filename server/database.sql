@@ -97,3 +97,13 @@ CREATE TABLE created_flashcards (
     user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
     total_flashcards INTEGER DEFAULT 0
 );
+
+CREATE TABLE total_read_notes (
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    total_read_notes INTEGER DEFAULT 0
+);
+
+CREATE TABLE total_reviewed_flashcards (
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    total_reviewed_flashcards INTEGER DEFAULT 0
+);

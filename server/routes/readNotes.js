@@ -33,7 +33,7 @@ router.post("/mark-read", async (req, res) => {
   const now = new Date();
 
   try {
-    // Insert or update last_read_date
+    // 1. Insert or update last_read_date in read_notes
     const existing = await pool.query(
       `SELECT * FROM read_notes
        WHERE user_id = $1 AND note_id = $2`,
@@ -55,21 +55,41 @@ router.post("/mark-read", async (req, res) => {
       );
     }
 
-    // Count how many distinct notes the user has read
-    const readCountRes = await pool.query(
-      `SELECT COUNT(*) FROM read_notes WHERE user_id = $1`,
+    // 2. Update total_read_notes table
+    const totalExisting = await pool.query(
+      `SELECT total_read_notes FROM total_read_notes WHERE user_id = $1`,
       [user_id]
     );
-    const readCount = parseInt(readCountRes.rows[0].count);
 
-    // Reading achievements
+    if (totalExisting.rows.length > 0) {
+      await pool.query(
+        `UPDATE total_read_notes
+         SET total_read_notes = total_read_notes + 1
+         WHERE user_id = $1`,
+        [user_id]
+      );
+    } else {
+      await pool.query(
+        `INSERT INTO total_read_notes (user_id, total_read_notes)
+         VALUES ($1, 1)`,
+        [user_id]
+      );
+    }
+
+    // 3. Get updated total read count
+    const readCountRes = await pool.query(
+      `SELECT total_read_notes FROM total_read_notes WHERE user_id = $1`,
+      [user_id]
+    );
+    const readCount = parseInt(readCountRes.rows[0].total_read_notes);
+
+    // 4. Reading achievements
     const readingAchievements = [
       { id: 11, count: 1 },   
-      { id: 13, count: 10},  // 10
-      { id: 14, count: 50}   // 50
+      { id: 13, count: 10 },  
+      { id: 14, count: 50 }   
     ];
 
-    // Track newly unlocked achievements
     const newlyUnlocked = [];
 
     for (const { id, count } of readingAchievements) {
@@ -90,6 +110,7 @@ router.post("/mark-read", async (req, res) => {
 
     res.json({
       message: "Note marked as read.",
+      totalReadNotes: readCount,
       newAchievements: newlyUnlocked
     });
   } catch (err) {
