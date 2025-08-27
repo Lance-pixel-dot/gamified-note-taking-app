@@ -70,14 +70,15 @@ router.post("/mark-reviewed", async (req, res) => {
       );
     }
 
-    // Update total_reviewed_flashcards count
-    await pool.query(
-      `INSERT INTO total_reviewed_flashcards (user_id, total_reviewed_flashcards)
-       VALUES ($1, 1)
-       ON CONFLICT (user_id) DO UPDATE
-       SET total_reviewed_flashcards = total_reviewed_flashcards + 1`,
-      [user_id]
-    );
+// Update total_reviewed_flashcards count
+await pool.query(
+  `INSERT INTO total_reviewed_flashcards (user_id, total_reviewed_flashcards)
+   VALUES ($1, 1)
+   ON CONFLICT (user_id) DO UPDATE
+   SET total_reviewed_flashcards = total_reviewed_flashcards.total_reviewed_flashcards + 1`,
+  [user_id]
+);
+
 
     // Count how many distinct flashcards the user has reviewed
     const reviewedCountRes = await pool.query(
