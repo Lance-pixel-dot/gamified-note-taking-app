@@ -70,21 +70,21 @@ router.post("/mark-reviewed", async (req, res) => {
       );
     }
 
-    // Update total reviewed flashcards table
+    // Update total_reviewed_flashcards count
     await pool.query(
       `INSERT INTO total_reviewed_flashcards (user_id, total_reviewed_flashcards)
        VALUES ($1, 1)
-       ON CONFLICT (user_id)
-       DO UPDATE SET total_reviewed_flashcards = total_reviewed_flashcards + 1`,
+       ON CONFLICT (user_id) DO UPDATE
+       SET total_reviewed_flashcards = total_reviewed_flashcards + 1`,
       [user_id]
     );
 
-    // Count how many total flashcards reviewed
+    // Count how many distinct flashcards the user has reviewed
     const reviewedCountRes = await pool.query(
-      `SELECT total_reviewed_flashcards FROM total_reviewed_flashcards WHERE user_id = $1`,
+      `SELECT COUNT(*) FROM review_flashcards WHERE user_id = $1`,
       [user_id]
     );
-    const reviewedCount = parseInt(reviewedCountRes.rows[0].total_reviewed_flashcards);
+    const reviewedCount = parseInt(reviewedCountRes.rows[0].count);
 
     // Check for review-based achievements
     const reviewAchievements = [
@@ -138,7 +138,6 @@ router.post("/mark-reviewed", async (req, res) => {
     }
 
     res.json({ message: "Flashcard marked as reviewed.", newAchievements });
-
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
