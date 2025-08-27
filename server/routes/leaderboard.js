@@ -62,13 +62,13 @@ router.get("/level", async (req, res) => {
         u.xp,
         u.streak_count,
         COALESCE(COUNT(DISTINCT rn.note_id), 0) AS total_read_notes,
-        COALESCE(COUNT(DISTINCT rf.flashcard_id), 0) AS total_reviewed_flashcards,
+        COALESCE(trf.total_reviewed_flashcards, 0) AS total_reviewed_flashcards,
         COALESCE(COUNT(DISTINCT ua.achievement_id), 0) AS total_achievements
       FROM users u
       LEFT JOIN read_notes rn ON u.user_id = rn.user_id
-      LEFT JOIN review_flashcards rf ON u.user_id = rf.user_id
+      LEFT JOIN total_reviewed_flashcards trf ON u.user_id = trf.user_id
       LEFT JOIN user_achievements ua ON u.user_id = ua.user_id
-      GROUP BY u.user_id
+      GROUP BY u.user_id, trf.total_reviewed_flashcards
       ORDER BY u.level DESC, u.xp DESC
       LIMIT 20;
       `
