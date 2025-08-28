@@ -330,7 +330,7 @@ async function saveSharedNote(note_id, shared_user_id, permission = "view") {
                 <section className="bg-[var(--accent-color)] rounded-b-xl h-full flex flex-col p-4 pt-0 border border-[var(--header-text-color)] border-t-0 lg:border-t lg:rounded-t-xl lg:h-full">
                     <section className="flex h-10 items-center">
                         <input id="search" className="border border-[var(--header-text-color)] border-r-0 text-[var(--header-text-color)]  rounded-l-xl h-7 w-full xl:text-lg focus:outline-none" onChange={(e) => setSearchTerm(e.target.value.toLowerCase())} placeholder='Search by Title or Tag' ></input>
-                        <div className='border border-[var(--header-text-color)] border-l-0 rounded-r-xl h-7 items-center'>
+                        <div className='border border-[var(--header-text-color)] border-l-0 rounded-r-xl h-7 items-center text-[var(--header-text-color)]'>
                             <Icon path={mdiMagnify} size={1} />
                         </div>
                     </section>
