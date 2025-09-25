@@ -12,7 +12,7 @@ function getXPNeeded(level) {
   return 100 + (level - 1) * 50;
 }
 
- const api = "gamified-note-taking-app-production.up.railway.app";
+ const api = "https://gamified-note-taking-app-production.up.railway.app";
 
 function App() {
   const [stats, setStats] = useState({
